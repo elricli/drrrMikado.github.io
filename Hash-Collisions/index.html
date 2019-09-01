@@ -99,7 +99,7 @@
 <meta property="og:image" content="https://drrrmikado.github.io/images/Hash-Collisions/b32662efc5800fdcd75e0e9205072772.jpg">
 <meta property="og:image" content="https://drrrmikado.github.io/images/Hash-Collisions/Hash-Collisions-Open-Addressing-Linear-Probing-Example.jpg">
 <meta property="og:image" content="https://drrrmikado.github.io/images/Hash-Collisions/Hash-Collisions-Chaining-Example.jpg">
-<meta property="og:updated_time" content="2019-09-01T15:49:29.656Z">
+<meta property="og:updated_time" content="2019-09-01T15:50:34.489Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="哈希冲突">
 <meta name="twitter:description" content="Hash 函数在有限的数组存储空间中，不存在一个Hash函数是能完全避免Hash冲突的。 Hash 冲突发生了Hash冲突，解决方法有两种，开放寻址法（Open addressing）和链表法(Chaining)。">
@@ -351,7 +351,7 @@
                 
               
 
-              <time title="Created: 2019-09-01 22:39:11 / Modified: 23:49:29" itemprop="dateCreated datePublished" datetime="2019-09-01T22:39:11+08:00">2019-09-01</time>
+              <time title="Created: 2019-09-01 22:39:11 / Modified: 23:50:34" itemprop="dateCreated datePublished" datetime="2019-09-01T22:39:11+08:00">2019-09-01</time>
             
 
             
@@ -434,7 +434,8 @@
 <li>链表法</li>
 </ul>
 <p>首先，链表法对内存的利用率比开放寻址法要高。因为链表结点可以在需要的时候再创建，并不需要像开放寻址法那样事先申请好。</p>
-<p>链表法比起开放寻址法，对大装载因子的容忍度更高。开放寻址法只能适用装载因子小于1的情<br>况。接近1时，就可能会有大量的Hash冲突，致大量的探测、再Hash等，性能会下降很多。但<br>是对于链表法来说，只要Hash函数的值随机均匀，即便装载因子变成10，也就是链表的长度变长<br>了而已。虽然查找效率有所下降，但是比起顺序查找还是快很多。</p>
+<p>链表法比起开放寻址法，对大装载因子的容忍度更高。开放寻址法只能适用装载因子小于1的情况。接近1时，就可能会有大量的Hash冲突，致大量的探测、再Hash等，性能会下降很多。但是对于链表法来说，只要Hash函数的值随机均匀，即便装载因子变成10，也就是链表的长度变长了而已。虽然查找效率有所下降，但是比起顺序查找还是快很多。</p>
+<p>基于链表的散列冲突处理方法比较适合存储大对象、大数据量的散列表，而且，比起开放寻址法，它更加灵活，支持更多的优化策略，比如用红黑树代替链表。</p>
 
       
     </div>
