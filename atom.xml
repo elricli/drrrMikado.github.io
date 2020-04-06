@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://drrrmikado.github.io/"/>
+  <link href="https://mikado.drrr.app/"/>
   <updated>2020-04-06T06:27:30.139Z</updated>
-  <id>https://drrrmikado.github.io/</id>
+  <id>https://mikado.drrr.app/</id>
   
   <author>
     <name>Mikado</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>译：InnoDB锁定</title>
-    <link href="https://drrrmikado.github.io/InnoDB-Locking-Translation/"/>
-    <id>https://drrrmikado.github.io/InnoDB-Locking-Translation/</id>
+    <link href="https://mikado.drrr.app/InnoDB-Locking-Translation/"/>
+    <id>https://mikado.drrr.app/InnoDB-Locking-Translation/</id>
     <published>2020-04-06T05:24:52.000Z</published>
     <updated>2020-04-06T06:27:30.139Z</updated>
     
@@ -46,16 +46,16 @@
     </summary>
     
     
-      <category term="InnoDB" scheme="https://drrrmikado.github.io/tags/InnoDB/"/>
+      <category term="InnoDB" scheme="https://mikado.drrr.app/tags/InnoDB/"/>
     
-      <category term="MySQL" scheme="https://drrrmikado.github.io/tags/MySQL/"/>
+      <category term="MySQL" scheme="https://mikado.drrr.app/tags/MySQL/"/>
     
   </entry>
   
   <entry>
     <title>哈希冲突</title>
-    <link href="https://drrrmikado.github.io/Hash-Collisions/"/>
-    <id>https://drrrmikado.github.io/Hash-Collisions/</id>
+    <link href="https://mikado.drrr.app/Hash-Collisions/"/>
+    <id>https://mikado.drrr.app/Hash-Collisions/</id>
     <published>2020-03-01T14:39:11.000Z</published>
     <updated>2020-04-06T14:36:52.579Z</updated>
     
@@ -70,16 +70,16 @@
     </summary>
     
     
-      <category term="hash" scheme="https://drrrmikado.github.io/tags/hash/"/>
+      <category term="hash" scheme="https://mikado.drrr.app/tags/hash/"/>
     
-      <category term="Data Struct" scheme="https://drrrmikado.github.io/tags/Data-Struct/"/>
+      <category term="Data Struct" scheme="https://mikado.drrr.app/tags/Data-Struct/"/>
     
   </entry>
   
   <entry>
     <title>TCP-协议</title>
-    <link href="https://drrrmikado.github.io/TCP-Protocol/"/>
-    <id>https://drrrmikado.github.io/TCP-Protocol/</id>
+    <link href="https://mikado.drrr.app/TCP-Protocol/"/>
+    <id>https://mikado.drrr.app/TCP-Protocol/</id>
     <published>2019-08-29T14:30:18.000Z</published>
     <updated>2019-08-29T14:54:12.668Z</updated>
     
@@ -100,14 +100,14 @@
     </summary>
     
     
-      <category term="TCP" scheme="https://drrrmikado.github.io/tags/TCP/"/>
+      <category term="TCP" scheme="https://mikado.drrr.app/tags/TCP/"/>
     
   </entry>
   
   <entry>
     <title>Redis持久化介绍</title>
-    <link href="https://drrrmikado.github.io/Redis-Persistence/"/>
-    <id>https://drrrmikado.github.io/Redis-Persistence/</id>
+    <link href="https://mikado.drrr.app/Redis-Persistence/"/>
+    <id>https://mikado.drrr.app/Redis-Persistence/</id>
     <published>2019-02-21T09:59:51.000Z</published>
     <updated>2019-08-29T14:49:51.575Z</updated>
     
@@ -129,16 +129,16 @@
     </summary>
     
     
-      <category term="Linux" scheme="https://drrrmikado.github.io/tags/Linux/"/>
+      <category term="Linux" scheme="https://mikado.drrr.app/tags/Linux/"/>
     
-      <category term="Redis" scheme="https://drrrmikado.github.io/tags/Redis/"/>
+      <category term="Redis" scheme="https://mikado.drrr.app/tags/Redis/"/>
     
   </entry>
   
   <entry>
     <title>Ubuntu服务器安装</title>
-    <link href="https://drrrmikado.github.io/Ubuntu-Server-Install-Note/"/>
-    <id>https://drrrmikado.github.io/Ubuntu-Server-Install-Note/</id>
+    <link href="https://mikado.drrr.app/Ubuntu-Server-Install-Note/"/>
+    <id>https://mikado.drrr.app/Ubuntu-Server-Install-Note/</id>
     <published>2019-01-31T02:07:09.000Z</published>
     <updated>2019-08-29T14:50:31.877Z</updated>
     
@@ -162,18 +162,18 @@
     </summary>
     
     
-      <category term="Linux" scheme="https://drrrmikado.github.io/tags/Linux/"/>
+      <category term="Linux" scheme="https://mikado.drrr.app/tags/Linux/"/>
     
-      <category term="Ubuntu" scheme="https://drrrmikado.github.io/tags/Ubuntu/"/>
+      <category term="Ubuntu" scheme="https://mikado.drrr.app/tags/Ubuntu/"/>
     
-      <category term="Linux Server" scheme="https://drrrmikado.github.io/tags/Linux-Server/"/>
+      <category term="Linux Server" scheme="https://mikado.drrr.app/tags/Linux-Server/"/>
     
   </entry>
   
   <entry>
     <title>Tmux和Zsh的安装与配置</title>
-    <link href="https://drrrmikado.github.io/Tmux-And-ZSH-Install-And-Configuration/"/>
-    <id>https://drrrmikado.github.io/Tmux-And-ZSH-Install-And-Configuration/</id>
+    <link href="https://mikado.drrr.app/Tmux-And-ZSH-Install-And-Configuration/"/>
+    <id>https://mikado.drrr.app/Tmux-And-ZSH-Install-And-Configuration/</id>
     <published>2019-01-27T13:08:54.000Z</published>
     <updated>2019-08-29T14:52:18.062Z</updated>
     
@@ -187,18 +187,18 @@
     </summary>
     
     
-      <category term="Tmux" scheme="https://drrrmikado.github.io/tags/Tmux/"/>
+      <category term="Tmux" scheme="https://mikado.drrr.app/tags/Tmux/"/>
     
-      <category term="Zsh" scheme="https://drrrmikado.github.io/tags/Zsh/"/>
+      <category term="Zsh" scheme="https://mikado.drrr.app/tags/Zsh/"/>
     
-      <category term="Linux" scheme="https://drrrmikado.github.io/tags/Linux/"/>
+      <category term="Linux" scheme="https://mikado.drrr.app/tags/Linux/"/>
     
   </entry>
   
   <entry>
     <title>第一篇博客</title>
-    <link href="https://drrrmikado.github.io/First-Blog/"/>
-    <id>https://drrrmikado.github.io/First-Blog/</id>
+    <link href="https://mikado.drrr.app/First-Blog/"/>
+    <id>https://mikado.drrr.app/First-Blog/</id>
     <published>2019-01-26T07:54:21.000Z</published>
     <updated>2019-08-29T14:51:51.660Z</updated>
     
