@@ -92,23 +92,23 @@
 <meta name="keywords" content="InnoDB,MySQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="译：InnoDB锁定">
-<meta property="og:url" content="https://drrrmikado.github.io/译：InnoDB锁定/index.html">
+<meta property="og:url" content="https://drrrmikado.github.io/InnoDB-Locking-Translation/index.html">
 <meta property="og:site_name" content="Mikado&#39;s Blog">
 <meta property="og:description" content="翻译文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html  共享锁与排他锁（Shared and Exclusive Locks）InnoDB实现了标准行锁定，其中有两种类型锁：共享（S）锁 和 排他（X）锁  共享锁允许持有该锁的事务读取一行。 排他锁允许持有该所的事务更新或删除一行。  假如事务T1在行r上持有共享">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="https://drrrmikado.github.io/images/InnoDB-Locking/69174779_p0.jpg">
-<meta property="og:updated_time" content="2020-04-06T05:52:36.398Z">
+<meta property="og:image" content="https://drrrmikado.github.io/images/InnoDB-Locking-Translation/69174779_p0.jpg">
+<meta property="og:updated_time" content="2020-04-06T06:27:30.139Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="译：InnoDB锁定">
 <meta name="twitter:description" content="翻译文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html  共享锁与排他锁（Shared and Exclusive Locks）InnoDB实现了标准行锁定，其中有两种类型锁：共享（S）锁 和 排他（X）锁  共享锁允许持有该锁的事务读取一行。 排他锁允许持有该所的事务更新或删除一行。  假如事务T1在行r上持有共享">
-<meta name="twitter:image" content="https://drrrmikado.github.io/images/InnoDB-Locking/69174779_p0.jpg">
+<meta name="twitter:image" content="https://drrrmikado.github.io/images/InnoDB-Locking-Translation/69174779_p0.jpg">
 
 
 
 
 
 
-  <link rel="canonical" href="https://drrrmikado.github.io/译：InnoDB锁定/">
+  <link rel="canonical" href="https://drrrmikado.github.io/InnoDB-Locking-Translation/">
 
 
 
@@ -306,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://drrrmikado.github.io/译：InnoDB锁定/">
+    <link itemprop="mainEntityOfPage" href="https://drrrmikado.github.io/InnoDB-Locking-Translation/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mikado">
@@ -349,7 +349,7 @@
                 
               
 
-              <time title="Created: 2020-04-06 13:24:52 / Modified: 13:52:36" itemprop="dateCreated datePublished" datetime="2020-04-06T13:24:52+08:00">2020-04-06</time>
+              <time title="Created: 2020-04-06 13:24:52 / Modified: 14:27:30" itemprop="dateCreated datePublished" datetime="2020-04-06T13:24:52+08:00">2020-04-06</time>
             
 
             
@@ -388,7 +388,7 @@
       
 
       
-        <p><img src="/images/InnoDB-Locking/69174779_p0.jpg" alt=""></p>
+        <p><img src="/images/InnoDB-Locking-Translation/69174779_p0.jpg" alt=""></p>
 <blockquote>
 <p>翻译文档地址：<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html</a></p>
 </blockquote>
@@ -403,6 +403,8 @@
 <li><code>T2</code>对<code>X</code>锁的请求不会被立即同意。</li>
 </ul>
 <p>如果事务<code>T1</code>持有对行<code>r</code>的排他（<code>X</code>）锁，来自不同事务<code>T2</code>的请求<code>r</code>上的两种类型的锁都不会被立即同意。反而，事务<code>T2</code>必须等待事务<code>T1</code>释放对行<code>r</code>的锁。</p>
+<a id="more"></a>
+
 <h2 id="意向锁（Intention-Locks）"><a href="#意向锁（Intention-Locks）" class="headerlink" title="意向锁（Intention Locks）"></a>意向锁（Intention Locks）</h2><p><code>InnoDB</code>支持<em>多粒度锁（multiple granularity locking）</em>来允许行锁和表锁共存。举个例子，像<a href="https://dev.mysql.com/doc/refman/8.0/en/lock-tables.html" target="_blank" rel="noopener"><code>LOCK TABLES ... WRITE</code></a>在特殊表中会持有排他锁（一个<code>X</code>锁）。为了锁在多粒度级别下可行，<code>InnoDB</code>使用了<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_intention_lock" target="_blank" rel="noopener">意向锁</a>。意向锁是表级锁，表明一个事务稍后对表中的行需要哪种类型的锁（共享或排他）。有两种类型的意向锁：</p>
 <ul>
 <li><a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_intention_shared_lock" target="_blank" rel="noopener">意向共享锁</a>（<code>IS</code>）表明事务打算在表中的各个行上设置<em>共享</em>锁。</li>
@@ -535,7 +537,7 @@
   <li class="post-copyright-link">
     <strong>Post link: </strong>
     
-    <a href="https://drrrmikado.github.io/译：InnoDB锁定/" title="译：InnoDB锁定">https://drrrmikado.github.io/译：InnoDB锁定/</a>
+    <a href="https://drrrmikado.github.io/InnoDB-Locking-Translation/" title="译：InnoDB锁定">https://drrrmikado.github.io/InnoDB-Locking-Translation/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
