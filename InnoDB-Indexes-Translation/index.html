@@ -89,7 +89,7 @@
 
 
   <meta name="description" content="翻译原文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
-<meta name="keywords" content="MySQL,InnoDB">
+<meta name="keywords" content="InnoDB,MySQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="译：InnoDB索引">
 <meta property="og:url" content="https://mikado.drrr.app/InnoDB-Indexes-Translation/index.html">
@@ -97,7 +97,7 @@
 <meta property="og:description" content="翻译原文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="https://mikado.drrr.app/images/InnoDB-Indexes-Translation/87c01ec7gy1frkhzeordxj21kw0zke81.jpg">
-<meta property="og:updated_time" content="2020-04-13T06:39:58.506Z">
+<meta property="og:updated_time" content="2020-04-13T07:03:56.329Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="译：InnoDB索引">
 <meta name="twitter:description" content="翻译原文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
@@ -357,7 +357,7 @@
                 
               
 
-              <time title="Created: 2020-04-13 14:30:50 / Modified: 14:39:58" itemprop="dateCreated datePublished" datetime="2020-04-13T14:30:50+08:00">2020-04-13</time>
+              <time title="Created: 2020-04-13 14:30:50 / Modified: 15:03:56" itemprop="dateCreated datePublished" datetime="2020-04-13T14:30:50+08:00">2020-04-13</time>
             
 
             
@@ -487,9 +487,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
-          
             <a href="/tags/InnoDB/" rel="tag"># InnoDB</a>
+          
+            <a href="/tags/MySQL/" rel="tag"># MySQL</a>
           
         </div>
       
@@ -842,6 +842,50 @@
   
 
   
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+  
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      
+      equationNumbers: {
+        autoNumber: "AMS"
+      }
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+      for (i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+<script src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<style>
+.MathJax_Display {
+  overflow: auto hidden;
+}
+</style>
+
+    
+  
+
 
   
 
