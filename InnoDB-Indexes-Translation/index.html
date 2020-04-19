@@ -15,11 +15,11 @@
 
 
 <html class="theme-next pisces use-motion" lang="en">
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222"/>
 
 
 
@@ -46,9 +46,9 @@
 
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2"/>
 
-<link rel="stylesheet" href="/css/main.css?v=7.0.0">
+<link rel="stylesheet" href="/css/main.css?v=7.0.0"/>
 
 
 
@@ -88,19 +88,20 @@
 
 
 
-  <meta name="description" content="翻译原文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
-<meta name="keywords" content="InnoDB,MySQL">
+  <meta name="description" content="翻译原文档地址：https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;8.0&#x2F;en&#x2F;innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="译：InnoDB索引">
 <meta property="og:url" content="https://mikado.drrr.app/InnoDB-Indexes-Translation/index.html">
 <meta property="og:site_name" content="Mikado&#39;s Blog">
-<meta property="og:description" content="翻译原文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
-<meta property="og:locale" content="en">
+<meta property="og:description" content="翻译原文档地址：https:&#x2F;&#x2F;dev.mysql.com&#x2F;doc&#x2F;refman&#x2F;8.0&#x2F;en&#x2F;innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
+<meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/InnoDB-Indexes-Translation/87c01ec7gy1frkhzeordxj21kw0zke81.jpg">
-<meta property="og:updated_time" content="2020-04-19T10:43:43.589Z">
+<meta property="article:published_time" content="2020-04-13T06:30:50.000Z">
+<meta property="article:modified_time" content="2020-04-19T11:42:22.704Z">
+<meta property="article:author" content="Mikado">
+<meta property="article:tag" content="InnoDB">
+<meta property="article:tag" content="MySQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="译：InnoDB索引">
-<meta name="twitter:description" content="翻译原文档地址：https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html  聚簇索引和二级索引每个InnoDB表都有一个特殊的索引，称为聚簇索引，用于存储行数据。通常，聚簇索引与主键同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解InnoDB如果使用聚簇索引为每个表优化最常见的查找和DML操作。">
 <meta name="twitter:image" content="https://mikado.drrr.app/images/InnoDB-Indexes-Translation/87c01ec7gy1frkhzeordxj21kw0zke81.jpg">
 
 
@@ -108,7 +109,7 @@
 
 
 
-  <link rel="canonical" href="https://mikado.drrr.app/InnoDB-Indexes-Translation/">
+  <link rel="canonical" href="https://mikado.drrr.app/InnoDB-Indexes-Translation/"/>
 
 
 
@@ -165,9 +166,10 @@
   </style>
 </noscript>
 
+<meta name="generator" content="Hexo 4.2.0"><link rel="alternate" href="/atom.xml" title="Mikado's Blog" type="application/atom+xml">
 </head>
 
-<body itemscope="" itemtype="http://schema.org/WebPage" lang="en">
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
   
   
@@ -177,7 +179,7 @@
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
-    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-wrapper">
   <div class="site-meta">
     
@@ -224,7 +226,7 @@
       
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+    <a href="/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-home&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;Home</a>
 
   </li>
         
@@ -243,7 +245,7 @@
       
     
 
-    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>Tags<span class="badge">11</span></a>
+    <a href="/tags/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-tags&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;Tags&lt;span class&#x3D;&quot;badge&quot;&gt;11&lt;&#x2F;span&gt;</a>
 
   </li>
         
@@ -262,7 +264,7 @@
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives<span class="badge">9</span></a>
+    <a href="/archives/" rel="section">&lt;i class&#x3D;&quot;menu-item-icon fa fa-fw fa-archive&quot;&gt;&lt;&#x2F;i&gt; &lt;br&#x2F;&gt;Archives&lt;span class&#x3D;&quot;badge&quot;&gt;9&lt;&#x2F;span&gt;</a>
 
   </li>
 
@@ -309,21 +311,21 @@
 
   
 
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/InnoDB-Indexes-Translation/">
+    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/InnoDB-Indexes-Translation/"/>
 
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mikado">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.png">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mikado"/>
+      <meta itemprop="description" content=""/>
+      <meta itemprop="image" content="/images/avatar.png"/>
     </span>
 
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mikado's Blog">
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mikado's Blog"/>
     </span>
 
     
@@ -412,7 +414,7 @@
 <p>当一个新记录插入到<code>InnoDB</code>的聚簇索引时，<code>InnoDB</code>尝试让页的$1/16$空闲，以供将来插入和更新索引记录。假如索引记录顺序（升序或降序）插入，产生的索引页大约占满$15/16$。如果以随机顺序插入记录，则页面的容量为$1/2$到$15/16$。</p>
 <p><code>InnoDB</code>在创建或重建B-tree索引时执行批量加载。这种索引创建方法称为排序索引构建。<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_fill_factor" target="_blank" rel="noopener"><code>innodb_fill_factor</code></a>配置选项定义了在排序索引构建期间填充的每个B-tree页上的空间百分比，剩余的空间供将来索引增长使用。排序索引构建不支持空间索引。更多信息查看<a href="https://dev.mysql.com/doc/refman/8.0/en/sorted-index-builds.html" target="_blank" rel="noopener">Section 15.6.2.3，“排序索引构建”</a>。设置为100的<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_fill_factor" target="_blank" rel="noopener"><code>innodb_fill_factor</code></a>会使聚簇索引页中的空间的$1/16$空闲，以供将来索引增长。</p>
 <p>如果<code>InnoDB</code>索引页的填充因子低于<code>MERGE_THRESHOLD</code>（如果未指定，默认值为50%），则<code>InnoDB</code>尝试收缩索引树以释放页。<code>MERGE_THRESHOLD</code>设置适用于B-tree和R-tree索引。更多信息，查看<a href="https://dev.mysql.com/doc/refman/8.0/en/index-page-merge-threshold.html" target="_blank" rel="noopener">Section 15.8.11，“配置索引页的合并阈值”</a>。</p>
-<p>你可以在初始化MySQL实例之前，通过设置<a href=""><code>innodb_page_size</code></a>配置选项来定义MySQL实例中所有<code>InnoDB</code>表空间的<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_page_size" target="_blank" rel="noopener">页大小</a>。一旦一个实例的页大小被定义，你不能修改它，除了重新初始化实例。支持的大小有：64KB，32KB，16KB（默认），8KB和4KB。</p>
+<p>你可以在初始化MySQL实例之前，通过设置<a href=""><code>innodb_page_size</code></a>配置选项来定义MySQL实例中所有<code>InnoDB</code>表空间的<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_page_size">页大小</a>。一旦一个实例的页大小被定义，你不能修改它，除了重新初始化实例。支持的大小有：64KB，32KB，16KB（默认），8KB和4KB。</p>
 <p>使用特定<code>InnoDB</code>页大小的MySQL实例不能使用来自不同页面大小的实例中的数据文件或日志文件。</p>
 <h2 id="排序索引构建"><a href="#排序索引构建" class="headerlink" title="排序索引构建"></a>排序索引构建</h2><p><code>InnoDB</code>在创建或重建B-tree索引时执行批量加载。这种索引创建方法称为排序索引构建。<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_fill_factor" target="_blank" rel="noopener"><code>innodb_fill_factor</code></a>配置选项定义了在排序索引构建期间填充的每个B-tree页上的空间百分比，剩余的空间供将来索引增长使用。排序索引构建不支持空间索引。</p>
 <p>一个索引构建有三个阶段。在第一阶段，扫描<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_clustered_index" target="_blank" rel="noopener">聚簇索引</a>，生成索引项并添加到排序缓冲区。当<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_sort_buffer" target="_blank" rel="noopener">排序缓冲区</a>满了，索引项在排序后，写入到临时中间文件。此过程也称为“<code>运行（run）</code>”。在第二阶段，在一个或多个<code>runs</code>写入到临时中间文件中，对文件的条目执行合并排序。在第三阶段也是最后节点，排序后的条目插入到<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_b_tree" target="_blank" rel="noopener">B-tree</a>中。</p>
@@ -470,10 +472,10 @@
   <li class="post-copyright-link">
     <strong>Post link: </strong>
     
-    <a href="https://mikado.drrr.app/InnoDB-Indexes-Translation/" title="译：InnoDB索引">https://mikado.drrr.app/InnoDB-Indexes-Translation/</a>
+    <a href="https://mikado.drrr.app/InnoDB-Indexes-Translation/" title="译：InnoDB索引">https:&#x2F;&#x2F;mikado.drrr.app&#x2F;InnoDB-Indexes-Translation&#x2F;</a>
   </li>
   <li class="post-copyright-license">
-    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.</li>
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-creative-commons&quot;&gt;&lt;&#x2F;i&gt;BY-NC-SA</a> unless stating additionally.</li>
 </ul>
 
       </div>
@@ -567,9 +569,11 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
-          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image" src="/images/avatar.png" alt="Mikado">
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.png"
+                alt="Mikado"/>
             
               <p class="site-author-name" itemprop="name">Mikado</p>
               <p class="site-description motion-element" itemprop="description"></p>
@@ -580,7 +584,7 @@
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%20%7C%7C%20archive">
                 
                     <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">posts</span>
@@ -638,7 +642,7 @@
                   
                     
                   
-                  <a href="https://github.com/drrrMikado" title="GitHub &rarr; https://github.com/drrrMikado" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                  <a href="https://github.com/drrrMikado" title="GitHub &amp;rarr; https:&#x2F;&#x2F;github.com&#x2F;drrrMikado" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-github&quot;&gt;&lt;&#x2F;i&gt;</a>
                 </span>
               
                 <span class="links-of-author-item">
@@ -647,7 +651,7 @@
                   
                     
                   
-                  <a href="https://twitter.com/NoneL1ke" title="Twitter &rarr; https://twitter.com/NoneL1ke" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i></a>
+                  <a href="https://twitter.com/NoneL1ke" title="Twitter &amp;rarr; https:&#x2F;&#x2F;twitter.com&#x2F;NoneL1ke" rel="noopener" target="_blank">&lt;i class&#x3D;&quot;fa fa-fw fa-twitter&quot;&gt;&lt;&#x2F;i&gt;</a>
                 </span>
               
             </div>
@@ -716,7 +720,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a></div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a></div>
 
 
 
@@ -724,7 +728,7 @@
 
 
 
-  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a></div>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a></div>
 
 
 
