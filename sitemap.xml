@@ -2,72 +2,79 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://mikado.drrr.app/InnoDB-Indexes-Translation/</loc>
+    <loc>https://mikado.drrr.app/tags/index.html</loc>
     
-    <lastmod>2020-04-13T07:03:56.329Z</lastmod>
+    <lastmod>2020-04-19T10:25:56.731Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://mikado.drrr.app/First-Blog/</loc>
     
-    <lastmod>2020-04-06T15:49:46.306Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mikado.drrr.app/Hash-Collisions/</loc>
-    
-    <lastmod>2020-04-06T14:36:52.579Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mikado.drrr.app/InnoDB-Locking-Translation/</loc>
-    
-    <lastmod>2020-04-06T06:27:30.139Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mikado.drrr.app/TCP-Protocol/</loc>
-    
-    <lastmod>2019-08-29T14:54:12.668Z</lastmod>
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://mikado.drrr.app/Tmux-And-ZSH-Install-And-Configuration/</loc>
     
-    <lastmod>2019-08-29T14:52:18.062Z</lastmod>
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://mikado.drrr.app/Ubuntu-Server-Install-Note/</loc>
     
-    <lastmod>2019-08-29T14:50:31.877Z</lastmod>
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://mikado.drrr.app/Redis-Persistence/</loc>
     
-    <lastmod>2019-08-29T14:49:51.575Z</lastmod>
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://mikado.drrr.app/tags/index.html</loc>
+    <loc>https://mikado.drrr.app/TCP-Protocol/</loc>
     
-    <lastmod>2019-08-29T14:10:13.671Z</lastmod>
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://mikado.drrr.app/Hash-Collisions/</loc>
+    
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://mikado.drrr.app/InnoDB-Locking-Translation/</loc>
+    
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://mikado.drrr.app/InnoDB-Indexes-Translation/</loc>
+    
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://mikado.drrr.app/Transaction-Isolation-Level-AND-Locks-In-InnoDB/</loc>
+    
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://mikado.drrr.app/about/index.html</loc>
     
-    <lastmod>2019-08-29T14:10:13.635Z</lastmod>
+    <lastmod>2020-04-19T10:25:56.695Z</lastmod>
     
   </url>
   
