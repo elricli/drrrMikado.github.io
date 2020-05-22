@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.0">
+<meta name="generator" content="Hexo 4.2.1">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -121,12 +121,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">11</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">13</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">10</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">11</span></a>
 
   </li>
   </ul>
@@ -152,6 +152,159 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/Configure-Deploy-Project-With-Caddy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Mikado">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mikado's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Configure-Deploy-Project-With-Caddy/" class="post-title-link" itemprop="url">使用Caddy配置和部署项目</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-22 20:26:39" itemprop="dateCreated datePublished" datetime="2020-05-22T20:26:39+08:00">2020-05-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img data-src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg" alt=""></p>
+<h2 id="Caddy简介"><a href="#Caddy简介" class="headerlink" title="Caddy简介"></a>Caddy简介</h2><p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br>Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外配置即可提供 HTTPS 特性的 Web 服务器。</p>
+<h2 id="Caddy特性"><a href="#Caddy特性" class="headerlink" title="Caddy特性"></a>Caddy特性</h2><ul>
+<li>静态文件分发</li>
+<li>FastCGI支持</li>
+<li>Markdown渲染</li>
+<li>HTTPS</li>
+<li>自动续签证书</li>
+<li>配置简单</li>
+<li>…</li>
+</ul>
+<h2 id="安装Caddy"><a href="#安装Caddy" class="headerlink" title="安装Caddy"></a>安装Caddy</h2><blockquote>
+<p>官网：<a href="https://caddyserver.com/" target="_blank" rel="noopener">https://caddyserver.com/</a></p>
+</blockquote>
+<ul>
+<li>静态二进制文件</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment"># 使用 curl</span></span><br><span class="line"> curl -OL <span class="string">"https://github.com/caddyserver/caddy/releases/latest/download/ASSET"</span></span><br><span class="line"> <span class="comment"># 使用 wget</span></span><br><span class="line"> wget <span class="string">"https://github.com/caddyserver/caddy/releases/latest/download/ASSET"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Docker</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"> docker pull caddy</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://hub.docker.com/_/caddy" target="_blank" rel="noopener">View on Docker Hub</a></p>
+<ul>
+<li>Debian, Ubuntu, Raspbian（本文采用该方法，安装到WSL1中）</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="built_in">echo</span> <span class="string">"deb [trusted=yes] https://apt.fury.io/caddy/ /"</span> \</span><br><span class="line">     | sudo tee -a /etc/apt/sources.list.d/caddy-fury.list</span><br><span class="line"> sudo apt update</span><br><span class="line"> sudo apt install caddy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Fedora, RedHat, CentOS</li>
+</ul>
+<p>Fedora or RHEL/CentOS 8:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> dnf install <span class="string">'dnf-command(copr)'</span></span><br><span class="line"> dnf copr <span class="built_in">enable</span> @caddy/caddy</span><br><span class="line"> dnf install caddy</span><br></pre></td></tr></table></figure>
+
+<p>RHEL/CentOS 7:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> yum install yum-plugin-copr</span><br><span class="line"> yum copr <span class="built_in">enable</span> @caddy/caddy</span><br><span class="line"> yum install caddy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Mac OS</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"> brew install caddy</span><br></pre></td></tr></table></figure>
+
+<h2 id="Caddy-Service配置"><a href="#Caddy-Service配置" class="headerlink" title="Caddy.Service配置"></a>Caddy.Service配置</h2><p>Caddy.service内容，使用 apt 安装会自动生成service文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description&#x3D;Caddy</span><br><span class="line">Documentation&#x3D;https:&#x2F;&#x2F;caddyserver.com&#x2F;docs&#x2F;</span><br><span class="line">After&#x3D;network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User&#x3D;caddy</span><br><span class="line">Group&#x3D;caddy</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;bin&#x2F;caddy run --environ --config &#x2F;etc&#x2F;caddy&#x2F;Caddyfile</span><br><span class="line">ExecReload&#x3D;&#x2F;usr&#x2F;bin&#x2F;caddy reload --config &#x2F;etc&#x2F;caddy&#x2F;Caddyfile</span><br><span class="line">TimeoutStopSec&#x3D;5s</span><br><span class="line">LimitNOFILE&#x3D;1048576</span><br><span class="line">LimitNPROC&#x3D;512</span><br><span class="line">PrivateTmp&#x3D;true</span><br><span class="line">ProtectSystem&#x3D;full</span><br><span class="line">AmbientCapabilities&#x3D;CAP_NET_BIND_SERVICE</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br></pre></td></tr></table></figure>
+
+<h2 id="Caddyfile文件"><a href="#Caddyfile文件" class="headerlink" title="Caddyfile文件"></a>Caddyfile文件</h2><p>Caddy的配置文件是json，但是由于json文件配置起来繁琐且不好管理，Caddy就推出了Caddyfile配置文件，Caddy会通过Caddyfile文件生成json配置。查看json配置内容可通过 adapt 命令查看json内容。</p>
+<p>Caddyfile文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">localhost</span><br><span class="line"></span><br><span class="line">respond &quot;Hello, world!&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Caddyfile转换后json字符串：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">"apps"</span>:&#123;<span class="attr">"http"</span>:&#123;<span class="attr">"servers"</span>:&#123;<span class="attr">"srv0"</span>:&#123;<span class="attr">"listen"</span>:[<span class="string">":443"</span>],<span class="attr">"routes"</span>:[&#123;<span class="attr">"match"</span>:[&#123;<span class="attr">"host"</span>:[<span class="string">"localhost"</span>]&#125;],<span class="attr">"handle"</span>:[&#123;<span class="attr">"handler"</span>:<span class="string">"subroute"</span>,<span class="attr">"routes"</span>:[&#123;<span class="attr">"handle"</span>:[&#123;<span class="attr">"body"</span>:<span class="string">"Hello, world!"</span>,<span class="attr">"handler"</span>:<span class="string">"static_response"</span>&#125;]&#125;]&#125;],<span class="attr">"terminal"</span>:<span class="literal">true</span>&#125;]&#125;&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Caddyfile 配置文件大致内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">m.example.com &#123;</span><br><span class="line">    log &#123;</span><br><span class="line">        output file &#x2F;var&#x2F;log&#x2F;caddy&#x2F;mock.access.log</span><br><span class="line">    &#125;</span><br><span class="line">    encode zstd gzip</span><br><span class="line">    reverse_proxy localhost:8081 # Go项目监听的端口</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">api.example.com &#123;</span><br><span class="line">    encode zstd gzip</span><br><span class="line">    log &#123;</span><br><span class="line">        output file &#x2F;var&#x2F;log&#x2F;caddy&#x2F;mock-api.access.log</span><br><span class="line">    &#125;</span><br><span class="line">    reverse_proxy localhost:8080</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">php-fast.example.com &#123;</span><br><span class="line">    php_fastcgi 127.0.0.1:9000</span><br><span class="line">    # sock style</span><br><span class="line">    # php_fastcgi unix&#x2F;&#x2F;run&#x2F;php&#x2F;php7.4-fpm.sock</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Caddy-TLS"><a href="#Caddy-TLS" class="headerlink" title="Caddy TLS"></a>Caddy TLS</h2><p>Caddy默认使用<a href="https://zh.wikipedia.org/wiki/%E5%82%B3%E8%BC%B8%E5%B1%A4%E5%AE%89%E5%85%A8%E6%80%A7%E5%8D%94%E5%AE%9A" target="_blank" rel="noopener">TLS</a>，所以在使用前需要配置证书。另外本地开发时，使用Caddy的内部，本地信任的证书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">example.com &#123;</span><br><span class="line">    tls internal</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果生产环境使用时，有命令行使用权限的话，可使用 certbot 免费生成证书，没有的话，可以使用托管服务商的证书服务。</p>
+<h2 id="Caddy与Nginx简单对比"><a href="#Caddy与Nginx简单对比" class="headerlink" title="Caddy与Nginx简单对比"></a>Caddy与Nginx简单对比</h2><table>
+<thead>
+<tr>
+<th align="center">对比项目</th>
+<th align="center">Caddy</th>
+<th align="center">Nginx</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">配置语法</td>
+<td align="center">简单</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">功能</td>
+<td align="center">慢慢增多</td>
+<td align="center">完善，稳定</td>
+</tr>
+<tr>
+<td align="center">HTTPS</td>
+<td align="center">配置简单，且客户端自动续签，默认支持HTTPS</td>
+<td align="center">配置繁琐，不提供自动续签证书，支持HTTPS需要配置</td>
+</tr>
+<tr>
+<td align="center">处理性能</td>
+<td align="center">性能较高</td>
+<td align="center">性能高，系统资源占用率低</td>
+</tr>
+<tr>
+<td align="center">负载均衡</td>
+<td align="center">支持</td>
+<td align="center">支持</td>
+</tr>
+</tbody></table>
+<p>总结：Nginx强大而复杂，Caddy先进而简约，但在某些方面略逊一筹。由于Nginx用C语言开发，决定了在某方面性能上比用Go开发的Caddy高一些。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -826,74 +979,11 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/First-Blog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="Mikado">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mikado's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/First-Blog/" class="post-title-link" itemprop="url">第一篇博客</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-01-26 15:54:21" itemprop="dateCreated datePublished" datetime="2019-01-26T15:54:21+08:00">2019-01-26</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/First-Blog/arcipello-cherry_blossoms-clouds-landscape-nobody-original-petals-scenic-tree.jpg" alt="image"></p>
-<p>最近逛了v2ex，发现了很多有意思的博客，去逛了逛，发现了很多有意思的内容。刚好2019新年之际，就打算给自己立了flag，写博客(逃
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/First-Blog/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+  </nav>
 
 
 
@@ -960,14 +1050,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
