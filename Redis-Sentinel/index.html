@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikado.drrr.app","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。 Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。  监控：Sentinel会不断检查您的主（master）实例和副本（replica）实例是否按预期">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis-Sentinel">
+<meta property="og:url" content="https://mikado.drrr.app/Redis-Sentinel/index.html">
+<meta property="og:site_name" content="Mikado&#39;s Blog">
+<meta property="og:description" content="Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。 Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。  监控：Sentinel会不断检查您的主（master）实例和副本（replica）实例是否按预期">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mikado.drrr.app/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg">
+<meta property="article:published_time" content="2020-07-12T12:28:21.000Z">
+<meta property="article:modified_time" content="2020-07-12T12:33:15.112Z">
+<meta property="article:author" content="Mikado">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mikado.drrr.app/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg">
+
+<link rel="canonical" href="https://mikado.drrr.app/Redis-Sentinel/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Redis-Sentinel | Mikado's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162906864-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-162906864-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Mikado's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mikado's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">13</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/Redis-Sentinel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Mikado">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mikado's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Redis-Sentinel
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-12 20:28:21" itemprop="dateCreated datePublished" datetime="2020-07-12T20:28:21+08:00">2020-07-12</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img data-src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg" alt=""></p>
+<p>Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。</p>
+<p>Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。</p>
+<ul>
+<li><strong>监控</strong>：Sentinel会不断检查您的主（master）实例和副本（replica）实例是否按预期工作。</li>
+<li><strong>通知</strong>：当其中一个受监视的Redis实例出了问题，Sentinel可以通过API通知系统管理员或其他计算机程序，</li>
+<li><strong>自动故障转移</strong>：如果一个master服务器不能正常工作，Sentile 可以启动一个故障转移过程，其中一个replica被提升为主服务器，其他额外的replica被重新配置为使用新的master服务器，并且使用Redis服务器的应用程序被告知在连接时使用的新地址。</li>
+<li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis master服务器的地址。如果发生故障转移，Sentinel将报告新地址。</li>
+</ul>
+<h2 id="Sentinel的分布式本质"><a href="#Sentinel的分布式本质" class="headerlink" title="Sentinel的分布式本质"></a>Sentinel的分布式本质</h2><p>Redis Sentinel是一个分布式系统：</p>
+<p>Sentinel本身设计为在有多个Sentinel进程协同合作的配置中运行。具有多个Sentinel进程进行协作的优点如下：</p>
+<ol>
+<li>当多个Sentinel同意master不在可用时，执行故障检测。这降低了误报的可能性。</li>
+<li>即使不是所有的Sentinel进程都在工作，Sentinel仍可正常工作，从而使系统能够有强大的抗故障能力。毕竟，拥有故障转移系统本身就是一个单点故障，这没有任何乐趣。</li>
+</ol>
+<p>Sentinels，Redis实例（master服务器和replica）以及连接到Sentinel和 Redis的客户端的总和也是具有特定属性的大型分布式系统。</p>
+<h2 id="运行Sentinel"><a href="#运行Sentinel" class="headerlink" title="运行Sentinel"></a>运行Sentinel</h2><p>拥有独立的 <code>redis-sentinel</code> 可执行文件时：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel /path/to/sentinel.conf</span><br></pre></td></tr></table></figure>
+
+<p>另外可以直接使用 <code>redis-server</code> 可执行文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-server /path/to/sentinel.conf --sentinel</span><br></pre></td></tr></table></figure>
+
+<p>两种方式都一样。</p>
+<p>但是，在运行Sentinel时必须使用配置文件，因为系统将使用此文件来保存当前状态，以便在重启时重新加载。如果未提供配置文件或配置文件路径不可写，Sentinel只会拒绝启动。</p>
+<p>Sentinels默认情况下会监听TCP端口26379的连接，因此，为了使Sentinels正常工作，必须打开服务器的端口26379才能从其他Sentinel实例的IP地址接收连接。否则，Sentinels无法讨论也不能就该做什么达成共识，因此将永远不会执行故障转移。</p>
+<h2 id="部署前有关Sentinel的基本知识"><a href="#部署前有关Sentinel的基本知识" class="headerlink" title="部署前有关Sentinel的基本知识"></a>部署前有关Sentinel的基本知识</h2><ol>
+<li>一个健壮的部署（robust deployment）至少需要三个Sentinel实例。</li>
+<li>应将三个Sentinel实例放置到被认为以独立方式失败（fail in an independent way）的计算机或虚拟机中。因此，例如不同物理服务器或虚拟机必须在不同的可用区域上部署。</li>
+<li>由于Redis使用异步复制，Sentinel + Redis分布式系统不保证在故障期间保留已确认的写操作。然而，有一些方法可以使Sentinel在特定时刻失去写操作，同时也有一些不太安全的方法来部署它。</li>
+<li>客户端必须开启Sentinel支持。流行的客户端库都有Sentinel支持，但不是全部。</li>
+<li>如果不经常在开发环境中进行测试，就没有安全的HA设置;如果可以的话，在生产环境中进行测试就更好了。你可能有一个错误的配置，只有当太晚的时候（在凌晨3点，master停止工作的时候）才会变得明显。</li>
+<li>Sentinel，Docker，或其他形式的网络地址转换或端口映射应该小心混合（mixed）：Docker执行端口重映射，破坏了其他Sentinel进程的Sentinel自动发现以及master的replica列表。</li>
+</ol>
+<h2 id="配置Sentinel"><a href="#配置Sentinel" class="headerlink" title="配置Sentinel"></a>配置Sentinel</h2><p>配置三个Sentinel，其中端口不一样，其中一个配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1 ::1</span><br><span class="line">port 26380 # 单机上，不同Sentinel可以修改为不同的port</span><br><span class="line">daemonize yes</span><br><span class="line">pidfile &quot;&#x2F;var&#x2F;run&#x2F;sentinel&#x2F;redis-sentinel-26380.pid&quot;</span><br><span class="line">logfile &quot;&#x2F;var&#x2F;log&#x2F;redis&#x2F;redis-sentinel-26380.log&quot;</span><br><span class="line">dir &quot;&#x2F;var&#x2F;lib&#x2F;redis&quot;</span><br><span class="line">sentinel myid 421825a687412475c44e7235823f99971edd4e2b</span><br><span class="line">protected-mode no</span><br><span class="line">sentinel deny-scripts-reconfig yes</span><br><span class="line">sentinel monitor mymaster 127.0.0.1 6379 2</span><br><span class="line">sentinel down-after-milliseconds mymaster 60000</span><br><span class="line">sentinel auth-pass mymaster 123456 # 如果master有开启密码的话，这里需要配置</span><br></pre></td></tr></table></figure>
+
+<p>replica的Redis的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Redis 5 把 slaveof 改为了 replicaof</span><br><span class="line">replicaof 127.0.0.1 16479</span><br><span class="line">masterauth 123456 # 如果master开启了auth验证</span><br></pre></td></tr></table></figure>
+
+<p>其中一个Sentinel的log</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">53072:X 10 Jul 2020 07:14:03.155 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span><br><span class="line">53072:X 10 Jul 2020 07:14:03.155 # Redis version&#x3D;5.0.7, bits&#x3D;64, commit&#x3D;00000000, modified&#x3D;0, pid&#x3D;53072, just started</span><br><span class="line">53072:X 10 Jul 2020 07:14:03.155 # Configuration loaded</span><br><span class="line">53073:X 10 Jul 2020 07:14:03.158 * Increased maximum number of open files to 10032 (it was originally set to 1024).</span><br><span class="line">53073:X 10 Jul 2020 07:14:03.159 * Running mode&#x3D;sentinel, port&#x3D;26380.</span><br><span class="line">53073:X 10 Jul 2020 07:14:03.164 # Sentinel ID is 421825a687412475c44e7235823f99971edd4e2b</span><br><span class="line">53073:X 10 Jul 2020 07:14:03.164 # +monitor master mymaster 127.0.0.1 16479 quorum 2</span><br><span class="line">53073:X 10 Jul 2020 07:14:03.166 * +slave slave 127.0.0.1:26479 127.0.0.1 26479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:14:03.172 * +slave slave 127.0.0.1:36479 127.0.0.1 36479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:14:31.733 * +sentinel sentinel f4c2516e7fd32e46f3efc3774d1b49ba4133e700 127.0.0.1 26381 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:14:34.203 * +sentinel sentinel b16de2db5c788e0530998336542c11dfed2edfb5 127.0.0.1 26382 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.736 # +sdown master mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.792 # +odown master mymaster 127.0.0.1 16479 #quorum 2&#x2F;2</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.792 # +new-epoch 1</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.792 # +try-failover master mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.797 # +vote-for-leader 421825a687412475c44e7235823f99971edd4e2b 1</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.809 # f4c2516e7fd32e46f3efc3774d1b49ba4133e700 voted for 421825a687412475c44e7235823f99971edd4e2b 1</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.810 # b16de2db5c788e0530998336542c11dfed2edfb5 voted for 421825a687412475c44e7235823f99971edd4e2b 1</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.898 # +elected-leader master mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.898 # +failover-state-select-slave master mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.954 # +selected-slave slave 127.0.0.1:26479 127.0.0.1 26479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:06.954 * +failover-state-send-slaveof-noone slave 127.0.0.1:26479 127.0.0.1 26479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:07.017 * +failover-state-wait-promotion slave 127.0.0.1:26479 127.0.0.1 26479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:07.419 # +promoted-slave slave 127.0.0.1:26479 127.0.0.1 26479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:07.419 # +failover-state-reconf-slaves master mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:07.471 * +slave-reconf-sent slave 127.0.0.1:36479 127.0.0.1 36479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:07.919 # -odown master mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:08.416 * +slave-reconf-inprog slave 127.0.0.1:36479 127.0.0.1 36479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:08.416 * +slave-reconf-done slave 127.0.0.1:36479 127.0.0.1 36479 @ mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:08.492 # +failover-end master mymaster 127.0.0.1 16479</span><br><span class="line">53073:X 10 Jul 2020 07:19:08.492 # +switch-master mymaster 127.0.0.1 16479 127.0.0.1 26479</span><br><span class="line">53073:X 10 Jul 2020 07:19:08.492 * +slave slave 127.0.0.1:36479 127.0.0.1 36479 @ mymaster 127.0.0.1 26479</span><br><span class="line">53073:X 10 Jul 2020 07:19:08.492 * +slave slave 127.0.0.1:16479 127.0.0.1 16479 @ mymaster 127.0.0.1 26479</span><br></pre></td></tr></table></figure>
+
+<p>从log上可以看到Sentinel的投票，更换master的流程。</p>
+<p>Sentinel会自动更改Redis server 的配置和Sentinel的配置</p>
+<p>更改之后Sentinel的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1 ::1</span><br><span class="line">port 26380</span><br><span class="line">daemonize yes</span><br><span class="line">pidfile &quot;&#x2F;var&#x2F;run&#x2F;sentinel&#x2F;redis-sentinel-26380.pid&quot;</span><br><span class="line">logfile &quot;&#x2F;var&#x2F;log&#x2F;redis&#x2F;redis-sentinel-26380.log&quot;</span><br><span class="line">dir &quot;&#x2F;var&#x2F;lib&#x2F;redis&quot;</span><br><span class="line">sentinel myid 421825a687412475c44e7235823f99971edd4e2b</span><br><span class="line">protected-mode no</span><br><span class="line">sentinel deny-scripts-reconfig yes</span><br><span class="line"></span><br><span class="line">sentinel monitor mymaster 127.0.0.1 16479 2</span><br><span class="line">sentinel down-after-milliseconds mymaster 60000</span><br><span class="line">sentinel auth-pass mymaster 123456</span><br><span class="line">sentinel config-epoch mymaster 2</span><br><span class="line">sentinel leader-epoch mymaster 2</span><br><span class="line">sentinel known-replica mymaster 127.0.0.1 36479</span><br><span class="line"></span><br><span class="line">sentinel known-replica mymaster 127.0.0.1 26479</span><br><span class="line">sentinel known-sentinel mymaster 127.0.0.1 26382 b16de2db5c788e0530998336542c11dfed2edfb5</span><br><span class="line">sentinel known-sentinel mymaster 127.0.0.1 26381 f4c2516e7fd32e46f3efc3774d1b49ba4133e700</span><br><span class="line">sentinel current-epoch 2</span><br></pre></td></tr></table></figure>
+
+<h2 id="主观下线和客观下线"><a href="#主观下线和客观下线" class="headerlink" title="主观下线和客观下线"></a>主观下线和客观下线</h2><p>Redis Sentinel对于下线（down）有两个不同的概念，一个是主观下线（<code>SDOWN</code>），它是本地Sentinel判断的一个情况。<br>另一个被称为客观下线（<code>ODOWN</code>），当足够多的Sentinel（至少配置为被监视的主节点的法定人数（quorum）参数的数量）具有 <code>SDOWN</code> 条件，并使用 <code>SENTINEL is-master-down-by-addr</code> 命令从其他Sentinel那里获得反馈时，才会达到这个情况。</p>
+<p>从Sentinel的角度来看，当它没有收到对 PING 请求的有效响应时，就会达到一个 SDOWN 条件，这个响应的秒数在配置中指定为<code>is-master-down-after-milliseconds</code>参数。</p>
+<p>可以接受的PING回复如下:</p>
+<ul>
+<li>PING 回答：+PONG。</li>
+<li>PING 回答：-LOADING 错误。</li>
+<li>PING 回答：-MASTERDOWN 错误。</li>
+</ul>
+<p>任何其他答复(或根本没有答复)都被认为是无效的。但是请注意，在信息输出中将自己作为Replica声明的逻辑master服务器被认为是宕机的。</p>
+<p>注意，SDOWN 要求在配置的整个时间间隔内不接收可接受的应答，因此，例如，如果时间间隔为30000毫秒(30秒)，并且我们每29秒就收到一个可接受的 PING 应答，则认为该实例在工作。</p>
+<p>SDOWN 不足以触发故障转移:它只意味着一个单一的Sentinel认为Redis实例不可用。<br>要触发故障转移，必须达到ODOWN状态。</p>
+<p>为了从 SDOWN 切换到 ODOWN，没有使用强一致性算法，而只是一种流言（gossip）：如果给定的Sentinel得到报告说，在给定的时间范围内，没有足够的Sentinel在工作，那么SDOWN将被提升为ODOWN。</p>
+<p>为了真正启动故障转移，需要使用实际多数的更严格的授权，但是如果不达到ODOWN状态，就不能触发故障转移。</p>
+<p>ODOWN条件仅适用于主机。对于其他类型的实例，Sentinel不需要执行操作，因此 Replica 和其他Sentinel永远不会达到ODOWN状态，而只有SDOWN可以达到。</p>
+<h2 id="Quorum（法定人数）"><a href="#Quorum（法定人数）" class="headerlink" title="Quorum（法定人数）"></a>Quorum（法定人数）</h2><p>如果quorum被配置为5，那么所有Sentinel必须就主错误条件达成一致，并且需要所有Sentinel的授权才能进行故障转移。</p>
+<p>这意味着可以通过两种方式使用 quorum 来调优 Sentinel:</p>
+<ul>
+<li>如果 quorum 的值小于我们部署的大多数Sentinel的值，那么我们基本上就使Sentinel对master 节点故障更加敏感，只要有一小部分Sentinel不再能够与master通信，就会触发故障转移。</li>
+<li>如果 quorum 值设置为大于大多数Sentinel的值，那么只有当连接良好的Sentinel数量非常大（大于大多数）且一致认为master节点处于宕机状态时，Sentinel才能够进行故障转移。</li>
+</ul>
+<h2 id="客户端连接问题"><a href="#客户端连接问题" class="headerlink" title="客户端连接问题"></a>客户端连接问题</h2><ol>
+<li>当master发生故障，Sentinel重新投票新的master，业务层代码怎么保证连接的 IP 地址是新的master的IP地址？<ol>
+<li>VIP（虚拟IP）</li>
+<li>Sentinel的Pub/Sub ？</li>
+</ol>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Mikado
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://mikado.drrr.app/Redis-Sentinel/" title="Redis-Sentinel">https://mikado.drrr.app/Redis-Sentinel/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/gRPC/" rel="prev" title="gRPC">
+      <i class="fa fa-chevron-left"></i> gRPC
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sentinel的分布式本质"><span class="nav-number">1.</span> <span class="nav-text">Sentinel的分布式本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行Sentinel"><span class="nav-number">2.</span> <span class="nav-text">运行Sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署前有关Sentinel的基本知识"><span class="nav-number">3.</span> <span class="nav-text">部署前有关Sentinel的基本知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Sentinel"><span class="nav-number">4.</span> <span class="nav-text">配置Sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主观下线和客观下线"><span class="nav-number">5.</span> <span class="nav-text">主观下线和客观下线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quorum（法定人数）"><span class="nav-number">6.</span> <span class="nav-text">Quorum（法定人数）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端连接问题"><span class="nav-number">7.</span> <span class="nav-text">客户端连接问题</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mikado"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Mikado</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/drrrMikado" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;drrrMikado" rel="noopener" target="_blank"><i class="github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/NoneL1ke" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;NoneL1ke" rel="noopener" target="_blank"><i class="twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mikado</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
