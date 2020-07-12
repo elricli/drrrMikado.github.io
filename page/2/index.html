@@ -121,12 +121,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">16</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">13</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">14</span></a>
 
   </li>
   </ul>
@@ -152,6 +152,80 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/Redis-Persistence/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Mikado">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mikado's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/Redis-Persistence/" class="post-title-link" itemprop="url">Redis持久化介绍</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-02-21 17:59:51" itemprop="dateCreated datePublished" datetime="2019-02-21T17:59:51+08:00">2019-02-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/Redis-Persistence/a15b4afegy1fmvjboz2dgj21hc0u0qj6.jpg" alt=""></p>
+<blockquote>
+<p>EN：<a href="https://redis.io/topics/persistence" target="_blank" rel="noopener">https://redis.io/topics/persistence</a> <br>CN：<a href="http://www.redis.cn/topics/persistence.html" target="_blank" rel="noopener">http://www.redis.cn/topics/persistence.html</a></p>
+</blockquote>
+<h3 id="Redis-提供了不同级别的持久化方式"><a href="#Redis-提供了不同级别的持久化方式" class="headerlink" title="Redis 提供了不同级别的持久化方式:"></a>Redis 提供了不同级别的持久化方式:</h3><p><code>RDB</code> 持久化方式能够在指定的时间间隔能对你的数据进行快照存储.</p>
+<ul>
+<li><code>AOF</code> 持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据, <code>AOF</code> 命令以redis协议追加保存每次写的操作到文件末尾.Redis还能对 <code>AOF</code> 文件进行后台重写,使得 <code>AOF</code> 文件的体积不至于过大.</li>
+<li>如果你只希望你的数据在服务器运行的时候存在,你也可以不使用任何持久化方式.</li>
+<li>你也可以同时开启两种持久化方式, 在这种情况下, 当Redis重启的时候会优先载入 <code>AOF</code> 文件来恢复原始的数据,因为在通常情况下 <code>AOF</code> 文件保存的数据集要比 <code>RDB</code> 文件保存的数据集要完整.</li>
+<li>最重要的事情是了解 <code>RDB</code> 和 <code>AOF</code> 持久化方式的不同,让我们以 <code>RDB</code> 持久化方式开始：
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/Redis-Persistence/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -431,14 +505,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

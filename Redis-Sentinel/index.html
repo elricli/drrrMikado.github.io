@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg">
 <meta property="article:published_time" content="2020-07-12T12:28:21.000Z">
-<meta property="article:modified_time" content="2020-07-12T12:33:15.112Z">
+<meta property="article:modified_time" content="2020-07-12T12:49:33.616Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -128,12 +128,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">15</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">16</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">13</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">14</span></a>
 
   </li>
   </ul>
@@ -208,7 +208,9 @@
 <li><strong>监控</strong>：Sentinel会不断检查您的主（master）实例和副本（replica）实例是否按预期工作。</li>
 <li><strong>通知</strong>：当其中一个受监视的Redis实例出了问题，Sentinel可以通过API通知系统管理员或其他计算机程序，</li>
 <li><strong>自动故障转移</strong>：如果一个master服务器不能正常工作，Sentile 可以启动一个故障转移过程，其中一个replica被提升为主服务器，其他额外的replica被重新配置为使用新的master服务器，并且使用Redis服务器的应用程序被告知在连接时使用的新地址。</li>
-<li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis master服务器的地址。如果发生故障转移，Sentinel将报告新地址。</li>
+<li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis master服务器的地址。如果发生故障转移，Sentinel将报告新地址。<a id="more"></a>
+
+</li>
 </ul>
 <h2 id="Sentinel的分布式本质"><a href="#Sentinel的分布式本质" class="headerlink" title="Sentinel的分布式本质"></a>Sentinel的分布式本质</h2><p>Redis Sentinel是一个分布式系统：</p>
 <p>Sentinel本身设计为在有多个Sentinel进程协同合作的配置中运行。具有多个Sentinel进程进行协作的优点如下：</p>
@@ -313,7 +315,10 @@
     <a href="/gRPC/" rel="prev" title="gRPC">
       <i class="fa fa-chevron-left"></i> gRPC
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/Three-Major-Cache-Issue/" rel="next" title="三大缓存问题">
+      三大缓存问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -388,14 +393,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
