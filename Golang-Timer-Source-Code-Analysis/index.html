@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"mikado.drrr.app","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="代码环境：  Golang版本：1.14.3 Server： Ubuntu Server 20.04  P 结构体添加 timer 都会添加至 P 的结构体中，然而P 结构体中维护一个最小堆的 timer 数组。 代码位置：runtime&#x2F;runtime2.go 1234567891011121314151617181920212223242526272829type p struct &amp;#12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang-Timer源码分析">
+<meta property="og:url" content="https://mikado.drrr.app/Golang-Timer-Source-Code-Analysis/index.html">
+<meta property="og:site_name" content="Mikado&#39;s Blog">
+<meta property="og:description" content="代码环境：  Golang版本：1.14.3 Server： Ubuntu Server 20.04  P 结构体添加 timer 都会添加至 P 的结构体中，然而P 结构体中维护一个最小堆的 timer 数组。 代码位置：runtime&#x2F;runtime2.go 1234567891011121314151617181920212223242526272829type p struct &amp;#12">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mikado.drrr.app/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg">
+<meta property="og:image" content="https://mikado.drrr.app/images/Golang-Timer-Source-Code-Analysis/Golang-Timer-State-Machine.png">
+<meta property="article:published_time" content="2020-07-16T14:04:42.000Z">
+<meta property="article:modified_time" content="2020-07-16T14:16:23.159Z">
+<meta property="article:author" content="Mikado">
+<meta property="article:tag" content="Golang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mikado.drrr.app/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg">
+
+<link rel="canonical" href="https://mikado.drrr.app/Golang-Timer-Source-Code-Analysis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Golang-Timer源码分析 | Mikado's Blog</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162906864-1"></script>
+    <script>
+      if (CONFIG.hostname === location.hostname) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-162906864-1');
+      }
+    </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Mikado's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Mikado's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">17</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">15</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/Golang-Timer-Source-Code-Analysis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="Mikado">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mikado's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Golang-Timer源码分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-07-16 22:04:42" itemprop="dateCreated datePublished" datetime="2020-07-16T22:04:42+08:00">2020-07-16</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img data-src="/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg" alt=""></p>
+<p>代码环境：</p>
+<ul>
+<li>Golang版本：1.14.3</li>
+<li>Server： Ubuntu Server 20.04</li>
+</ul>
+<h2 id="P-结构体"><a href="#P-结构体" class="headerlink" title="P 结构体"></a><code>P</code> 结构体</h2><p>添加 timer 都会添加至 <code>P</code> 的结构体中，然而<code>P</code> 结构体中维护一个最小堆的 timer 数组。</p>
+<p>代码位置：<code>runtime/runtime2.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> p <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// ......部分代码省略</span></span><br><span class="line">	<span class="comment">// Lock for timers. We normally access the timers while running</span></span><br><span class="line">	<span class="comment">// on this P, but the scheduler can also do it from a different P.</span></span><br><span class="line">	timersLock mutex</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Actions to take at some time. This is used to implement the</span></span><br><span class="line">	<span class="comment">// standard library's time package.</span></span><br><span class="line">	<span class="comment">// Must hold timersLock to access.</span></span><br><span class="line">	timers []*timer <span class="comment">// 最小堆实现</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timers in P's heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	numTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerModifiedEarlier timers on P's heap.</span></span><br><span class="line">	<span class="comment">// This should only be modified while holding timersLock,</span></span><br><span class="line">	<span class="comment">// or while the timer status is in a transient state</span></span><br><span class="line">	<span class="comment">// such as timerModifying.</span></span><br><span class="line">	adjustTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerDeleted timers in P's heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	deletedTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Race context used while executing timer functions.</span></span><br><span class="line">	timerRaceCtx <span class="keyword">uintptr</span></span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h2 id="往-P-添加-timer"><a href="#往-P-添加-timer" class="headerlink" title="往 P 添加 timer"></a>往 <code>P</code> 添加 timer</h2><p>在 <code>timer.NewTimer()</code> 中</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewTimer</span><span class="params">(d Duration)</span> *<span class="title">Timer</span></span> &#123;</span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> Time, <span class="number">1</span>)</span><br><span class="line">	t := &amp;Timer&#123;</span><br><span class="line">		C: c,</span><br><span class="line">		r: runtimeTimer&#123;</span><br><span class="line">			when: when(d),</span><br><span class="line">			f:    sendTime,</span><br><span class="line">			arg:  c,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	startTimer(&amp;t.r)</span><br><span class="line">	<span class="keyword">return</span> t</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>startTime</code> 是链接到了 <code>runtime/time.go</code>，<code>runtime/time.go</code>中的 <code>startTimer</code> 实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// startTimer adds t to the timer heap.</span></span><br><span class="line"><span class="comment">//go:linkname startTimer time.startTimer</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">startTimer</span><span class="params">(t *timer)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> raceenabled &#123;</span><br><span class="line">		racerelease(unsafe.Pointer(t))</span><br><span class="line">	&#125;</span><br><span class="line">	addtimer(t)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>addtimer</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// addtimer adds a timer to the current P.</span></span><br><span class="line"><span class="comment">// This should only be called with a newly created timer.</span></span><br><span class="line"><span class="comment">// That avoids the risk of changing the when field of a timer in some P's heap,</span></span><br><span class="line"><span class="comment">// which could cause the heap to become unsorted.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">addtimer</span><span class="params">(t *timer)</span></span> &#123;</span><br><span class="line">	<span class="comment">// when must never be negative; otherwise runtimer will overflow</span></span><br><span class="line">	<span class="comment">// during its delta calculation and never expire other runtime timers.</span></span><br><span class="line">	<span class="keyword">if</span> t.when &lt; <span class="number">0</span> &#123;</span><br><span class="line">		t.when = maxWhen</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> t.status != timerNoStatus &#123;</span><br><span class="line">		throw(<span class="string">"addtimer called with initialized timer"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	t.status = timerWaiting</span><br><span class="line"></span><br><span class="line">	when := t.when</span><br><span class="line"></span><br><span class="line">	pp := getg().m.p.ptr()</span><br><span class="line">	lock(&amp;pp.timersLock)</span><br><span class="line">	cleantimers(pp)</span><br><span class="line">	doaddtimer(pp, t)</span><br><span class="line">	unlock(&amp;pp.timersLock)</span><br><span class="line"></span><br><span class="line">	wakeNetPoller(when)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>添加 timer 至 <code>P</code> 中的 timers堆中的方法是 <code>doaddtimer</code>：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// doaddtimer adds t to the current P's heap.</span></span><br><span class="line"><span class="comment">// The caller must have locked the timers for pp.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">doaddtimer</span><span class="params">(pp *p, t *timer)</span></span> &#123;</span><br><span class="line">	<span class="comment">// Timers rely on the network poller, so make sure the poller</span></span><br><span class="line">	<span class="comment">// has started.</span></span><br><span class="line">	<span class="keyword">if</span> netpollInited == <span class="number">0</span> &#123;</span><br><span class="line">		netpollGenericInit()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> t.pp != <span class="number">0</span> &#123;</span><br><span class="line">		throw(<span class="string">"doaddtimer: P already set in timer"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	t.pp.set(pp)</span><br><span class="line">	i := <span class="built_in">len</span>(pp.timers)</span><br><span class="line">	pp.timers = <span class="built_in">append</span>(pp.timers, t)</span><br><span class="line">	siftupTimer(pp.timers, i)</span><br><span class="line">	<span class="keyword">if</span> t == pp.timers[<span class="number">0</span>] &#123;</span><br><span class="line">		atomic.Store64(&amp;pp.timer0When, <span class="keyword">uint64</span>(t.when))</span><br><span class="line">	&#125;</span><br><span class="line">	atomic.Xadd(&amp;pp.numTimers, <span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一开始是直接 <code>append</code> 到尾部，在通过 <code>siftupTimer</code> 从下至上调整到正确的位置。</p>
+<p><code>siftupTimer</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">siftupTimer</span><span class="params">(t []*timer, i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> i &gt;= <span class="built_in">len</span>(t) &#123;</span><br><span class="line">		badTimer()</span><br><span class="line">	&#125;</span><br><span class="line">	when := t[i].when</span><br><span class="line">	tmp := t[i]</span><br><span class="line">	<span class="keyword">for</span> i &gt; <span class="number">0</span> &#123;</span><br><span class="line">		p := (i - <span class="number">1</span>) / <span class="number">4</span> <span class="comment">// parent</span></span><br><span class="line">		<span class="keyword">if</span> when &gt;= t[p].when &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		t[i] = t[p]</span><br><span class="line">		i = p</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> tmp != t[i] &#123;</span><br><span class="line">		t[i] = tmp</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重点看下 <code>p := (i - 1) / 4</code> ，内部维护了一个 <code>最小*四叉*堆</code> 。</p>
+<h2 id="Timer的触发"><a href="#Timer的触发" class="headerlink" title="Timer的触发"></a>Timer的触发</h2><p>触发有两种方式：</p>
+<ol>
+<li>从调度循环中触发</li>
+<li>从系统监控中触发<ol>
+<li>与 goroutine 调度完全一样，系统监控也负责 netpoller 的触发，并在必要时启动 <code>M</code> 来执行需要的 timer 或获取网络数据。</li>
+<li>函数：<code>sysmon()</code></li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>调度器涉及的主要概念包括以下三个：</p>
+<ul>
+<li>G: Goroutine，即我们在 Go 程序中使用 go 关键字创建的执行体；</li>
+<li>M: Machine，或 worker thread，即传统意义上进程的线程；</li>
+<li>P: Processor，即一种人为抽象的、用于执行 Go 代码被要求局部资源。只有当 M 与一个 P 关联后才能执行 Go 代码。除非 M 发生阻塞或在进行系统调用时间过长时，没有与之关联的 P。</li>
+</ul>
+</blockquote>
+<p>下面主要从调度循环中解析 timer 的触发，在每次的 goroutine 调度中，都会去检查 timers，调度代码如下</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// One round of scheduler: find a runnable goroutine and execute it.</span></span><br><span class="line"><span class="comment">// Never returns.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">schedule</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// ......部分代码省略</span></span><br><span class="line">	checkTimers(pp, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> gp *g</span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">	<span class="keyword">if</span> gp == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// 在 findrunnable 中也会调用checkTimers</span></span><br><span class="line">		gp, inheritTime = findrunnable() <span class="comment">// blocks until work is available</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>findrunnable</code> 中有个点需要注意下，<code>findrunnable</code> 部分代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">findrunnable</span><span class="params">()</span> <span class="params">(gp *g, inheritTime <span class="keyword">bool</span>)</span></span> &#123;</span><br><span class="line">	_g_ := getg()</span><br><span class="line"></span><br><span class="line">top:</span><br><span class="line">	_p_ := _g_.m.p.ptr()</span><br><span class="line">	(...)</span><br><span class="line"></span><br><span class="line">	now, pollUntil, _ := checkTimers(_p_, <span class="number">0</span>)</span><br><span class="line">	(...)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Poll 网络，优先级比从其他 P 中偷要高。</span></span><br><span class="line">	<span class="comment">// 在我们尝试去其他 P 偷之前，这个 netpoll 只是一个优化。</span></span><br><span class="line">	<span class="comment">// 如果没有 waiter 或 netpoll 中的线程已被阻塞，则可以安全地跳过它。</span></span><br><span class="line">	<span class="comment">// 如果有任何类型的逻辑竞争与被阻塞的线程（例如它已经从 netpoll 返回，但尚未设置 lastpoll）</span></span><br><span class="line">	<span class="comment">// 该线程无论如何都将阻塞 netpoll。</span></span><br><span class="line">	<span class="keyword">if</span> netpollinited() &amp;&amp; atomic.Load(&amp;netpollWaiters) &gt; <span class="number">0</span> &amp;&amp; atomic.Load64(&amp;sched.lastpoll) != <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> list := netpoll(<span class="number">0</span>); !list.empty() &#123; <span class="comment">// 无阻塞</span></span><br><span class="line">			gp := list.pop()</span><br><span class="line">			injectglist(&amp;list)</span><br><span class="line">			casgstatus(gp, _Gwaiting, _Grunnable)</span><br><span class="line">			(...)</span><br><span class="line">			<span class="keyword">return</span> gp, <span class="literal">false</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 从其他 P 中偷 timer</span></span><br><span class="line">	ranTimer := <span class="literal">false</span></span><br><span class="line">	(...)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">4</span>; i++ &#123;</span><br><span class="line">		<span class="comment">// 随机偷</span></span><br><span class="line">		<span class="keyword">for</span> enum := stealOrder.start(fastrand()); !enum.done(); enum.next() &#123;</span><br><span class="line">			(...)</span><br><span class="line"></span><br><span class="line">			<span class="comment">// Consider stealing timers from p2.</span></span><br><span class="line">			<span class="comment">// This call to checkTimers is the only place where</span></span><br><span class="line">			<span class="comment">// we hold a lock on a different P's timers.</span></span><br><span class="line">			<span class="comment">// Lock contention can be a problem here, so avoid</span></span><br><span class="line">			<span class="comment">// grabbing the lock if p2 is running and not marked</span></span><br><span class="line">			<span class="comment">// for preemption. If p2 is running and not being</span></span><br><span class="line">			<span class="comment">// preempted we assume it will handle its own timers.</span></span><br><span class="line">			<span class="keyword">if</span> i &gt; <span class="number">2</span> &amp;&amp; shouldStealTimers(p2) &#123;</span><br><span class="line">				tnow, w, ran := checkTimers(p2, now)</span><br><span class="line">				now = tnow</span><br><span class="line">				<span class="keyword">if</span> w != <span class="number">0</span> &amp;&amp; (pollUntil == <span class="number">0</span> || w &lt; pollUntil) &#123;</span><br><span class="line">					pollUntil = w</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span> ran &#123;</span><br><span class="line">					<span class="comment">// Running the timers may have</span></span><br><span class="line">					<span class="comment">// made an arbitrary number of G's</span></span><br><span class="line">					<span class="comment">// ready and added them to this P's</span></span><br><span class="line">					<span class="comment">// local run queue. That invalidates</span></span><br><span class="line">					<span class="comment">// the assumption of runqsteal</span></span><br><span class="line">					<span class="comment">// that is always has room to add</span></span><br><span class="line">					<span class="comment">// stolen G's. So check now if there</span></span><br><span class="line">					<span class="comment">// is a local G to run.</span></span><br><span class="line">					<span class="keyword">if</span> gp, inheritTime := runqget(_p_); gp != <span class="literal">nil</span> &#123;</span><br><span class="line">						<span class="keyword">return</span> gp, inheritTime</span><br><span class="line">					&#125;</span><br><span class="line">					ranTimer = <span class="literal">true</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> ranTimer &#123;</span><br><span class="line">		<span class="comment">// 执行完一个 timer 后可能存在已经就绪的 goroutine</span></span><br><span class="line">		<span class="keyword">goto</span> top</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">stop:</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 没有任何 timer</span></span><br><span class="line">	(...)</span><br><span class="line">	delta := <span class="keyword">int64</span>(<span class="number">-1</span>)</span><br><span class="line">	<span class="keyword">if</span> pollUntil != <span class="number">0</span> &#123;</span><br><span class="line">		<span class="comment">// checkTimers ensures that polluntil &gt; now.</span></span><br><span class="line">		delta = pollUntil - now</span><br><span class="line">	&#125;</span><br><span class="line">	(...)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// poll 网络</span></span><br><span class="line">	<span class="comment">// 和上面重新找 runqueue 的逻辑类似</span></span><br><span class="line">	<span class="keyword">if</span> netpollinited() &amp;&amp; (atomic.Load(&amp;netpollWaiters) &gt; <span class="number">0</span> || pollUntil != <span class="number">0</span>) &amp;&amp; atomic.Xchg64(&amp;sched.lastpoll, <span class="number">0</span>) != <span class="number">0</span> &#123;</span><br><span class="line">		atomic.Store64(&amp;sched.pollUntil, <span class="keyword">uint64</span>(pollUntil))</span><br><span class="line">		(...)</span><br><span class="line">		list := netpoll(delta) <span class="comment">// block until new work is available</span></span><br><span class="line">		atomic.Store64(&amp;sched.pollUntil, <span class="number">0</span>)</span><br><span class="line">		atomic.Store64(&amp;sched.lastpoll, <span class="keyword">uint64</span>(nanotime()))</span><br><span class="line">		(...)</span><br><span class="line">		lock(&amp;sched.lock)</span><br><span class="line">		_p_ = pidleget()</span><br><span class="line">		unlock(&amp;sched.lock)</span><br><span class="line">		<span class="keyword">if</span> _p_ == <span class="literal">nil</span> &#123;</span><br><span class="line">			injectglist(&amp;list)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			acquirep(_p_)</span><br><span class="line">			<span class="keyword">if</span> !list.empty() &#123;</span><br><span class="line">				gp := list.pop()</span><br><span class="line">				injectglist(&amp;list)</span><br><span class="line">				casgstatus(gp, _Gwaiting, _Grunnable)</span><br><span class="line">				(...)</span><br><span class="line">				<span class="keyword">return</span> gp, <span class="literal">false</span></span><br><span class="line">			&#125;</span><br><span class="line">			(...)</span><br><span class="line">			<span class="keyword">goto</span> top</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> pollUntil != <span class="number">0</span> &amp;&amp; netpollinited() &#123;</span><br><span class="line">		pollerPollUntil := <span class="keyword">int64</span>(atomic.Load64(&amp;sched.pollUntil))</span><br><span class="line">		<span class="keyword">if</span> pollerPollUntil == <span class="number">0</span> || pollerPollUntil &gt; pollUntil &#123;</span><br><span class="line">			netpollBreak()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 真的什么都没找到</span></span><br><span class="line">	<span class="comment">// park 当前的 m</span></span><br><span class="line">	stopm()</span><br><span class="line">	<span class="keyword">goto</span> top</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当一个 <code>P</code> 因为某种原因被销毁时，还需要考虑 timer 的转移，<code>P</code> 的<code>destroy</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// destroy releases all of the resources associated with pp and</span></span><br><span class="line"><span class="comment">// transitions it to status _Pdead.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// sched.lock must be held and the world must be stopped.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(pp *p)</span> <span class="title">destroy</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// Move all runnable goroutines to the global queue</span></span><br><span class="line">	<span class="keyword">for</span> pp.runqhead != pp.runqtail &#123;</span><br><span class="line">		<span class="comment">// Pop from tail of local queue</span></span><br><span class="line">		pp.runqtail--</span><br><span class="line">		gp := pp.runq[pp.runqtail%<span class="keyword">uint32</span>(<span class="built_in">len</span>(pp.runq))].ptr()</span><br><span class="line">		<span class="comment">// Push onto head of global queue</span></span><br><span class="line">		globrunqputhead(gp)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> pp.runnext != <span class="number">0</span> &#123;</span><br><span class="line">		globrunqputhead(pp.runnext.ptr())</span><br><span class="line">		pp.runnext = <span class="number">0</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 转移 timers</span></span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(pp.timers) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		plocal := getg().m.p.ptr()</span><br><span class="line">		<span class="comment">// The world is stopped, but we acquire timersLock to</span></span><br><span class="line">		<span class="comment">// protect against sysmon calling timeSleepUntil.</span></span><br><span class="line">		<span class="comment">// This is the only case where we hold the timersLock of</span></span><br><span class="line">		<span class="comment">// more than one P, so there are no deadlock concerns.</span></span><br><span class="line">		lock(&amp;plocal.timersLock)</span><br><span class="line">		lock(&amp;pp.timersLock)</span><br><span class="line">		moveTimers(plocal, pp.timers)</span><br><span class="line">		pp.timers = <span class="literal">nil</span></span><br><span class="line">		pp.numTimers = <span class="number">0</span></span><br><span class="line">		pp.adjustTimers = <span class="number">0</span></span><br><span class="line">		pp.deletedTimers = <span class="number">0</span></span><br><span class="line">		atomic.Store64(&amp;pp.timer0When, <span class="number">0</span>)</span><br><span class="line">		unlock(&amp;pp.timersLock)</span><br><span class="line">		unlock(&amp;plocal.timersLock)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>moveTimers</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// moveTimers moves a slice of timers to pp. The slice has been taken</span></span><br><span class="line"><span class="comment">// from a different P.</span></span><br><span class="line"><span class="comment">// This is currently called when the world is stopped, but the caller</span></span><br><span class="line"><span class="comment">// is expected to have locked the timers for pp.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">moveTimers</span><span class="params">(pp *p, timers []*timer)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> _, t := <span class="keyword">range</span> timers &#123;</span><br><span class="line">	loop:</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			<span class="keyword">switch</span> s := atomic.Load(&amp;t.status); s &#123;</span><br><span class="line">			<span class="keyword">case</span> timerWaiting:</span><br><span class="line">				t.pp = <span class="number">0</span></span><br><span class="line">				doaddtimer(pp, t)</span><br><span class="line">				<span class="keyword">break</span> loop</span><br><span class="line">			<span class="keyword">case</span> timerModifiedEarlier, timerModifiedLater:</span><br><span class="line">				<span class="keyword">if</span> !atomic.Cas(&amp;t.status, s, timerMoving) &#123;</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				&#125;</span><br><span class="line">				t.when = t.nextwhen</span><br><span class="line">				t.pp = <span class="number">0</span></span><br><span class="line">				doaddtimer(pp, t)</span><br><span class="line">				<span class="keyword">if</span> !atomic.Cas(&amp;t.status, timerMoving, timerWaiting) &#123;</span><br><span class="line">					badTimer()</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">break</span> loop</span><br><span class="line">			<span class="keyword">case</span> timerDeleted:</span><br><span class="line">				<span class="keyword">if</span> !atomic.Cas(&amp;t.status, s, timerRemoved) &#123;</span><br><span class="line">					<span class="keyword">continue</span></span><br><span class="line">				&#125;</span><br><span class="line">				t.pp = <span class="number">0</span></span><br><span class="line">				<span class="comment">// We no longer need this timer in the heap.</span></span><br><span class="line">				<span class="keyword">break</span> loop</span><br><span class="line">			<span class="keyword">case</span> timerModifying:</span><br><span class="line">				<span class="comment">// Loop until the modification is complete.</span></span><br><span class="line">				osyield()</span><br><span class="line">			<span class="keyword">case</span> timerNoStatus, timerRemoved:</span><br><span class="line">				<span class="comment">// We should not see these status values in a timers heap.</span></span><br><span class="line">				badTimer()</span><br><span class="line">			<span class="keyword">case</span> timerRunning, timerRemoving, timerMoving:</span><br><span class="line">				<span class="comment">// Some other P thinks it owns this timer,</span></span><br><span class="line">				<span class="comment">// which should not happen.</span></span><br><span class="line">				badTimer()</span><br><span class="line">			<span class="keyword">default</span>:</span><br><span class="line">				badTimer()</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到<code>scheduleule</code> 和 <code>findrunnable</code> 中的 <code>checkTimers</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// checkTimers runs any timers for the P that are ready.</span></span><br><span class="line"><span class="comment">// If now is not 0 it is the current time.</span></span><br><span class="line"><span class="comment">// It returns the current time or 0 if it is not known,</span></span><br><span class="line"><span class="comment">// and the time when the next timer should run or 0 if there is no next timer,</span></span><br><span class="line"><span class="comment">// and reports whether it ran any timers.</span></span><br><span class="line"><span class="comment">// If the time when the next timer should run is not 0,</span></span><br><span class="line"><span class="comment">// it is always larger than the returned time.</span></span><br><span class="line"><span class="comment">// We pass now in and out to avoid extra calls of nanotime.</span></span><br><span class="line"><span class="comment">//go:yeswritebarrierrec</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">checkTimers</span><span class="params">(pp *p, now <span class="keyword">int64</span>)</span> <span class="params">(rnow, pollUntil <span class="keyword">int64</span>, ran <span class="keyword">bool</span>)</span></span> &#123;</span><br><span class="line">	<span class="comment">// If there are no timers to adjust, and the first timer on</span></span><br><span class="line">	<span class="comment">// the heap is not yet ready to run, then there is nothing to do.</span></span><br><span class="line">	<span class="keyword">if</span> atomic.Load(&amp;pp.adjustTimers) == <span class="number">0</span> &#123;</span><br><span class="line">		next := <span class="keyword">int64</span>(atomic.Load64(&amp;pp.timer0When))</span><br><span class="line">		<span class="keyword">if</span> next == <span class="number">0</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> now, <span class="number">0</span>, <span class="literal">false</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> now == <span class="number">0</span> &#123;</span><br><span class="line">			now = nanotime()</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> now &lt; next &#123;</span><br><span class="line">			<span class="comment">// Next timer is not ready to run.</span></span><br><span class="line">			<span class="comment">// But keep going if we would clear deleted timers.</span></span><br><span class="line">			<span class="comment">// This corresponds to the condition below where</span></span><br><span class="line">			<span class="comment">// we decide whether to call clearDeletedTimers.</span></span><br><span class="line">			<span class="keyword">if</span> pp != getg().m.p.ptr() || <span class="keyword">int</span>(atomic.Load(&amp;pp.deletedTimers)) &lt;= <span class="keyword">int</span>(atomic.Load(&amp;pp.numTimers)/<span class="number">4</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> now, next, <span class="literal">false</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	lock(&amp;pp.timersLock)</span><br><span class="line"></span><br><span class="line">	adjusttimers(pp)</span><br><span class="line"></span><br><span class="line">	rnow = now</span><br><span class="line">	<span class="keyword">if</span> <span class="built_in">len</span>(pp.timers) &gt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> rnow == <span class="number">0</span> &#123;</span><br><span class="line">			rnow = nanotime()</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> <span class="built_in">len</span>(pp.timers) &gt; <span class="number">0</span> &#123;</span><br><span class="line">			<span class="comment">// Note that runtimer may temporarily unlock</span></span><br><span class="line">			<span class="comment">// pp.timersLock.</span></span><br><span class="line">			<span class="keyword">if</span> tw := runtimer(pp, rnow); tw != <span class="number">0</span> &#123;</span><br><span class="line">				<span class="keyword">if</span> tw &gt; <span class="number">0</span> &#123;</span><br><span class="line">					pollUntil = tw</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			&#125;</span><br><span class="line">			ran = <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// If this is the local P, and there are a lot of deleted timers,</span></span><br><span class="line">	<span class="comment">// clear them out. We only do this for the local P to reduce</span></span><br><span class="line">	<span class="comment">// lock contention on timersLock.</span></span><br><span class="line">	<span class="keyword">if</span> pp == getg().m.p.ptr() &amp;&amp; <span class="keyword">int</span>(atomic.Load(&amp;pp.deletedTimers)) &gt; <span class="built_in">len</span>(pp.timers)/<span class="number">4</span> &#123;</span><br><span class="line">		clearDeletedTimers(pp)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	unlock(&amp;pp.timersLock)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> rnow, pollUntil, ran</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>checktimer</code> 针对timer的状态不同做出不同的处理</p>
+<ul>
+<li><code>timerDeleted</code> ：<ol>
+<li>执行 <code>dodeltimer</code> 删除timer</li>
+<li>更新timer状态（执行：<code>!atomic.Cas(&amp;t.status, timerRemoving, timerRemoved)</code> ）</li>
+<li><code>i--</code></li>
+</ol>
+</li>
+<li><code>timerModifiedEarlier</code> , <code>timerModifiedLater</code><ol>
+<li>对比状态：<code>atomic.Cas(&amp;t.status, s, timerMoving)</code></li>
+<li>更新timer的when属性，<code>t.when = t.nextwhen</code></li>
+<li>执行 <code>dodeltimer</code> 删除timer</li>
+<li>把新的 timer 放入到 <code>moved</code> 数组中，方便后面重新执行 <code>doaddtimer</code></li>
+<li>状态等于 <code>timerModifiedEarlier</code> 时，把 <code>p</code> 的 <code>adjustTimers</code> 计数器减一，如果小于等于0，跳出循环。</li>
+<li><code>i--</code></li>
+</ol>
+</li>
+<li><code>timerNoStatus</code>, <code>timerRunning</code>, <code>timerRemoving</code>, <code>timerRemoved</code>, <code>timerMoving</code><ol>
+<li><code>throw(&quot;timer data corruption&quot;)</code></li>
+</ol>
+</li>
+<li><code>timerWaiting</code><ol>
+<li>不做任何操作</li>
+</ol>
+</li>
+<li><code>timerModifying</code><ol>
+<li>执行 <code>osyield</code> ：修改完成后再检查</li>
+<li><code>i--</code></li>
+</ol>
+</li>
+</ul>
+<p>最后判断 <code>moved</code> 是否为空，不为空执行重新添加timer： <code>addAdjustedTimers</code>。</p>
+<p><code>addjusttimers</code> 执行完之后，就遍历 <code>P</code> 中的timers，对每个timer执行 <code>runtimer</code>。</p>
+<p><code>runtimer</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// runtimer examines the first timer in timers. If it is ready based on now,</span></span><br><span class="line"><span class="comment">// it runs the timer and removes or updates it.</span></span><br><span class="line"><span class="comment">// Returns 0 if it ran a timer, -1 if there are no more timers, or the time</span></span><br><span class="line"><span class="comment">// when the first timer should run.</span></span><br><span class="line"><span class="comment">// The caller must have locked the timers for pp.</span></span><br><span class="line"><span class="comment">// If a timer is run, this will temporarily unlock the timers.</span></span><br><span class="line"><span class="comment">//go:systemstack</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">runtimer</span><span class="params">(pp *p, now <span class="keyword">int64</span>)</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		t := pp.timers[<span class="number">0</span>]</span><br><span class="line">		<span class="keyword">if</span> t.pp.ptr() != pp &#123;</span><br><span class="line">			throw(<span class="string">"runtimer: bad p"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">switch</span> s := atomic.Load(&amp;t.status); s &#123;</span><br><span class="line">		<span class="keyword">case</span> timerWaiting:</span><br><span class="line">			<span class="keyword">if</span> t.when &gt; now &#123;</span><br><span class="line">				<span class="comment">// Not ready to run.</span></span><br><span class="line">				<span class="keyword">return</span> t.when</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> !atomic.Cas(&amp;t.status, s, timerRunning) &#123;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">// Note that runOneTimer may temporarily unlock</span></span><br><span class="line">			<span class="comment">// pp.timersLock.</span></span><br><span class="line">			runOneTimer(pp, t, now)</span><br><span class="line">			<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">case</span> timerDeleted:</span><br><span class="line">			<span class="keyword">if</span> !atomic.Cas(&amp;t.status, s, timerRemoving) &#123;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			dodeltimer0(pp)</span><br><span class="line">			<span class="keyword">if</span> !atomic.Cas(&amp;t.status, timerRemoving, timerRemoved) &#123;</span><br><span class="line">				badTimer()</span><br><span class="line">			&#125;</span><br><span class="line">			atomic.Xadd(&amp;pp.deletedTimers, <span class="number">-1</span>)</span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">len</span>(pp.timers) == <span class="number">0</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">case</span> timerModifiedEarlier, timerModifiedLater:</span><br><span class="line">			<span class="keyword">if</span> !atomic.Cas(&amp;t.status, s, timerMoving) &#123;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			t.when = t.nextwhen</span><br><span class="line">			dodeltimer0(pp)</span><br><span class="line">			doaddtimer(pp, t)</span><br><span class="line">			<span class="keyword">if</span> s == timerModifiedEarlier &#123;</span><br><span class="line">				atomic.Xadd(&amp;pp.adjustTimers, <span class="number">-1</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> !atomic.Cas(&amp;t.status, timerMoving, timerWaiting) &#123;</span><br><span class="line">				badTimer()</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">case</span> timerModifying:</span><br><span class="line">			<span class="comment">// Wait for modification to complete.</span></span><br><span class="line">			osyield()</span><br><span class="line"></span><br><span class="line">		<span class="keyword">case</span> timerNoStatus, timerRemoved:</span><br><span class="line">			<span class="comment">// Should not see a new or inactive timer on the heap.</span></span><br><span class="line">			badTimer()</span><br><span class="line">		<span class="keyword">case</span> timerRunning, timerRemoving, timerMoving:</span><br><span class="line">			<span class="comment">// These should only be set when timers are locked,</span></span><br><span class="line">			<span class="comment">// and we didn't do it.</span></span><br><span class="line">			badTimer()</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			badTimer()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>runtimer</code> 中也是判断 timer 的状态，如果状态等于 <code>timerWaiting</code> 并且 <code>when</code> 大于 <code>now</code> 则执行 <code>runOneTimer</code>。其他状态则跟之前的 <code>checkTimers</code>一样，维护状态。</p>
+<p><code>runOneTimer</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// runOneTimer runs a single timer.</span></span><br><span class="line"><span class="comment">// The caller must have locked the timers for pp.</span></span><br><span class="line"><span class="comment">// This will temporarily unlock the timers while running the timer function.</span></span><br><span class="line"><span class="comment">//go:systemstack</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">runOneTimer</span><span class="params">(pp *p, t *timer, now <span class="keyword">int64</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> raceenabled &#123;</span><br><span class="line">		ppcur := getg().m.p.ptr()</span><br><span class="line">		<span class="keyword">if</span> ppcur.timerRaceCtx == <span class="number">0</span> &#123;</span><br><span class="line">			ppcur.timerRaceCtx = racegostart(funcPC(runtimer) + sys.PCQuantum)</span><br><span class="line">		&#125;</span><br><span class="line">		raceacquirectx(ppcur.timerRaceCtx, unsafe.Pointer(t))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	f := t.f</span><br><span class="line">	arg := t.arg</span><br><span class="line">	seq := t.seq</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> t.period &gt; <span class="number">0</span> &#123;</span><br><span class="line">		<span class="comment">// Leave in heap but adjust next time to fire.</span></span><br><span class="line">		delta := t.when - now</span><br><span class="line">		t.when += t.period * (<span class="number">1</span> + -delta/t.period)</span><br><span class="line">		siftdownTimer(pp.timers, <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">if</span> !atomic.Cas(&amp;t.status, timerRunning, timerWaiting) &#123;</span><br><span class="line">			badTimer()</span><br><span class="line">		&#125;</span><br><span class="line">		updateTimer0When(pp)</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// Remove from heap.</span></span><br><span class="line">		dodeltimer0(pp)</span><br><span class="line">		<span class="keyword">if</span> !atomic.Cas(&amp;t.status, timerRunning, timerNoStatus) &#123;</span><br><span class="line">			badTimer()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> raceenabled &#123;</span><br><span class="line">		<span class="comment">// Temporarily use the current P's racectx for g0.</span></span><br><span class="line">		gp := getg()</span><br><span class="line">		<span class="keyword">if</span> gp.racectx != <span class="number">0</span> &#123;</span><br><span class="line">			throw(<span class="string">"runOneTimer: unexpected racectx"</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		gp.racectx = gp.m.p.ptr().timerRaceCtx</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	unlock(&amp;pp.timersLock)</span><br><span class="line"></span><br><span class="line">	f(arg, seq)</span><br><span class="line"></span><br><span class="line">	lock(&amp;pp.timersLock)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> raceenabled &#123;</span><br><span class="line">		gp := getg()</span><br><span class="line">		gp.racectx = <span class="number">0</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里流程就是：</p>
+<ol>
+<li>判断 <code>t.period</code> 是否大于0<ul>
+<li>大于0则是 <code>ticker</code>，需要重新更新 <code>timer</code>，然后执行 <code>siftdownTimer</code>，从上到下构建 timers 数组。不删除timer。</li>
+<li>小于等于0， 删除timer。</li>
+</ul>
+</li>
+<li>短暂解锁 <code>timersLock</code></li>
+<li>执行 <code>f</code> （timer 中的函数）</li>
+<li>最后在上锁。</li>
+</ol>
+<p><code>siftdownTimer</code> 代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">siftdownTimer</span><span class="params">(t []*timer, i <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	n := <span class="built_in">len</span>(t)</span><br><span class="line">	<span class="keyword">if</span> i &gt;= n &#123;</span><br><span class="line">		badTimer()</span><br><span class="line">	&#125;</span><br><span class="line">	when := t[i].when</span><br><span class="line">	tmp := t[i]</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		c := i*<span class="number">4</span> + <span class="number">1</span> <span class="comment">// left child</span></span><br><span class="line">		c3 := c + <span class="number">2</span>  <span class="comment">// mid child</span></span><br><span class="line">		<span class="keyword">if</span> c &gt;= n &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		w := t[c].when</span><br><span class="line">		<span class="keyword">if</span> c+<span class="number">1</span> &lt; n &amp;&amp; t[c+<span class="number">1</span>].when &lt; w &#123;</span><br><span class="line">			w = t[c+<span class="number">1</span>].when</span><br><span class="line">			c++</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> c3 &lt; n &#123;</span><br><span class="line">			w3 := t[c3].when</span><br><span class="line">			<span class="keyword">if</span> c3+<span class="number">1</span> &lt; n &amp;&amp; t[c3+<span class="number">1</span>].when &lt; w3 &#123;</span><br><span class="line">				w3 = t[c3+<span class="number">1</span>].when</span><br><span class="line">				c3++</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> w3 &lt; w &#123;</span><br><span class="line">				w = w3</span><br><span class="line">				c = c3</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> w &gt;= when &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		t[i] = t[c]</span><br><span class="line">		i = c</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> tmp != t[i] &#123;</span><br><span class="line">		t[i] = tmp</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="timer的状态转变"><a href="#timer的状态转变" class="headerlink" title="timer的状态转变"></a>timer的状态转变</h2><p>上面讲到了 timer 的状态，这里讲下 timer 的状态变化，讲 timer 的状态变化前，先列举下timer的状态有哪些：</p>
+<ul>
+<li><code>timerNoStatus</code><ul>
+<li>timer还没有状态</li>
+</ul>
+</li>
+<li><code>timerWaiting</code><ul>
+<li>正在等待执行</li>
+<li>在某个P的堆中</li>
+</ul>
+</li>
+<li><code>timerRunning</code><ul>
+<li>正在执行 timer 的函数</li>
+<li>timer 只短暂的拥有这个状态</li>
+</ul>
+</li>
+<li><code>timerDeleted</code><ul>
+<li>timer 被删除和应该被移除（removed）</li>
+<li>该状态下，不该执行 timer，但会存在某个 <code>p</code> 的堆中</li>
+</ul>
+</li>
+<li><code>timerRemoving</code><ul>
+<li>timer正在被移除</li>
+<li>timer 只短暂的拥有这个状态</li>
+</ul>
+</li>
+<li><code>timerRemoved</code><ul>
+<li>timer 被停止（stopped）</li>
+<li>不在任何 <code>p</code> 的堆中</li>
+</ul>
+</li>
+<li><code>timerModifying</code><ul>
+<li>timer 正在被修改</li>
+<li>timer 只短暂的拥有这个状态</li>
+</ul>
+</li>
+<li><code>timerModifiedEarlier</code><ul>
+<li>timer 被修改为更早的时间</li>
+<li>新的when值在nextwhen字段中</li>
+<li>timer 在某个 <code>P</code> 堆中，可能在错误的位置上</li>
+</ul>
+</li>
+<li><code>timerModifiedLater</code><ul>
+<li>timer 被修改为相同或稍后的时间。</li>
+<li>新的when值在nextwhen字段中</li>
+<li>timer 在某个 <code>P</code> 堆中，可能在错误的位置上</li>
+</ul>
+</li>
+<li><code>timerMoving</code><ul>
+<li>timer 被修改了，并且正在移动</li>
+<li>timer 只短暂的拥有这个状态</li>
+</ul>
+</li>
+</ul>
+<h3 id="操作timer函数的状态变化"><a href="#操作timer函数的状态变化" class="headerlink" title="操作timer函数的状态变化"></a>操作timer函数的状态变化</h3><p>来源自代码：<code>runtime/time.go#73</code></p>
+<ul>
+<li><code>addtimer</code><ul>
+<li>timerNoStatus -&gt; timerWaiting</li>
+<li>anything else -&gt; panic: invalid value</li>
+</ul>
+</li>
+<li><code>deltimer</code><ul>
+<li>timerWaiting -&gt; timerModifying -&gt; timerDeleted</li>
+<li>timerModifiedEarlier -&gt; timerModifying -&gt; timerDeleted</li>
+<li>timerModifiedLater -&gt; timerModifying -&gt; timerDeleted</li>
+<li>timerNoStatus -&gt; do nothing</li>
+<li>timerDeleted -&gt; do nothing</li>
+<li>timerRemoving -&gt; do nothing</li>
+<li>timerRemoved -&gt; do nothing</li>
+<li>timerRunning -&gt; wait until status changes</li>
+<li>timerMoving -&gt; wait until status changes</li>
+<li>timerModifying -&gt; wait until status changes</li>
+</ul>
+</li>
+<li><code>modtimer</code><ul>
+<li>timerWaiting -&gt; timerModifying -&gt; timerModifiedXX</li>
+<li>timerModifiedXX -&gt; timerModifying -&gt; timerModifiedYY</li>
+<li>timerNoStatus -&gt; timerModifying -&gt; timerWaiting</li>
+<li>timerRemoved -&gt; timerModifying -&gt; timerWaiting</li>
+<li>timerDeleted -&gt; timerModifying -&gt; timerModifiedXX</li>
+<li>timerRunning -&gt; wait until status changes</li>
+<li>timerMoving -&gt; wait until status changes</li>
+<li>timerRemoving -&gt; wait until status changes</li>
+<li>timerModifying -&gt; wait until status changes</li>
+</ul>
+</li>
+<li><code>cleantimers</code> (looks in P’s timer heap)<ul>
+<li>timerDeleted -&gt; timerRemoving -&gt; timerRemoved</li>
+<li>timerModifiedXX -&gt; timerMoving -&gt; timerWaiting</li>
+</ul>
+</li>
+<li><code>adjusttimers</code> (looks in P’s timer heap)<ul>
+<li>timerDeleted -&gt; timerRemoving -&gt; timerRemoved</li>
+<li>timerModifiedXX -&gt; timerMoving -&gt; timerWaiting</li>
+</ul>
+</li>
+<li><code>runtimer</code> (looks in P’s timer heap)<ul>
+<li>timerNoStatus -&gt; panic: uninitialized timer</li>
+<li>timerWaiting -&gt; timerWaiting or</li>
+<li>timerWaiting -&gt; timerRunning -&gt; timerNoStatus or</li>
+<li>timerWaiting -&gt; timerRunning -&gt; timerWaiting</li>
+<li>timerModifying -&gt; wait until status changes</li>
+<li>timerModifiedXX -&gt; timerMoving -&gt; timerWaiting</li>
+<li>timerDeleted -&gt; timerRemoving -&gt; timerRemoved</li>
+<li>timerRunning -&gt; panic: concurrent runtimer calls</li>
+<li>timerRemoved -&gt; panic: inconsistent timer heap</li>
+<li>timerRemoving -&gt; panic: inconsistent timer heap</li>
+<li>timerMoving -&gt; panic: inconsistent timer heap</li>
+</ul>
+</li>
+</ul>
+<h3 id="timer状态机"><a href="#timer状态机" class="headerlink" title="timer状态机"></a>timer状态机</h3><p>来源网络：</p>
+<p><img data-src="/images/Golang-Timer-Source-Code-Analysis/Golang-Timer-State-Machine.png" alt=""></p>
+<p>参考文献：</p>
+<ol>
+<li><a href="https://changkun.de/golang/zh-cn/part2runtime/ch06sched/timer/" target="_blank" rel="noopener">Go 语言原本：计时器</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Mikado
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://mikado.drrr.app/Golang-Timer-Source-Code-Analysis/" title="Golang-Timer源码分析">https://mikado.drrr.app/Golang-Timer-Source-Code-Analysis/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Three-Major-Cache-Issue/" rel="prev" title="三大缓存问题">
+      <i class="fa fa-chevron-left"></i> 三大缓存问题
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#P-结构体"><span class="nav-number">1.</span> <span class="nav-text">P 结构体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#往-P-添加-timer"><span class="nav-number">2.</span> <span class="nav-text">往 P 添加 timer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Timer的触发"><span class="nav-number">3.</span> <span class="nav-text">Timer的触发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#timer的状态转变"><span class="nav-number">4.</span> <span class="nav-text">timer的状态转变</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#操作timer函数的状态变化"><span class="nav-number">4.1.</span> <span class="nav-text">操作timer函数的状态变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#timer状态机"><span class="nav-number">4.2.</span> <span class="nav-text">timer状态机</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mikado"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">Mikado</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/drrrMikado" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;drrrMikado" rel="noopener" target="_blank"><i class="github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/NoneL1ke" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;NoneL1ke" rel="noopener" target="_blank"><i class="twitter fa-fw"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mikado</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
