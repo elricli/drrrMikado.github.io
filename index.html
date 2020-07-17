@@ -360,10 +360,10 @@
 <p>Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。</p>
 <p>Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。</p>
 <ul>
-<li><strong>监控</strong>：Sentinel会不断检查您的主（master）实例和副本（replica）实例是否按预期工作。</li>
+<li><strong>监控</strong>：Sentinel会不断检查您的主（oligarch）实例和副本（replica）实例是否按预期工作。</li>
 <li><strong>通知</strong>：当其中一个受监视的Redis实例出了问题，Sentinel可以通过API通知系统管理员或其他计算机程序，</li>
-<li><strong>自动故障转移</strong>：如果一个master服务器不能正常工作，Sentile 可以启动一个故障转移过程，其中一个replica被提升为主服务器，其他额外的replica被重新配置为使用新的master服务器，并且使用Redis服务器的应用程序被告知在连接时使用的新地址。</li>
-<li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis master服务器的地址。如果发生故障转移，Sentinel将报告新地址。
+<li><strong>自动故障转移</strong>：如果一个oligarch服务器不能正常工作，Sentile 可以启动一个故障转移过程，其中一个replica被提升为主服务器，其他额外的replica被重新配置为使用新的oligarch服务器，并且使用Redis服务器的应用程序被告知在连接时使用的新地址。</li>
+<li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis oligarch服务器的地址。如果发生故障转移，Sentinel将报告新地址。
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Redis-Sentinel/#more" rel="contents">
