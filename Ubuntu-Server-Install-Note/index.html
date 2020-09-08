@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/Ubuntu-Server-Install-Note/0072Vf1pgy1foxk73gascj31hc0u07e1.jpg">
 <meta property="article:published_time" content="2019-01-31T02:07:09.000Z">
-<meta property="article:modified_time" content="2020-09-08T10:11:53.893Z">
+<meta property="article:modified_time" content="2020-09-08T12:45:59.636Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="Ubuntu">
@@ -128,14 +128,14 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">19</span></a>
-
-  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">16</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">19</span></a>
 
   </li>
   </ul>
@@ -203,7 +203,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/Ubuntu-Server-Install-Note/0072Vf1pgy1foxk73gascj31hc0u07e1.jpg" alt=""></p>
+        <p><img data-src="/images/Ubuntu-Server-Install-Note/0072Vf1pgy1foxk73gascj31hc0u07e1.jpg"></p>
 <p>This is a note when I installing Ubuntu 18.04 LTS Server. </p>
 <h2 id="Before-install"><a href="#Before-install" class="headerlink" title="Before install"></a>Before install</h2><h3 id="Change-SSH-port"><a href="#Change-SSH-port" class="headerlink" title="Change SSH port"></a>Change SSH port</h3><ol>
 <li>Edit ssh config</li>
@@ -229,7 +229,7 @@
 <h3 id="Change-user"><a href="#Change-user" class="headerlink" title="Change user"></a>Change user</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su &#123;username&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="Update-sources-mirror"><a href="#Update-sources-mirror" class="headerlink" title="Update sources mirror"></a>Update sources mirror</h3><blockquote>
-<p><a href="https://mirrors.ustc.edu.cn/help/ubuntu.html" target="_blank" rel="noopener">https://mirrors.ustc.edu.cn/help/ubuntu.html</a></p>
+<p><a target="_blank" rel="noopener" href="https://mirrors.ustc.edu.cn/help/ubuntu.html">https://mirrors.ustc.edu.cn/help/ubuntu.html</a></p>
 </blockquote>
 <ol>
 <li>Back up sources list</li>
@@ -242,7 +242,7 @@
 <ul>
 <li>If you using English, the <code>&lt;country-code&gt;</code> is empty.</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i 's/&lt;country-code&gt;.archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -i &#x27;s/&lt;country-code&gt;.archive.ubuntu.com/mirrors.ustc.edu.cn/g&#x27; /etc/apt/sources.list</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>Edit <code>/etc/apt/sources.list</code>, need <code>sudo</code>.</li>
@@ -256,12 +256,12 @@
 <h3 id="Vimrc-config"><a href="#Vimrc-config" class="headerlink" title="Vimrc config"></a>Vimrc config</h3><p>edit <code>~/.vimrc</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set number</span><br><span class="line">syntax on</span><br></pre></td></tr></table></figure>
 
-<h3 id="PHP-7-2"><a href="#PHP-7-2" class="headerlink" title="PHP 7.2"></a>PHP 7.2</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install php7.2 php7.2-mysql php7.2-curl \</span><br><span class="line">    php7.2-common php7.2-xml php7.2-json \</span><br><span class="line">    php7.2-cli php7.2-bcmath php7.2-fpm \</span><br><span class="line">    php7.2-mbstring</span><br></pre></td></tr></table></figure>
+<h3 id="PHP-7-2"><a href="#PHP-7-2" class="headerlink" title="PHP 7.2"></a>PHP 7.2</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install php7.2 php7.2-mysql php7.2-curl \</span><br><span class="line">    php7.2-common php7.2-xml php7.2-json \</span><br><span class="line">    php7.2-cli php7.2-bcmath php7.2-fpm \</span><br><span class="line">    php7.2-mbstring</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h3 id="Composer"><a href="#Composer" class="headerlink" title="Composer"></a>Composer</h3><ul>
 <li>Install composer</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"</span><br><span class="line">php -r "if (hash_file('sha384', 'composer-setup.php') === '93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8') &#123; echo 'Installer verified'; &#125; else &#123; echo 'Installer corrupt'; unlink('composer-setup.php');&#125; echo PHP_EOL;"</span><br><span class="line">php composer-setup.php</span><br><span class="line">php -r "unlink('composer-setup.php');"</span><br><span class="line">sudo cp composer.phar /user/bin/composer</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">php -r &quot;copy(&#x27;https://getcomposer.org/installer&#x27;, &#x27;composer-setup.php&#x27;);&quot;</span><br><span class="line">php -r &quot;if (hash_file(&#x27;sha384&#x27;, &#x27;composer-setup.php&#x27;) === &#x27;93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8&#x27;) &#123; echo &#x27;Installer verified&#x27;; &#125; else &#123; echo &#x27;Installer corrupt&#x27;; unlink(&#x27;composer-setup.php&#x27;);&#125; echo PHP_EOL;&quot;</span><br><span class="line">php composer-setup.php</span><br><span class="line">php -r &quot;unlink(&#x27;composer-setup.php&#x27;);&quot;</span><br><span class="line">sudo cp composer.phar /user/bin/composer</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>Set up composer packagist url</li>
@@ -269,19 +269,19 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer config -g repo.packagist composer https://packagist.laravel-china.org</span><br></pre></td></tr></table></figure>
 
 <h3 id="MariaDB-10-4"><a href="#MariaDB-10-4" class="headerlink" title="MariaDB-10.4"></a>MariaDB-10.4</h3><h4 id="Install-mariadb-server"><a href="#Install-mariadb-server" class="headerlink" title="Install mariadb server"></a>Install mariadb server</h4><blockquote>
-<p><a href="https://downloads.mariadb.org/mariadb/repositories" target="_blank" rel="noopener">https://downloads.mariadb.org/mariadb/repositories</a></p>
+<p><a target="_blank" rel="noopener" href="https://downloads.mariadb.org/mariadb/repositories">https://downloads.mariadb.org/mariadb/repositories</a></p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install software-properties-common</span><br><span class="line">sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8</span><br><span class="line">sudo add-apt-repository 'deb [arch=amd64,arm64,ppc64el] https://mirrors.shu.edu.cn/mariadb/repo/10.4/ubuntu bionic main'</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install mariadb-server</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install software-properties-common</span><br><span class="line">sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8</span><br><span class="line">sudo add-apt-repository &#x27;deb [arch=amd64,arm64,ppc64el] https://mirrors.shu.edu.cn/mariadb/repo/10.4/ubuntu bionic main&#x27;</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install mariadb-server</span><br></pre></td></tr></table></figure>
 
 <h4 id="Add-user-1"><a href="#Add-user-1" class="headerlink" title="Add user"></a>Add user</h4><blockquote>
-<p><a href="https://mariadb.com/kb/en/library/create-user/" target="_blank" rel="noopener">https://mariadb.com/kb/en/library/create-user/</a></p>
+<p><a target="_blank" rel="noopener" href="https://mariadb.com/kb/en/library/create-user/">https://mariadb.com/kb/en/library/create-user/</a></p>
 </blockquote>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> [<span class="keyword">OR</span> <span class="keyword">REPLACE</span>] <span class="keyword">USER</span> [<span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] <span class="string">'foo2'</span>@<span class="string">'test'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'password'</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> [<span class="keyword">OR</span> <span class="keyword">REPLACE</span>] <span class="keyword">USER</span> [<span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] <span class="string">&#x27;foo2&#x27;</span>@<span class="string">&#x27;test&#x27;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&#x27;password&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
 <h4 id="Grant-user"><a href="#Grant-user" class="headerlink" title="Grant user"></a>Grant user</h4><blockquote>
-<p><a href="https://mariadb.com/kb/en/library/grant" target="_blank" rel="noopener">https://mariadb.com/kb/en/library/grant</a></p>
+<p><a target="_blank" rel="noopener" href="https://mariadb.com/kb/en/library/grant">https://mariadb.com/kb/en/library/grant</a></p>
 </blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT ALL ON laravel_blog.* TO 'laravel_blog'@'%'</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT ALL ON laravel_blog.* TO &#x27;laravel_blog&#x27;@&#x27;%&#x27;</span><br></pre></td></tr></table></figure>
 
 <h4 id="Change-port"><a href="#Change-port" class="headerlink" title="Change port"></a>Change port</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/mysql/my.cnf</span><br></pre></td></tr></table></figure>
 
@@ -417,10 +417,10 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/drrrMikado" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;drrrMikado" rel="noopener" target="_blank"><i class="github fa-fw"></i></a>
+        <a href="https://github.com/drrrMikado" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;drrrMikado" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/NoneL1ke" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;NoneL1ke" rel="noopener" target="_blank"><i class="twitter fa-fw"></i></a>
+        <a href="https://twitter.com/NoneL1ke" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;NoneL1ke" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
       </span>
   </div>
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 4.2.1">
+<meta name="generator" content="Hexo 5.1.1">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -119,14 +119,14 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
 
   </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">19</span></a>
-
-  </li>
         <li class="menu-item menu-item-archives">
 
     <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives<span class="badge">16</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags<span class="badge">19</span></a>
 
   </li>
   </ul>
@@ -194,7 +194,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="images/MapReduce-Paper-Notes/images.png" alt=""></p>
+          <p><img src="/images/MapReduce-Paper-Notes/images.png"></p>
 <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>MapReduce是Google提出的一个软件架构，用于大规模数据集（大于1TB）的并行运算。概念“Map”和“Reduce”，及他们的主要思想，都是从函数式编程语言借鉴的，还有从矢量编程语言借来的特性。</p>
 <p>当前的软件实现是指定一个Map函数，用来把一组键值对映射成一组新的键值对，指定并发的Reduce函数，用来保证所有映射的键值对中的每一个共享相同的键组。</p>
           <!--noindex-->
@@ -261,7 +261,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg" alt=""></p>
+          <p><img src="/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg"></p>
 <p>代码环境：</p>
 <ul>
 <li>Golang版本：1.14.3</li>
@@ -269,7 +269,7 @@
 </ul>
 <h2 id="P-结构体"><a href="#P-结构体" class="headerlink" title="P 结构体"></a><code>P</code> 结构体</h2><p>添加 timer 都会添加至 <code>P</code> 的结构体中，然而<code>P</code> 结构体中维护一个最小堆的 timer 数组。</p>
 <p>代码位置：<code>runtime/runtime2.go</code></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> p <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// ......部分代码省略</span></span><br><span class="line">	<span class="comment">// Lock for timers. We normally access the timers while running</span></span><br><span class="line">	<span class="comment">// on this P, but the scheduler can also do it from a different P.</span></span><br><span class="line">	timersLock mutex</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Actions to take at some time. This is used to implement the</span></span><br><span class="line">	<span class="comment">// standard library's time package.</span></span><br><span class="line">	<span class="comment">// Must hold timersLock to access.</span></span><br><span class="line">	timers []*timer <span class="comment">// 最小堆实现</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timers in P's heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	numTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerModifiedEarlier timers on P's heap.</span></span><br><span class="line">	<span class="comment">// This should only be modified while holding timersLock,</span></span><br><span class="line">	<span class="comment">// or while the timer status is in a transient state</span></span><br><span class="line">	<span class="comment">// such as timerModifying.</span></span><br><span class="line">	adjustTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerDeleted timers in P's heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	deletedTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Race context used while executing timer functions.</span></span><br><span class="line">	timerRaceCtx <span class="keyword">uintptr</span></span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> p <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// ......部分代码省略</span></span><br><span class="line">	<span class="comment">// Lock for timers. We normally access the timers while running</span></span><br><span class="line">	<span class="comment">// on this P, but the scheduler can also do it from a different P.</span></span><br><span class="line">	timersLock mutex</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Actions to take at some time. This is used to implement the</span></span><br><span class="line">	<span class="comment">// standard library&#x27;s time package.</span></span><br><span class="line">	<span class="comment">// Must hold timersLock to access.</span></span><br><span class="line">	timers []*timer <span class="comment">// 最小堆实现</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timers in P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	numTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerModifiedEarlier timers on P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// This should only be modified while holding timersLock,</span></span><br><span class="line">	<span class="comment">// or while the timer status is in a transient state</span></span><br><span class="line">	<span class="comment">// such as timerModifying.</span></span><br><span class="line">	adjustTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerDeleted timers in P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	deletedTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Race context used while executing timer functions.</span></span><br><span class="line">	timerRaceCtx <span class="keyword">uintptr</span></span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Golang-Timer-Source-Code-Analysis/#more" rel="contents">
@@ -334,7 +334,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg" alt=""></p>
+          <p><img src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg"></p>
 <ul>
 <li><p>缓存一致性</p>
 <p>  缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保障业务性能。</p>
@@ -356,7 +356,7 @@
 </li>
 <li><p>缓存雪崩</p>
 <p>  缓存雪崩是指由于大量的热数据设置了相同或接近的过期时间，导致缓存在某一时刻密集失效，大量请求全部转发到 DB，或者是某个冷数据瞬间涌入大量访问，这些查询在缓存 MISS 后，并发的将请求透传到 DB，DB 瞬时压力过载从而拒绝服务。目前常见的预防缓存雪崩的解决方案，主要是通过对 key 的 TTL 时间加随机数，打散 key 的淘汰时间来尽量规避，但是不能彻底规避。</p>
-<p>  <img src="/images/Three-Major-Cache-Issue/Cache-avalanche.png" alt=""></p>
+<p>  <img src="/images/Three-Major-Cache-Issue/Cache-avalanche.png"></p>
 </li>
 </ul>
           <!--noindex-->
@@ -423,7 +423,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg" alt=""></p>
+          <p><img src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg"></p>
 <p>Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。</p>
 <p>Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。</p>
 <ul>
@@ -495,7 +495,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg" alt=""></p>
+          <p><img src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg"></p>
 <h2 id="什么是gRPC"><a href="#什么是gRPC" class="headerlink" title="什么是gRPC"></a><strong>什么是gRPC</strong></h2><p>gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。</p>
 <p>gRPC基于 HTTP/2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。</p>
 <h3 id="gRPC使用场景"><a href="#gRPC使用场景" class="headerlink" title="gRPC使用场景"></a>gRPC使用场景</h3><ul>
@@ -569,7 +569,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg" alt=""></p>
+          <p><img src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg"></p>
 <h2 id="Caddy简介"><a href="#Caddy简介" class="headerlink" title="Caddy简介"></a>Caddy简介</h2><p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br>Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外配置即可提供 HTTPS 特性的 Web 服务器。</p>
           <!--noindex-->
             <div class="post-button">
@@ -635,7 +635,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Deploy-Hexo-Blog-With-Travis-CI/1-44.jpg" alt=""></p>
+          <p><img src="/images/Deploy-Hexo-Blog-With-Travis-CI/1-44.jpg"></p>
 <h2 id="传统模式"><a href="#传统模式" class="headerlink" title="传统模式"></a>传统模式</h2><p>在传统模式下部署Hexo-Blog，需要在Git仓库下，执行<code>hexo clean &amp;&amp; hexo generate  &amp;&amp; hexo deploy</code>。这步操作都是需要去手动执行。</p>
           <!--noindex-->
             <div class="post-button">
@@ -701,7 +701,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg" alt=""></p>
+          <p><img src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg"></p>
 <h2 id="事务中的加锁方式"><a href="#事务中的加锁方式" class="headerlink" title="事务中的加锁方式"></a>事务中的加锁方式</h2><h3 id="事务中的四种隔离级别"><a href="#事务中的四种隔离级别" class="headerlink" title="事务中的四种隔离级别"></a>事务中的四种隔离级别</h3><table>
 <thead>
 <tr>
@@ -805,11 +805,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/InnoDB-Indexes-Translation/87c01ec7gy1frkhzeordxj21kw0zke81.jpg" alt=""></p>
+          <p><img src="/images/InnoDB-Indexes-Translation/87c01ec7gy1frkhzeordxj21kw0zke81.jpg"></p>
 <blockquote>
-<p>翻译原文档地址：<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html</a></p>
+<p>翻译原文档地址：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html">https://dev.mysql.com/doc/refman/8.0/en/innodb-indexes.html</a></p>
 </blockquote>
-<h2 id="聚簇索引和二级索引"><a href="#聚簇索引和二级索引" class="headerlink" title="聚簇索引和二级索引"></a>聚簇索引和二级索引</h2><p>每个<code>InnoDB</code>表都有一个特殊的索引，称为<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_clustered_index" target="_blank" rel="noopener">聚簇索引</a>，用于存储行数据。通常，聚簇索引与<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_primary_key" target="_blank" rel="noopener">主键</a>同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解<code>InnoDB</code>如果使用聚簇索引为每个表优化最常见的查找和DML操作。</p>
+<h2 id="聚簇索引和二级索引"><a href="#聚簇索引和二级索引" class="headerlink" title="聚簇索引和二级索引"></a>聚簇索引和二级索引</h2><p>每个<code>InnoDB</code>表都有一个特殊的索引，称为<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_clustered_index">聚簇索引</a>，用于存储行数据。通常，聚簇索引与<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_primary_key">主键</a>同义。为了从查询，插入，和其他数据操作上获得最佳性能，你必须了解<code>InnoDB</code>如果使用聚簇索引为每个表优化最常见的查找和DML操作。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/InnoDB-Indexes-Translation/#more" rel="contents">
@@ -874,14 +874,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/InnoDB-Locking-Translation/69174779_p0.jpg" alt=""></p>
+          <p><img src="/images/InnoDB-Locking-Translation/69174779_p0.jpg"></p>
 <blockquote>
-<p>翻译文档地址：<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html</a></p>
+<p>翻译文档地址：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html">https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html</a></p>
 </blockquote>
-<h2 id="共享锁与排他锁（Shared-and-Exclusive-Locks）"><a href="#共享锁与排他锁（Shared-and-Exclusive-Locks）" class="headerlink" title="共享锁与排他锁（Shared and Exclusive Locks）"></a>共享锁与排他锁（Shared and Exclusive Locks）</h2><p><code>InnoDB</code>实现了标准行锁定，其中有两种类型锁：<a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_shared_lock" target="_blank" rel="noopener">共享（<code>S</code>）锁</a> 和 <a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_exclusive_lock" target="_blank" rel="noopener">排他（<code>X</code>）锁</a></p>
+<h2 id="共享锁与排他锁（Shared-and-Exclusive-Locks）"><a href="#共享锁与排他锁（Shared-and-Exclusive-Locks）" class="headerlink" title="共享锁与排他锁（Shared and Exclusive Locks）"></a>共享锁与排他锁（Shared and Exclusive Locks）</h2><p><code>InnoDB</code>实现了标准行锁定，其中有两种类型锁：<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_shared_lock">共享（<code>S</code>）锁</a> 和 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_exclusive_lock">排他（<code>X</code>）锁</a></p>
 <ul>
-<li><a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_shared_lock" target="_blank" rel="noopener">共享锁</a>允许持有该锁的事务读取一行。</li>
-<li><a href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_exclusive_lock" target="_blank" rel="noopener">排他锁</a>允许持有该所的事务更新或删除一行。</li>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_shared_lock">共享锁</a>允许持有该锁的事务读取一行。</li>
+<li><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_exclusive_lock">排他锁</a>允许持有该所的事务更新或删除一行。</li>
 </ul>
 <p>假如事务<code>T1</code>在行<code>r</code>上持有共享（<code>S</code>）锁，然后，不同的事务<code>T2</code>请求行<code>r</code>上的锁时，处理方法如下：</p>
 <ul>
@@ -996,10 +996,10 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/drrrMikado" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;drrrMikado" rel="noopener" target="_blank"><i class="github fa-fw"></i></a>
+        <a href="https://github.com/drrrMikado" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;drrrMikado" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
       </span>
       <span class="links-of-author-item">
-        <a href="https://twitter.com/NoneL1ke" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;NoneL1ke" rel="noopener" target="_blank"><i class="twitter fa-fw"></i></a>
+        <a href="https://twitter.com/NoneL1ke" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;NoneL1ke" rel="noopener" target="_blank"><i class="fab fa-twitter fa-fw"></i></a>
       </span>
   </div>
 
