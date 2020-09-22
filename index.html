@@ -197,7 +197,6 @@
           <p>PHP7数组的源码内部实现</p>
 <p>先看下PHP7数组的定义：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zend_array</span> &#123;</span></span><br><span class="line">    zend_refcounted_h gc;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">            ZEND_ENDIAN_LOHI_4( <span class="comment">// 解决大小端问题*</span></span><br><span class="line">                zend_uchar    flags,</span><br><span class="line">                zend_uchar    _unused,</span><br><span class="line">                zend_uchar    nIteratorsCount,</span><br><span class="line">                zend_uchar    _unused2)</span><br><span class="line">        &#125; v;</span><br><span class="line">        <span class="keyword">uint32_t</span> flags;</span><br><span class="line">    &#125; u;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nTableMask;</span><br><span class="line">    Bucket           *arData;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nNumUsed;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nNumOfElements;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nTableSize;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nInternalPointer;</span><br><span class="line">    zend_long         nNextFreeElement;</span><br><span class="line">    <span class="keyword">dtor_func_t</span>       pDestructor;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
 <p>可以从数据结构上看到，PHP7的结构名由PHP5的HastTable修改为了zend_array。</p>
           <!--noindex-->
             <div class="post-button">
@@ -264,7 +263,8 @@
 
       
           <p>布隆过滤器（英语：Bloom Filter）是1970年由布隆提出的。它实际上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。它的优点是空间效率和查询时间都远远超过一般的算法，缺点是有一定的误识别率和删除困难。</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>如果想判断一个元素是不是在一个集合里，一般想到的是将集合中所有元素保存起来，然后通过比较确定。链表、树、散列表（又叫哈希表，Hash table）等等数据结构都是这种思路。但是随着集合中元素的增加，我们需要的存储空间越来越大。同时检索速度也越来越慢，上述三种结构的检索时间复杂度分别为 ${\displaystyle O(n),O(\log n),O(1)}$。</p>
+<h2 id="基本概念">基本概念</h2>
+<p>如果想判断一个元素是不是在一个集合里，一般想到的是将集合中所有元素保存起来，然后通过比较确定。链表、树、散列表（又叫哈希表，Hash table）等等数据结构都是这种思路。但是随着集合中元素的增加，我们需要的存储空间越来越大。同时检索速度也越来越慢，上述三种结构的检索时间复杂度分别为 ${\displaystyle O(n),O(\log n),O(1)}$。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Bloom-Filter-Introduction/#more" rel="contents">
@@ -329,8 +329,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/MapReduce-Paper-Notes/images.png"></p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>MapReduce是Google提出的一个软件架构，用于大规模数据集（大于1TB）的并行运算。概念“Map”和“Reduce”，及他们的主要思想，都是从函数式编程语言借鉴的，还有从矢量编程语言借来的特性。</p>
+          <p><img src="/images/MapReduce-Paper-Notes/images.png" alt=""></p>
+<h2 id="介绍">介绍</h2>
+<p>MapReduce是Google提出的一个软件架构，用于大规模数据集（大于1TB）的并行运算。概念“Map”和“Reduce”，及他们的主要思想，都是从函数式编程语言借鉴的，还有从矢量编程语言借来的特性。</p>
 <p>当前的软件实现是指定一个Map函数，用来把一组键值对映射成一组新的键值对，指定并发的Reduce函数，用来保证所有映射的键值对中的每一个共享相同的键组。</p>
           <!--noindex-->
             <div class="post-button">
@@ -396,13 +397,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg"></p>
+          <p><img src="/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg" alt=""></p>
 <p>代码环境：</p>
 <ul>
 <li>Golang版本：1.14.3</li>
 <li>Server： Ubuntu Server 20.04</li>
 </ul>
-<h2 id="P-结构体"><a href="#P-结构体" class="headerlink" title="P 结构体"></a><code>P</code> 结构体</h2><p>添加 timer 都会添加至 <code>P</code> 的结构体中，然而<code>P</code> 结构体中维护一个最小堆的 timer 数组。</p>
+<h2 id="P-结构体"><code>P</code> 结构体</h2>
+<p>添加 timer 都会添加至 <code>P</code> 的结构体中，然而<code>P</code> 结构体中维护一个最小堆的 timer 数组。</p>
 <p>代码位置：<code>runtime/runtime2.go</code></p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> p <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// ......部分代码省略</span></span><br><span class="line">	<span class="comment">// Lock for timers. We normally access the timers while running</span></span><br><span class="line">	<span class="comment">// on this P, but the scheduler can also do it from a different P.</span></span><br><span class="line">	timersLock mutex</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Actions to take at some time. This is used to implement the</span></span><br><span class="line">	<span class="comment">// standard library&#x27;s time package.</span></span><br><span class="line">	<span class="comment">// Must hold timersLock to access.</span></span><br><span class="line">	timers []*timer <span class="comment">// 最小堆实现</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timers in P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	numTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerModifiedEarlier timers on P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// This should only be modified while holding timersLock,</span></span><br><span class="line">	<span class="comment">// or while the timer status is in a transient state</span></span><br><span class="line">	<span class="comment">// such as timerModifying.</span></span><br><span class="line">	adjustTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerDeleted timers in P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	deletedTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Race context used while executing timer functions.</span></span><br><span class="line">	timerRaceCtx <span class="keyword">uintptr</span></span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
@@ -469,29 +471,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg"></p>
+          <p><img src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg" alt=""></p>
 <ul>
-<li><p>缓存一致性</p>
-<p>  缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保障业务性能。</p>
+<li>
+<p>缓存一致性</p>
+<p>缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保障业务性能。</p>
 </li>
-<li><p>缓存击穿</p>
-<p>  缓存击穿是指查询请求没有在缓存层命中而将查询透传到存储 DB 的问题，当大量的请求发生缓存击穿时，将给存储 DB 带来极大的访问压力，甚至导致 DB 过载拒绝服务。</p>
-<p>  空数据查询(黑客攻击)和缓存污染（网络爬虫）是常见的引发缓存击穿的原因：</p>
+<li>
+<p>缓存击穿</p>
+<p>缓存击穿是指查询请求没有在缓存层命中而将查询透传到存储 DB 的问题，当大量的请求发生缓存击穿时，将给存储 DB 带来极大的访问压力，甚至导致 DB 过载拒绝服务。</p>
+<p>空数据查询(黑客攻击)和缓存污染（网络爬虫）是常见的引发缓存击穿的原因：</p>
 <ul>
-<li><p>空数据查询通常指攻击者伪造大量不存在的数据进行访问（比如不存在的商品信息、用户信息）。</p>
-</li>
-<li><p>缓存污染通常指在遍历数据等情况下冷数据把热数据驱逐出内存，导致缓存了大量冷数据而热数据被驱逐。</p>
+<li>空数据查询通常指攻击者伪造大量不存在的数据进行访问（比如不存在的商品信息、用户信息）。</li>
+<li>缓存污染通常指在遍历数据等情况下冷数据把热数据驱逐出内存，导致缓存了大量冷数据而热数据被驱逐。</li>
+</ul>
 <p>缓存污染的场景我们目前还没有发现较好的解决方案，但是在空数据查询问题上我们可以改造业务，通过以下方式防止缓存击穿：</p>
-</li>
-<li><p>通过 bloomfilter 记录 key 是否存在，从而避免无效 Key 的查询；</p>
-</li>
-<li><p>在 Redis 缓存不存在的 Key，从而避免无效 Key 的查询；</p>
-</li>
+<ul>
+<li>通过 bloomfilter 记录 key 是否存在，从而避免无效 Key 的查询；</li>
+<li>在 Redis 缓存不存在的 Key，从而避免无效 Key 的查询；</li>
 </ul>
 </li>
-<li><p>缓存雪崩</p>
-<p>  缓存雪崩是指由于大量的热数据设置了相同或接近的过期时间，导致缓存在某一时刻密集失效，大量请求全部转发到 DB，或者是某个冷数据瞬间涌入大量访问，这些查询在缓存 MISS 后，并发的将请求透传到 DB，DB 瞬时压力过载从而拒绝服务。目前常见的预防缓存雪崩的解决方案，主要是通过对 key 的 TTL 时间加随机数，打散 key 的淘汰时间来尽量规避，但是不能彻底规避。</p>
-<p>  <img src="/images/Three-Major-Cache-Issue/Cache-avalanche.png"></p>
+<li>
+<p>缓存雪崩</p>
+<p>缓存雪崩是指由于大量的热数据设置了相同或接近的过期时间，导致缓存在某一时刻密集失效，大量请求全部转发到 DB，或者是某个冷数据瞬间涌入大量访问，这些查询在缓存 MISS 后，并发的将请求透传到 DB，DB 瞬时压力过载从而拒绝服务。目前常见的预防缓存雪崩的解决方案，主要是通过对 key 的 TTL 时间加随机数，打散 key 的淘汰时间来尽量规避，但是不能彻底规避。</p>
+<p><img src="/images/Three-Major-Cache-Issue/Cache-avalanche.png" alt=""></p>
 </li>
 </ul>
           <!--noindex-->
@@ -558,14 +561,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg"></p>
+          <p><img src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg" alt=""></p>
 <p>Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。</p>
 <p>Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。</p>
 <ul>
 <li><strong>监控</strong>：Sentinel会不断检查您的主（master）实例和副本（replica）实例是否按预期工作。</li>
 <li><strong>通知</strong>：当其中一个受监视的Redis实例出了问题，Sentinel可以通过API通知系统管理员或其他计算机程序，</li>
 <li><strong>自动故障转移</strong>：如果一个master服务器不能正常工作，Sentile 可以启动一个故障转移过程，其中一个replica被提升为主服务器，其他额外的replica被重新配置为使用新的master服务器，并且使用Redis服务器的应用程序被告知在连接时使用的新地址。</li>
-<li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis master服务器的地址。如果发生故障转移，Sentinel将报告新地址。
+<li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis master服务器的地址。如果发生故障转移，Sentinel将报告新地址。</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Redis-Sentinel/#more" rel="contents">
@@ -630,16 +634,19 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg"></p>
-<h2 id="什么是gRPC"><a href="#什么是gRPC" class="headerlink" title="什么是gRPC"></a><strong>什么是gRPC</strong></h2><p>gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。</p>
+          <p><img src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg" alt=""></p>
+<h2 id="什么是gRPC"><strong>什么是gRPC</strong></h2>
+<p>gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。</p>
 <p>gRPC基于 HTTP/2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。</p>
-<h3 id="gRPC使用场景"><a href="#gRPC使用场景" class="headerlink" title="gRPC使用场景"></a>gRPC使用场景</h3><ul>
+<h3 id="gRPC使用场景">gRPC使用场景</h3>
+<ul>
 <li>低延迟，高度可扩展的分布式系统。</li>
 <li>开发与云服务器通信的移动客户端。</li>
 <li>设计一个新的协议，该协议必须准确，高效且独立于语言。</li>
 <li>分层设计以实现扩展，例如。身份验证，负载平衡，日志记录和监视等</li>
 </ul>
-<h2 id="什么是RPC"><a href="#什么是RPC" class="headerlink" title="什么是RPC"></a>什么是RPC</h2><p>在分布式计算，远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一个地址空间（通常为一个开放网络的一台计算机）的子程序，而程序员就像调用本地程序一样，无需额外地为这个交互作用编程（无需关注细节）。RPC是一种服务器-客户端（Client/Server）模式，经典实现是一个通过发送请求-接受回应进行信息交互的系统。</p>
+<h2 id="什么是RPC">什么是RPC</h2>
+<p>在分布式计算，远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一个地址空间（通常为一个开放网络的一台计算机）的子程序，而程序员就像调用本地程序一样，无需额外地为这个交互作用编程（无需关注细节）。RPC是一种服务器-客户端（Client/Server）模式，经典实现是一个通过发送请求-接受回应进行信息交互的系统。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/gRPC/#more" rel="contents">
@@ -704,8 +711,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg"></p>
-<h2 id="Caddy简介"><a href="#Caddy简介" class="headerlink" title="Caddy简介"></a>Caddy简介</h2><p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br>Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外配置即可提供 HTTPS 特性的 Web 服务器。</p>
+          <p><img src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg" alt=""></p>
+<h2 id="Caddy简介">Caddy简介</h2>
+<p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br>
+Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外配置即可提供 HTTPS 特性的 Web 服务器。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Configure-Deploy-Project-With-Caddy/#more" rel="contents">
@@ -770,8 +779,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Deploy-Hexo-Blog-With-Travis-CI/1-44.jpg"></p>
-<h2 id="传统模式"><a href="#传统模式" class="headerlink" title="传统模式"></a>传统模式</h2><p>在传统模式下部署Hexo-Blog，需要在Git仓库下，执行<code>hexo clean &amp;&amp; hexo generate  &amp;&amp; hexo deploy</code>。这步操作都是需要去手动执行。</p>
+          <p><img src="/images/Deploy-Hexo-Blog-With-Travis-CI/1-44.jpg" alt=""></p>
+<h2 id="传统模式">传统模式</h2>
+<p>在传统模式下部署Hexo-Blog，需要在Git仓库下，执行<code>hexo clean &amp;&amp; hexo generate  &amp;&amp; hexo deploy</code>。这步操作都是需要去手动执行。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Deploy-Hexo-Blog-With-Travis-CI/#more" rel="contents">
@@ -836,46 +846,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg"></p>
-<h2 id="事务中的加锁方式"><a href="#事务中的加锁方式" class="headerlink" title="事务中的加锁方式"></a>事务中的加锁方式</h2><h3 id="事务中的四种隔离级别"><a href="#事务中的四种隔离级别" class="headerlink" title="事务中的四种隔离级别"></a>事务中的四种隔离级别</h3><table>
+          <p><img src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg" alt=""></p>
+<h2 id="事务中的加锁方式">事务中的加锁方式</h2>
+<h3 id="事务中的四种隔离级别">事务中的四种隔离级别</h3>
+<table>
 <thead>
 <tr>
-<th align="left">隔离级别</th>
-<th align="left">脏读（Dirty Read）</th>
-<th align="left">不可重复读（NonRepeatable Read）</th>
-<th align="left">幻读（Phantom Read）</th>
+<th style="text-align:left">隔离级别</th>
+<th style="text-align:left">脏读（Dirty Read）</th>
+<th style="text-align:left">不可重复读（NonRepeatable Read）</th>
+<th style="text-align:left">幻读（Phantom Read）</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">未提交读（Read Uncommitted）</td>
-<td align="left">可能</td>
-<td align="left">可能</td>
-<td align="left">可能</td>
+<tbody>
+<tr>
+<td style="text-align:left">未提交读（Read Uncommitted）</td>
+<td style="text-align:left">可能</td>
+<td style="text-align:left">可能</td>
+<td style="text-align:left">可能</td>
 </tr>
 <tr>
-<td align="left">已提交读（Read Committed）</td>
-<td align="left">不可能</td>
-<td align="left">可能</td>
-<td align="left">可能</td>
+<td style="text-align:left">已提交读（Read Committed）</td>
+<td style="text-align:left">不可能</td>
+<td style="text-align:left">可能</td>
+<td style="text-align:left">可能</td>
 </tr>
 <tr>
-<td align="left">可重复度（Repeatable Read）</td>
-<td align="left">不可能</td>
-<td align="left">不可能</td>
-<td align="left">可能</td>
+<td style="text-align:left">可重复度（Repeatable Read）</td>
+<td style="text-align:left">不可能</td>
+<td style="text-align:left">不可能</td>
+<td style="text-align:left">可能</td>
 </tr>
 <tr>
-<td align="left">可串行化（Serializable）</td>
-<td align="left">不可能</td>
-<td align="left">不可能</td>
-<td align="left">不可能</td>
+<td style="text-align:left">可串行化（Serializable）</td>
+<td style="text-align:left">不可能</td>
+<td style="text-align:left">不可能</td>
+<td style="text-align:left">不可能</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <ul>
 <li>未提交读（Read Uncommitted）：允许脏读，也就是可能读取到其他会话中未提交事务修改的数据。数据库一般不用到该级别，任何操作不会加锁</li>
 <li>已提交读（Read Committed）：只能允许读到已经提交的数据。Oracle等多数数据库默认该级别</li>
 <li>可重复读（Repeatable Read）：在同一事务中的查询都是事务开始时刻一致的，InnoDB默认级别。在SQL标准中，该隔离级别消除了不可重复读，但是还存在幻读</li>
-<li>串行读（Serializable）：完全串行化的读，每次读都需要获得表级共享锁，读写相互都会阻塞
+<li>串行读（Serializable）：完全串行化的读，每次读都需要获得表级共享锁，读写相互都会阻塞</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Transaction-Isolation-Level-AND-Locks-In-InnoDB/#more" rel="contents">
@@ -1084,6 +1099,9 @@ if (document.querySelectorAll('pre.mermaid').length) {
   
 
   
+      
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@0/dist/katex.min.css">
+
 
   
 

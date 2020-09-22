@@ -16,19 +16,19 @@
     var CONFIG = {"hostname":"mikado.drrr.app","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="什么是gRPCgRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。 gRPC基于 HTTP&#x2F;2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。 gRPC使用场景 低延迟，高度可扩展的分布式系统。">
+  <meta name="description" content="什么是gRPC gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。 gRPC基于 HTTP&#x2F;2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。 gRPC使用场景  低延迟，高度可扩展的分布式系统">
 <meta property="og:type" content="article">
 <meta property="og:title" content="gRPC">
 <meta property="og:url" content="https://mikado.drrr.app/gRPC/index.html">
 <meta property="og:site_name" content="Mikado&#39;s Blog">
-<meta property="og:description" content="什么是gRPCgRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。 gRPC基于 HTTP&#x2F;2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。 gRPC使用场景 低延迟，高度可扩展的分布式系统。">
+<meta property="og:description" content="什么是gRPC gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。 gRPC基于 HTTP&#x2F;2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。 gRPC使用场景  低延迟，高度可扩展的分布式系统">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg">
 <meta property="og:image" content="https://mikado.drrr.app/images/gPRC/model.png">
 <meta property="og:image" content="https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/image007.jpg">
 <meta property="og:image" content="https://mikado.drrr.app/images/gRPC/output.png">
 <meta property="article:published_time" content="2020-07-05T07:53:17.000Z">
-<meta property="article:modified_time" content="2020-09-22T08:27:06.495Z">
+<meta property="article:modified_time" content="2020-09-22T09:51:47.720Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="gRPC">
 <meta name="twitter:card" content="summary">
@@ -204,23 +204,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg"></p>
-<h2 id="什么是gRPC"><a href="#什么是gRPC" class="headerlink" title="什么是gRPC"></a><strong>什么是gRPC</strong></h2><p>gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。</p>
+        <p><img data-src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg" alt=""></p>
+<h2 id="什么是gRPC"><strong>什么是gRPC</strong></h2>
+<p>gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。</p>
 <p>gRPC基于 HTTP/2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。</p>
-<h3 id="gRPC使用场景"><a href="#gRPC使用场景" class="headerlink" title="gRPC使用场景"></a>gRPC使用场景</h3><ul>
+<h3 id="gRPC使用场景">gRPC使用场景</h3>
+<ul>
 <li>低延迟，高度可扩展的分布式系统。</li>
 <li>开发与云服务器通信的移动客户端。</li>
 <li>设计一个新的协议，该协议必须准确，高效且独立于语言。</li>
 <li>分层设计以实现扩展，例如。身份验证，负载平衡，日志记录和监视等</li>
 </ul>
-<h2 id="什么是RPC"><a href="#什么是RPC" class="headerlink" title="什么是RPC"></a>什么是RPC</h2><p>在分布式计算，远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一个地址空间（通常为一个开放网络的一台计算机）的子程序，而程序员就像调用本地程序一样，无需额外地为这个交互作用编程（无需关注细节）。RPC是一种服务器-客户端（Client/Server）模式，经典实现是一个通过发送请求-接受回应进行信息交互的系统。</p>
+<h2 id="什么是RPC">什么是RPC</h2>
+<p>在分布式计算，远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一个地址空间（通常为一个开放网络的一台计算机）的子程序，而程序员就像调用本地程序一样，无需额外地为这个交互作用编程（无需关注细节）。RPC是一种服务器-客户端（Client/Server）模式，经典实现是一个通过发送请求-接受回应进行信息交互的系统。</p>
 <a id="more"></a>
-
-<h2 id="HTTP-2"><a href="#HTTP-2" class="headerlink" title="HTTP/2"></a>HTTP/2</h2><p><strong>HTTP/2</strong>（超文本传输协议第2版，最初命名为<strong>HTTP 2.0</strong>），简称为<strong>h2</strong>（基于TLS/1.2或以上版本的加密连接）或<strong>h2c</strong>（非加密连接），是HTTP协议的的第二个主要版本，使用于万维网。</p>
+<h2 id="HTTP-2">HTTP/2</h2>
+<p><strong>HTTP/2</strong>（超文本传输协议第2版，最初命名为<strong>HTTP 2.0</strong>），简称为<strong>h2</strong>（基于TLS/1.2或以上版本的加密连接）或<strong>h2c</strong>（非加密连接），是HTTP协议的的第二个主要版本，使用于万维网。</p>
 <p>HTTP/2是HTTP协议自1999年HTTP 1.1发布后的首个更新，主要基于<code>SPDY</code>协议。它由互联网工程任务组（IETF）的Hypertext Transfer Protocol Bis（httpbis）工作小组进行开发。该组织于2014年12月将HTTP/2标准提议递交至IESG进行讨论，于2015年2月17日被批准。</p>
-<h3 id="HTTP-2与HTTP-1-1比较"><a href="#HTTP-2与HTTP-1-1比较" class="headerlink" title="HTTP/2与HTTP/1.1比较"></a>HTTP/2与HTTP/1.1比较</h3><p>HTTP/2 相比 HTTP/1.1 的修改并不会破坏现有程序的工作，但是新的程序可以借由新特性得到更好的速度。</p>
+<h3 id="HTTP-2与HTTP-1-1比较">HTTP/2与HTTP/1.1比较</h3>
+<p>HTTP/2 相比 HTTP/1.1 的修改并不会破坏现有程序的工作，但是新的程序可以借由新特性得到更好的速度。</p>
 <p>HTTP/2 保留了 HTTP/1.1 的大部分语义，例如请求方法、状态码乃至URI和绝大多数HTTP头部字段一致。而 HTTP/2 采用了新的方法来编码、传输 客户端&lt;——&gt;服务器 间的数据。</p>
-<h3 id="HTTP-1-1与SPDY的区别"><a href="#HTTP-1-1与SPDY的区别" class="headerlink" title="HTTP/1.1与SPDY的区别"></a>HTTP/1.1与SPDY的区别</h3><p>SPDY (发音为”speedy”) 是一个由 Google 主导的研究项目发明的HTTP替代协议。SPDY一开始主要关注降低延迟，采用了TCP通道，但是使用了不同的协议来达到此目的。其与HTTP/1.1相比，主要的改变有：</p>
+<h3 id="HTTP-1-1与SPDY的区别">HTTP/1.1与SPDY的区别</h3>
+<p>SPDY (发音为&quot;speedy&quot;) 是一个由 Google 主导的研究项目发明的HTTP替代协议。SPDY一开始主要关注降低延迟，采用了TCP通道，但是使用了不同的协议来达到此目的。其与HTTP/1.1相比，主要的改变有：</p>
 <ul>
 <li>实现无需先入先出的多路复用</li>
 <li>为简化客户端和服务器开发的消息—帧机制</li>
@@ -228,38 +233,46 @@
 <li>优先级排序</li>
 <li>双向通讯</li>
 </ul>
-<h3 id="HTTP-2与SPDY的比较"><a href="#HTTP-2与SPDY的比较" class="headerlink" title="HTTP/2与SPDY的比较"></a>HTTP/2与SPDY的比较</h3><p>HTTP/2的开发基于SPDY进行跃进式改进。在诸多修改中，最显著的改进在于，HTTP/2使用了一份经过定制的压缩算法，基于霍夫曼编码，以此替代了SPDY的动态流压缩算法，以避免对协议的Oracle攻击——这一类攻击以CRIME为代表。此外，HTTP/2禁用了诸多加密包，以保证基于TLS的连接的前向安全。</p>
-<h3 id="新特性"><a href="#新特性" class="headerlink" title="新特性"></a>新特性</h3><p>HTTP/2 的第一版草案（对 SPDY 协议的复刻）中，新增的性能改进不仅包括HTTP/1.1中已有的多路复用，修复队头阻塞问题，允许设置设定请求优先级，还包含了一个头部压缩算法(HPACK)。此外， HTTP/2 采用了二进制而非明文来打包、传输 客户端&lt;——&gt;服务器 间的数据。</p>
+<h3 id="HTTP-2与SPDY的比较">HTTP/2与SPDY的比较</h3>
+<p>HTTP/2的开发基于SPDY进行跃进式改进。在诸多修改中，最显著的改进在于，HTTP/2使用了一份经过定制的压缩算法，基于霍夫曼编码，以此替代了SPDY的动态流压缩算法，以避免对协议的Oracle攻击——这一类攻击以CRIME为代表。此外，HTTP/2禁用了诸多加密包，以保证基于TLS的连接的前向安全。</p>
+<h3 id="新特性">新特性</h3>
+<p>HTTP/2 的第一版草案（对 SPDY 协议的复刻）中，新增的性能改进不仅包括HTTP/1.1中已有的多路复用，修复队头阻塞问题，允许设置设定请求优先级，还包含了一个头部压缩算法(HPACK)。此外， HTTP/2 采用了二进制而非明文来打包、传输 客户端&lt;——&gt;服务器 间的数据。</p>
 <ul>
-<li><p><strong>帧、消息、流和TCP连接</strong></p>
-<p>  有别于HTTP/1.1在连接中的明文请求，HTTP/2与SPDY一样，将一个TCP连接分为若干个流（Stream），每个流中可以传输若干消息（Message），每个消息由若干最小的二进制帧（Frame）组成。这也是HTTP/1.1与HTTP/2最大的区别所在。</p>
-<p>   HTTP/2中，每个用户的操作行为被分配了一个<strong>流编号</strong>(stream ID)，这意味着用户与服务端之间创建了一个TCP通道；协议将每个请求分割为二进制的控制帧与数据帧部分，以便解析。这个举措在SPDY中的实践表明，相比HTTP/1.1，新页面加载可以加快11.81% 到 47.7%</p>
+<li>
+<p><strong>帧、消息、流和TCP连接</strong></p>
+<p>有别于HTTP/1.1在连接中的明文请求，HTTP/2与SPDY一样，将一个TCP连接分为若干个流（Stream），每个流中可以传输若干消息（Message），每个消息由若干最小的二进制帧（Frame）组成。这也是HTTP/1.1与HTTP/2最大的区别所在。</p>
+<p>HTTP/2中，每个用户的操作行为被分配了一个<strong>流编号</strong>(stream ID)，这意味着用户与服务端之间创建了一个TCP通道；协议将每个请求分割为二进制的控制帧与数据帧部分，以便解析。这个举措在SPDY中的实践表明，相比HTTP/1.1，新页面加载可以加快11.81% 到 47.7%</p>
 </li>
-<li><p><strong>HPACK 算法</strong></p>
-<p>  HPACK算法是新引入HTTP/2的一个算法，用于对HTTP头部做压缩。其原理在于：</p>
+<li>
+<p><strong>HPACK 算法</strong></p>
+<p>HPACK算法是新引入HTTP/2的一个算法，用于对HTTP头部做压缩。其原理在于：</p>
 <ul>
 <li>客户端与服务端根据 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7541">RFC 7541</a> 的附录A，维护一份共同的静态字典（Static Table），其中包含了常见头部名及常见头部名称与值的组合的代码；</li>
 <li>客户端和服务端根据先入先出的原则，维护一份可动态添加内容的共同动态字典（Dynamic Table）；</li>
 <li>客户端和服务端根据 <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc7541">RFC 7541</a> 的附录B，支持基于该静态哈夫曼码表的哈夫曼编码（Huffman Coding）。</li>
 </ul>
 </li>
-<li><p><strong>服务器推送</strong></p>
-<p>  网站为了使请求数减少，通常采用对页面上的图片、脚本进行极简化处理。但是，这一举措十分不方便，也不高效，依然需要诸多HTTP链接来加载页面和页面资源。</p>
-<p>  HTTP/2引入了服务器推送，即服务端向客户端发送比客户端请求更多的数据。这允许服务器直接提供浏览器渲染页面所需资源，而无须浏览器在收到、解析页面后再提起一轮请求，节约了加载时间。</p>
+<li>
+<p><strong>服务器推送</strong></p>
+<p>网站为了使请求数减少，通常采用对页面上的图片、脚本进行极简化处理。但是，这一举措十分不方便，也不高效，依然需要诸多HTTP链接来加载页面和页面资源。</p>
+<p>HTTP/2引入了服务器推送，即服务端向客户端发送比客户端请求更多的数据。这允许服务器直接提供浏览器渲染页面所需资源，而无须浏览器在收到、解析页面后再提起一轮请求，节约了加载时间。</p>
 </li>
 </ul>
-<h2 id="gRPC调用模型"><a href="#gRPC调用模型" class="headerlink" title="gRPC调用模型"></a>gRPC调用模型</h2><p><img data-src="/images/gPRC/model.png"></p>
-<h2 id="Protocal-Buffers"><a href="#Protocal-Buffers" class="headerlink" title="Protocal Buffers"></a>Protocal Buffers</h2><p>Protocol Buffers是一种序列化数据结构的协议。对于透过管道(pipeline)或存储数据进行通信的程序开发上是很有用的。这个方法包含一个接口描述语言，描述一些数据结构，并提供程序工具根据这些描述产生代码，用于将这些数据结构产生或解析数据流。</p>
-<h3 id="Google-Protocol-Buffer-的-Encoding"><a href="#Google-Protocol-Buffer-的-Encoding" class="headerlink" title="Google Protocol Buffer 的 Encoding"></a>Google Protocol Buffer 的 Encoding</h3><p>Protobuf 序列化后所生成的二进制消息非常紧凑，这得益于 Protobuf 采用的非常巧妙的 Encoding 方法。</p>
+<h2 id="gRPC调用模型">gRPC调用模型</h2>
+<p><img data-src="/images/gPRC/model.png" alt=""></p>
+<h2 id="Protocal-Buffers">Protocal Buffers</h2>
+<p>Protocol Buffers是一种序列化数据结构的协议。对于透过管道(pipeline)或存储数据进行通信的程序开发上是很有用的。这个方法包含一个接口描述语言，描述一些数据结构，并提供程序工具根据这些描述产生代码，用于将这些数据结构产生或解析数据流。</p>
+<h3 id="Google-Protocol-Buffer-的-Encoding">Google Protocol Buffer 的 Encoding</h3>
+<p>Protobuf 序列化后所生成的二进制消息非常紧凑，这得益于 Protobuf 采用的非常巧妙的 Encoding 方法。</p>
 <p>考察消息结构之前，让我首先要介绍一个叫做 Varint 的术语。</p>
 <p>Varint 是一种紧凑的表示数字的方法。它用一个或多个字节来表示一个数字，值越小的数字使用越少的字节数。这能减少用来表示数字的字节数。</p>
 <p>比如对于 int32 类型的数字，一般需要 4 个 byte 来表示。但是采用 Varint，对于很小的 int32 类型的数字，则可以用 1 个 byte 来表示。当然凡事都有好的也有不好的一面，采用 Varint 表示法，大的数字则需要 5 个 byte 来表示。从统计的角度来说，一般不会所有的消息中的数字都是大数，因此大多数情况下，采用 Varint 后，可以用更少的字节数来表示数字信息。下面就详细介绍一下 Varint。</p>
 <p>Varint 中的每个 byte 的最高位 bit 有特殊的含义，如果该位为 1，表示后续的 byte 也是该数字的一部分，如果该位为 0，则结束。其他的 7 个 bit 都用来表示数字。因此小于 128 的数字都可以用一个 byte 表示。大于 128 的数字，比如 300，会用两个字节来表示：<code>1010 1100 0000 0010</code></p>
 <p>下面演示了 Google Protocol Buffer 如何解析数字 300。注意到最终计算前将两个 byte 的位置相互交换过一次，这是因为 Google Protocol Buffer 字节序采用 <code>little-endian（小端序）</code> 的方式。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> 1010 1100 0000 0010</span><br><span class="line">→ 010 1100  000 0010</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 前后顺序对调之后</span><br><span class="line">000 0010  010 1100</span><br><span class="line">→ 000 0010 ++ 010 1100</span><br><span class="line">→ 100101100</span><br><span class="line">→ 256 + 32 + 8 + 4 &#x3D; 300</span><br></pre></td></tr></table></figure>
-
 <p>消息经过序列化后会成为一个二进制数据流，该流中的数据为一系列的 Key-Value 对。如下图所示：</p>
-<h3 id="Message-Buffer-图"><a href="#Message-Buffer-图" class="headerlink" title="Message Buffer 图"></a>Message Buffer 图</h3><p><img data-src="https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/image007.jpg" alt="https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/image007.jpg"></p>
+<h3 id="Message-Buffer-图">Message Buffer 图</h3>
+<p><img data-src="https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/image007.jpg" alt="https://www.ibm.com/developerworks/cn/linux/l-cn-gpb/image007.jpg"></p>
 <p>采用这种 Key-Pair 结构无需使用分隔符来分割不同的 Field。对于可选的 Field，如果消息中不存在该 field，那么在最终的 Message Buffer 中就没有该 field，这些特性都有助于节约消息本身的大小。</p>
 <p>Key 用来标识具体的 field，在解包的时候，Protocol Buffer 据 Key 就可以知道相应的 Value 应该对应于消息中的哪一个 field。</p>
 <p>Key 的定义如下：$(field_number &lt;&lt; 3) | wire_type$</p>
@@ -273,7 +286,8 @@
 <th>Used For</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>0</td>
 <td>Varint</td>
 <td>int32, int64, uint32, uint64, sint32, sint64, bool, enum</td>
@@ -303,18 +317,19 @@
 <td>32-bit</td>
 <td>fixed32, sfixed32, float</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>Google Protocol Buffer 区别它们的主要意图也是为了减少 encoding 后的字节数。</p>
 <p>例：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message Test2 &#123;</span><br><span class="line">  optional string b &#x3D; 2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>将<code>b</code>的值设置为<code>testing</code>，得到字节序为：<code>12 07 74 65 73 74 69 6e 67</code></p>
 <ul>
 <li><code>0x12</code>是 <code>2 &lt;&lt; 3 | 2</code>，第一个2为$field_number$，第二个2为$wire_type$。</li>
 <li><code>0x07</code>代表长度 <code>7</code>。</li>
 <li><code>74 65 73 74 69 6e 67</code>值为<code>testing</code>。</li>
 </ul>
-<h2 id="gRPC优缺点"><a href="#gRPC优缺点" class="headerlink" title="gRPC优缺点"></a>gRPC优缺点</h2><p>优点：</p>
+<h2 id="gRPC优缺点">gRPC优缺点</h2>
+<p>优点：</p>
 <ul>
 <li>支持多种语言（可以把proto文件看做IDL文件）</li>
 <li>protobuf二进制消息，性能好/效率高（空间和时间效率都很不错）</li>
@@ -325,37 +340,30 @@
 <li>尚未提供“服务发现”、“负载均衡”机制</li>
 <li>gRPC调试难。HTTP/1有 curl, httpie, postman 等好工具使用，而且JSON是人类可读的 纯文本，gRPC则不同，首先它使用protobuf进行编码，其次HTTP/2是二进制协议，人类难以读懂。</li>
 </ul>
-<h2 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h2><p>生成PHP Plugin</p>
+<h2 id="先决条件">先决条件</h2>
+<p>生成PHP Plugin</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b v1.28.1 https://github.com/grpc/grpc</span><br><span class="line"><span class="built_in">cd</span> grpc</span><br><span class="line">git submodule update --init</span><br><span class="line">make grpc_php_plugin</span><br></pre></td></tr></table></figure>
-
 <p>安装Go Plugin</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> GO111MODULE=on  <span class="comment"># Enable module mode</span></span><br><span class="line">go get github.com/golang/protobuf/protoc-gen-go@v1.3</span><br></pre></td></tr></table></figure>
-
 <p>安装扩展，可以使用<code>pecl</code>安装</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo pecl install grpc</span><br><span class="line">sudo pecl install protobuf</span><br></pre></td></tr></table></figure>
-
 <p>安装composer</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">composer require grpc/grpc</span><br><span class="line">composer require google/protobuf</span><br></pre></td></tr></table></figure>
-
-<h2 id="部署项目"><a href="#部署项目" class="headerlink" title="部署项目"></a>部署项目</h2><p>创建 gRPC 服务的第一步是在.proto 文件中定义好接口。下面的代码是一个接口的定义，它定义了一个简单的远程过程调用<code>SayHello</code>以及相应的输入和输出类型。</p>
+<h2 id="部署项目">部署项目</h2>
+<p>创建 gRPC 服务的第一步是在.proto 文件中定义好接口。下面的代码是一个接口的定义，它定义了一个简单的远程过程调用<code>SayHello</code>以及相应的输入和输出类型。</p>
 <p>.proto文件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">syntax &#x3D; &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">package greeter;</span><br><span class="line"></span><br><span class="line">option go_package &#x3D; &quot;.;pb&quot;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The greeting service definition.</span><br><span class="line">service Greeter &#123;</span><br><span class="line">  &#x2F;&#x2F; Sends a greeting</span><br><span class="line">  rpc SayHello (HelloRequest) returns (HelloReply) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The request message containing the user&#39;s name.</span><br><span class="line">message HelloRequest &#123;</span><br><span class="line">  string name &#x3D; 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The response message containing the greetings</span><br><span class="line">message HelloReply &#123;</span><br><span class="line">  string message &#x3D; 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>生成代码命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc --proto_path=./protos --php_out=./php --grpc_out=./php  --plugin=protoc-gen-grpc=PTH/grpc_php_plugin  greeter.proto</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc --proto_path=./protos --go_out=plugins=grpc:./go greeter.proto</span><br></pre></td></tr></table></figure>
-
 <p>编写客户端/服务端代码</p>
 <p>客户端代码：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Greeter</span>\<span class="title">GreeterClient</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Greeter</span>\<span class="title">HelloReply</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Greeter</span>\<span class="title">HelloRequest</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Grpc</span>\<span class="title">UnaryCall</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">require</span> dirname(<span class="keyword">__FILE__</span>).<span class="string">&#x27;/vendor/autoload.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">include_once</span> dirname(<span class="keyword">__FILE__</span>).<span class="string">&#x27;/Greeter/GreeterClient.php&#x27;</span>;</span><br><span class="line">@<span class="keyword">include_once</span> dirname(<span class="keyword">__FILE__</span>).<span class="string">&#x27;/Greeter/HelloReply.php&#x27;</span>;</span><br><span class="line">@<span class="keyword">include_once</span> dirname(<span class="keyword">__FILE__</span>).<span class="string">&#x27;/Greeter/HelloRequest.php&#x27;</span>;</span><br><span class="line">@<span class="keyword">include_once</span> dirname(<span class="keyword">__FILE__</span>).<span class="string">&#x27;/GPBMetadata/Sample.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">greet</span>(<span class="params">$name</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $client  = <span class="keyword">new</span> GreeterClient(<span class="string">&quot;localhost:50051&quot;</span>, [</span><br><span class="line">        <span class="string">&quot;credentials&quot;</span> =&gt; Grpc\ChannelCredentials::createInsecure(),</span><br><span class="line">    ]);</span><br><span class="line">    $request = <span class="keyword">new</span> HelloRequest();</span><br><span class="line">    $request-&gt;setName($name);</span><br><span class="line">    <span class="comment">/**<span class="doctag">@var</span> UnaryCall $call */</span></span><br><span class="line">    $call = $client-&gt;SayHello($request);</span><br><span class="line">    <span class="comment">/**<span class="doctag">@var</span> HelloReply $reply */</span></span><br><span class="line">    <span class="keyword">list</span>($reply, $status) = $call-&gt;wait();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> $reply-&gt;getMessage();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$name = !<span class="keyword">empty</span>($argv[<span class="number">1</span>]) ? $argv[<span class="number">1</span>] : <span class="string">&#x27;PHP Client&#x27;</span>;</span><br><span class="line"><span class="keyword">echo</span> greet($name).<span class="string">&quot;\n&quot;</span>;</span><br></pre></td></tr></table></figure>
-
 <p>服务端代码：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;greeter/pb&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="string">&quot;google.golang.org/grpc&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> server <span class="keyword">struct</span> &#123;</span><br><span class="line">	pb.UnimplementedGreeterServer</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *server)</span> <span class="title">SayHello</span><span class="params">(ctx context.Context, in *pb.HelloRequest)</span> <span class="params">(*pb.HelloReply, error)</span></span> &#123;</span><br><span class="line">	log.Printf(<span class="string">&quot;Received: %v&quot;</span>, in.GetName())</span><br><span class="line">	<span class="keyword">return</span> &amp;pb.HelloReply&#123;Message: <span class="string">&quot;Hello &quot;</span> + in.GetName()&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	listen, err := net.Listen(<span class="string">&quot;tcp&quot;</span>, <span class="string">&quot;:50051&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatalln(err)</span><br><span class="line">	&#125;</span><br><span class="line">	s := grpc.NewServer()</span><br><span class="line">	pb.RegisterGreeterServer(s, &amp;server&#123;&#125;)</span><br><span class="line">	<span class="keyword">if</span> err := s.Serve(listen); err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Fatalln(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <p>结果：</p>
-<p><img data-src="/images/gRPC/output.png"></p>
-<p>如果关心具体Go怎么实现gRPC的可以参考文档： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/sunsky303/p/11119300.html">https://www.cnblogs.com/sunsky303/p/11119300.html</a> </p>
+<p><img data-src="/images/gRPC/output.png" alt=""></p>
+<p>如果关心具体Go怎么实现gRPC的可以参考文档： <a target="_blank" rel="noopener" href="https://www.cnblogs.com/sunsky303/p/11119300.html">https://www.cnblogs.com/sunsky303/p/11119300.html</a></p>
 <p>代码地址：<a target="_blank" rel="noopener" href="https://github.com/drrrMikado/grpc-example">https://github.com/drrrMikado/grpc-example</a></p>
 <p>参考文献</p>
 <ul>

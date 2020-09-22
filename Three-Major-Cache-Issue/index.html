@@ -16,12 +16,12 @@
     var CONFIG = {"hostname":"mikado.drrr.app","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="缓存一致性   缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保">
+  <meta name="description" content="缓存一致性 缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保障">
 <meta property="og:type" content="article">
 <meta property="og:title" content="三大缓存问题">
 <meta property="og:url" content="https://mikado.drrr.app/Three-Major-Cache-Issue/index.html">
 <meta property="og:site_name" content="Mikado&#39;s Blog">
-<meta property="og:description" content="缓存一致性   缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保">
+<meta property="og:description" content="缓存一致性 缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保障">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg">
 <meta property="og:image" content="https://mikado.drrr.app/images/Three-Major-Cache-Issue/Cache-avalanche.png">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://mikado.drrr.app/images/Three-Major-Cache-Issue/External-Component-Update-Cache1.png">
 <meta property="og:image" content="https://mikado.drrr.app/images/Three-Major-Cache-Issue/External-Component-Update-Cache2.png">
 <meta property="article:published_time" content="2020-07-12T12:38:12.000Z">
-<meta property="article:modified_time" content="2020-09-22T08:27:06.495Z">
+<meta property="article:modified_time" content="2020-09-22T09:51:47.720Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="Cache">
 <meta name="twitter:card" content="summary">
@@ -208,39 +208,44 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg"></p>
+        <p><img data-src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg" alt=""></p>
 <ul>
-<li><p>缓存一致性</p>
-<p>  缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保障业务性能。</p>
+<li>
+<p>缓存一致性</p>
+<p>缓存一致性是指业务在引入分布式缓存系统后，业务对数据的更新除了要更新存储以外还需要同时更新缓存，对两个系统进行数据更新就要先解决分布式系统中的隔离性和原子性难题。目前大多数业务在引入分布式缓存后都是通过牺牲小概率的一致性来保障业务性能，因为要在业务层严格保障数据的一致性，代价非常高，业务引入分布式缓存主要是为了解决性能问题，所以在性能和一致性面前，通常选择牺牲小概率的一致性来保障业务性能。</p>
 </li>
-<li><p>缓存击穿</p>
-<p>  缓存击穿是指查询请求没有在缓存层命中而将查询透传到存储 DB 的问题，当大量的请求发生缓存击穿时，将给存储 DB 带来极大的访问压力，甚至导致 DB 过载拒绝服务。</p>
-<p>  空数据查询(黑客攻击)和缓存污染（网络爬虫）是常见的引发缓存击穿的原因：</p>
+<li>
+<p>缓存击穿</p>
+<p>缓存击穿是指查询请求没有在缓存层命中而将查询透传到存储 DB 的问题，当大量的请求发生缓存击穿时，将给存储 DB 带来极大的访问压力，甚至导致 DB 过载拒绝服务。</p>
+<p>空数据查询(黑客攻击)和缓存污染（网络爬虫）是常见的引发缓存击穿的原因：</p>
 <ul>
-<li><p>空数据查询通常指攻击者伪造大量不存在的数据进行访问（比如不存在的商品信息、用户信息）。</p>
-</li>
-<li><p>缓存污染通常指在遍历数据等情况下冷数据把热数据驱逐出内存，导致缓存了大量冷数据而热数据被驱逐。</p>
+<li>空数据查询通常指攻击者伪造大量不存在的数据进行访问（比如不存在的商品信息、用户信息）。</li>
+<li>缓存污染通常指在遍历数据等情况下冷数据把热数据驱逐出内存，导致缓存了大量冷数据而热数据被驱逐。</li>
+</ul>
 <p>缓存污染的场景我们目前还没有发现较好的解决方案，但是在空数据查询问题上我们可以改造业务，通过以下方式防止缓存击穿：</p>
-</li>
-<li><p>通过 bloomfilter 记录 key 是否存在，从而避免无效 Key 的查询；</p>
-</li>
-<li><p>在 Redis 缓存不存在的 Key，从而避免无效 Key 的查询；</p>
-</li>
+<ul>
+<li>通过 bloomfilter 记录 key 是否存在，从而避免无效 Key 的查询；</li>
+<li>在 Redis 缓存不存在的 Key，从而避免无效 Key 的查询；</li>
 </ul>
 </li>
-<li><p>缓存雪崩</p>
-<p>  缓存雪崩是指由于大量的热数据设置了相同或接近的过期时间，导致缓存在某一时刻密集失效，大量请求全部转发到 DB，或者是某个冷数据瞬间涌入大量访问，这些查询在缓存 MISS 后，并发的将请求透传到 DB，DB 瞬时压力过载从而拒绝服务。目前常见的预防缓存雪崩的解决方案，主要是通过对 key 的 TTL 时间加随机数，打散 key 的淘汰时间来尽量规避，但是不能彻底规避。</p>
-<p>  <img data-src="/images/Three-Major-Cache-Issue/Cache-avalanche.png"></p>
+<li>
+<p>缓存雪崩</p>
+<p>缓存雪崩是指由于大量的热数据设置了相同或接近的过期时间，导致缓存在某一时刻密集失效，大量请求全部转发到 DB，或者是某个冷数据瞬间涌入大量访问，这些查询在缓存 MISS 后，并发的将请求透传到 DB，DB 瞬时压力过载从而拒绝服务。目前常见的预防缓存雪崩的解决方案，主要是通过对 key 的 TTL 时间加随机数，打散 key 的淘汰时间来尽量规避，但是不能彻底规避。</p>
+<p><img data-src="/images/Three-Major-Cache-Issue/Cache-avalanche.png" alt=""></p>
 </li>
 </ul>
 <a id="more"></a>
-
-<h2 id="传统分布式缓存方案"><a href="#传统分布式缓存方案" class="headerlink" title="传统分布式缓存方案"></a>传统分布式缓存方案</h2><p>原来的两层架构（应用+数据库）变成了三层架构（应用+缓存+数据库），缓存层缓存热数据，存储层复制全量数据持久化存储，存储架构的变化要求业务对数据的存取逻辑进行相应调整，这个调整是巨大的，通常需要做到三个点变化：缓存读取、缓存更新、缓存淘汰。</p>
-<p><img data-src="/images/Three-Major-Cache-Issue/Traditional-Distributed-Cache-Solution.png"></p>
-<h2 id="缓存读取"><a href="#缓存读取" class="headerlink" title="缓存读取"></a>缓存读取</h2><p>引入缓存层后，读数据就变得不是那么简单直接了，APP 需要先去缓存读取数据，如果缓存 MISS（数据没有被缓存），则需要从存储中读取数据，并将数据更新到缓存系统中，整个流程和代码如下所示：</p>
-<p><img data-src="/images/Three-Major-Cache-Issue/Cache-Reading.png"></p>
-<h2 id="缓存更新"><a href="#缓存更新" class="headerlink" title="缓存更新"></a>缓存更新</h2><p>我们把常见的缓存更新方案总结为两大类：<strong>业务层更新</strong> 和 <strong>外部组件更新</strong> ，比较常见的是通过业务更新的方案。</p>
-<h3 id="业务层更新缓存"><a href="#业务层更新缓存" class="headerlink" title="业务层更新缓存"></a>业务层更新缓存</h3><h4 id="缓存更新的难点"><a href="#缓存更新的难点" class="headerlink" title="缓存更新的难点"></a>缓存更新的难点</h4><ul>
+<h2 id="传统分布式缓存方案">传统分布式缓存方案</h2>
+<p>原来的两层架构（应用+数据库）变成了三层架构（应用+缓存+数据库），缓存层缓存热数据，存储层复制全量数据持久化存储，存储架构的变化要求业务对数据的存取逻辑进行相应调整，这个调整是巨大的，通常需要做到三个点变化：缓存读取、缓存更新、缓存淘汰。</p>
+<p><img data-src="/images/Three-Major-Cache-Issue/Traditional-Distributed-Cache-Solution.png" alt=""></p>
+<h2 id="缓存读取">缓存读取</h2>
+<p>引入缓存层后，读数据就变得不是那么简单直接了，APP 需要先去缓存读取数据，如果缓存 MISS（数据没有被缓存），则需要从存储中读取数据，并将数据更新到缓存系统中，整个流程和代码如下所示：</p>
+<p><img data-src="/images/Three-Major-Cache-Issue/Cache-Reading.png" alt=""></p>
+<h2 id="缓存更新">缓存更新</h2>
+<p>我们把常见的缓存更新方案总结为两大类：<strong>业务层更新</strong> 和 <strong>外部组件更新</strong> ，比较常见的是通过业务更新的方案。</p>
+<h3 id="业务层更新缓存">业务层更新缓存</h3>
+<h4 id="缓存更新的难点">缓存更新的难点</h4>
+<ul>
 <li>数据可靠性</li>
 </ul>
 <p>如果要保证数据的可靠性，在业务逻辑成功之前，必须保障有一份数据落地，我们有以下两个选择：</p>
@@ -250,46 +255,47 @@
 <li>操作隔离性</li>
 </ul>
 <p>一条数据的更新涉及到存储和缓存两套系统，如果多个线程同时操作一条数据，并且没有方案保证多个操作之间的有序执行，就可能会发生更新顺序错乱导致数据不一致的问题。</p>
-<p><img data-src="/images/Three-Major-Cache-Issue/Business-Layer-Update-Cache1.png"></p>
+<p><img data-src="/images/Three-Major-Cache-Issue/Business-Layer-Update-Cache1.png" alt=""></p>
 <ul>
 <li>更新原子性</li>
 </ul>
 <p>引入缓存后，我们需要保证缓存和存储要么同时更新成功，要么同时更新失败，否则部分更新成功就会导致缓存和存储数据不一致的问题。</p>
-<p><img data-src="/images/Three-Major-Cache-Issue/Business-Layer-Update-Cache2.png"></p>
+<p><img data-src="/images/Three-Major-Cache-Issue/Business-Layer-Update-Cache2.png" alt=""></p>
 <p>业务层缓存更新方案</p>
 <p>我们看到大多数的常见是选择以下方案，保障数据可靠性，尽量减少数据不一致的出现，通过 TTL 超时机制在一定时间段后自动解决数据不一致现象。</p>
 <ol>
-<li><p>更新存储，保证数据可靠性；</p>
+<li>
+<p>更新存储，保证数据可靠性；</p>
 </li>
-<li><p>更新缓存，有 2 个策略：</p>
+<li>
+<p>更新缓存，有 2 个策略：</p>
 <ul>
-<li><p>惰性更新：删除缓存，等待下次读 MISS 再缓存（<strong>推荐</strong>）；</p>
-</li>
-<li><p>积极更新：将最新的值更新到缓存（<strong>不推荐</strong>）；</p>
+<li>惰性更新：删除缓存，等待下次读 MISS 再缓存（<strong>推荐</strong>）；</li>
+<li>积极更新：将最新的值更新到缓存（<strong>不推荐</strong>）；</li>
+</ul>
 <p>积极更新策略，缓存数据实时性更高，但是在缓存侧带来了更多的更新操作，这会提高更新冲突导致脏数据概率。</p>
 </li>
-</ul>
-</li>
 </ol>
-<h3 id="外部组件更新缓存"><a href="#外部组件更新缓存" class="headerlink" title="外部组件更新缓存"></a>外部组件更新缓存</h3><ul>
+<h3 id="外部组件更新缓存">外部组件更新缓存</h3>
+<ul>
 <li>缓存 MISS 处理方案</li>
 </ul>
 <p>在通过第三方组件更新的方案中，为了保障数据的一致性，避免对单条数据的并行更新，缓存的所有更新操作都需要交给同步组件，因此缓存 MISS 场景下的逻辑如下：</p>
-<p><img data-src="/images/Three-Major-Cache-Issue/External-Component-Update-Cache1.png"></p>
+<p><img data-src="/images/Three-Major-Cache-Issue/External-Component-Update-Cache1.png" alt=""></p>
 <ul>
-<li><p>其他缓存更新方案</p>
-<p>  在实际的生产中，我们还会看到很多先更新缓存，然后通过第三方组件更新存储的场景，但是这个方案也会面临数据一致性和数据可靠性的挑战，虽然不推荐，但是确实还是能看到有在使用这个方案的，我们拿出来探讨下。</p>
+<li>
+<p>其他缓存更新方案</p>
+<p>在实际的生产中，我们还会看到很多先更新缓存，然后通过第三方组件更新存储的场景，但是这个方案也会面临数据一致性和数据可靠性的挑战，虽然不推荐，但是确实还是能看到有在使用这个方案的，我们拿出来探讨下。</p>
 <ul>
-<li><p>这个场景数据可靠性低，不及先更新存储的方案，但是写入性能高，延迟低；</p>
-</li>
-<li><p>这个方案 APP 和第三方组件都会更新 Cache，会存在数据一致性的问题，因为很难保障两个组件更新的时序。</p>
+<li>这个场景数据可靠性低，不及先更新存储的方案，但是写入性能高，延迟低；</li>
+<li>这个方案 APP 和第三方组件都会更新 Cache，会存在数据一致性的问题，因为很难保障两个组件更新的时序。</li>
+</ul>
 <p>流程图如下：</p>
-<p><img data-src="/images/Three-Major-Cache-Issue/External-Component-Update-Cache2.png"></p>
+<p><img data-src="/images/Three-Major-Cache-Issue/External-Component-Update-Cache2.png" alt=""></p>
 </li>
 </ul>
-</li>
-</ul>
-<h2 id="缓存淘汰"><a href="#缓存淘汰" class="headerlink" title="缓存淘汰"></a>缓存淘汰</h2><p>缓存的作用是将热点数据缓存到内存实现加速，内存的成本要远高于磁盘，因此我们通常仅仅缓存热数据在内存，冷数据需要定期的从内存淘汰，数据的淘汰通常有两种方案：</p>
+<h2 id="缓存淘汰">缓存淘汰</h2>
+<p>缓存的作用是将热点数据缓存到内存实现加速，内存的成本要远高于磁盘，因此我们通常仅仅缓存热数据在内存，冷数据需要定期的从内存淘汰，数据的淘汰通常有两种方案：</p>
 <ul>
 <li>主动淘汰，<strong>推荐方案</strong>，我们通过对 Key 设置 TTL 的方式来让 Key 定期淘汰，以保障冷数据不会长久的占有内存。TTL 的策略可以保证冷数据一定被淘汰，但是没有办法保障热数据始终在内存，这个我们在后面会展开；</li>
 <li>被动淘汰，这个是保底方案，<strong>不推荐</strong>。Redis 提供了一系列的 Maxmemory 策略来对数据进行驱逐，触发的前提是内存要到达 maxmemory（内存使用率 100%），在 maxmemory 的场景下缓存的质量是不可控的，因为每次缓存一个 Key 都可能需要去淘汰一个 Key。</li>
