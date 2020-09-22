@@ -16,25 +16,21 @@
     var CONFIG = {"hostname":"mikado.drrr.app","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Hash 函数在有限的数组存储空间中，不存在一个Hash函数是能完全避免Hash冲突的。 Hash 冲突发生了Hash冲突，解决方法有两种，开放寻址法（Open addressing）和链表法(Chaining)。">
+  <meta name="description" content="PHP7数组的源码内部实现 先看下PHP7数组的定义： 123456789101112131415161718192021struct _zend_array &amp;#123;    zend_refcounted_h gc;    union &amp;#123;        struct &amp;#123;            ZEND_ENDIAN_LOHI_4( &#x2F;&#x2F; 解决大小端问题*">
 <meta property="og:type" content="article">
-<meta property="og:title" content="哈希冲突">
-<meta property="og:url" content="https://mikado.drrr.app/Hash-Collisions/index.html">
+<meta property="og:title" content="PHP7-HashTable源码阅读">
+<meta property="og:url" content="https://mikado.drrr.app/PHP7-HashTable/index.html">
 <meta property="og:site_name" content="Mikado&#39;s Blog">
-<meta property="og:description" content="Hash 函数在有限的数组存储空间中，不存在一个Hash函数是能完全避免Hash冲突的。 Hash 冲突发生了Hash冲突，解决方法有两种，开放寻址法（Open addressing）和链表法(Chaining)。">
+<meta property="og:description" content="PHP7数组的源码内部实现 先看下PHP7数组的定义： 123456789101112131415161718192021struct _zend_array &amp;#123;    zend_refcounted_h gc;    union &amp;#123;        struct &amp;#123;            ZEND_ENDIAN_LOHI_4( &#x2F;&#x2F; 解决大小端问题*">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://mikado.drrr.app/images/Hash-Collisions/b32662efc5800fdcd75e0e9205072772.jpg">
-<meta property="og:image" content="https://mikado.drrr.app/images/Hash-Collisions/Hash-Collisions-Open-Addressing-Linear-Probing-Example.jpg">
-<meta property="og:image" content="https://mikado.drrr.app/images/Hash-Collisions/Hash-Collisions-Chaining-Example.jpg">
-<meta property="article:published_time" content="2020-03-01T14:39:11.000Z">
+<meta property="article:published_time" content="2020-09-22T07:36:48.000Z">
 <meta property="article:modified_time" content="2020-09-22T08:27:06.495Z">
 <meta property="article:author" content="Mikado">
-<meta property="article:tag" content="hash">
-<meta property="article:tag" content="Data Struct">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="HashTable">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://mikado.drrr.app/images/Hash-Collisions/b32662efc5800fdcd75e0e9205072772.jpg">
 
-<link rel="canonical" href="https://mikado.drrr.app/Hash-Collisions/">
+<link rel="canonical" href="https://mikado.drrr.app/PHP7-HashTable/">
 
 
 <script id="page-configurations">
@@ -47,7 +43,7 @@
   };
 </script>
 
-  <title>哈希冲突 | Mikado's Blog</title>
+  <title>PHP7-HashTable源码阅读 | Mikado's Blog</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162906864-1"></script>
     <script>
@@ -167,7 +163,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/Hash-Collisions/">
+    <link itemprop="mainEntityOfPage" href="https://mikado.drrr.app/PHP7-HashTable/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -180,7 +176,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          哈希冲突
+          PHP7-HashTable源码阅读
         </h1>
 
         <div class="post-meta">
@@ -190,7 +186,7 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2020-03-01 22:39:11" itemprop="dateCreated datePublished" datetime="2020-03-01T22:39:11+08:00">2020-03-01</time>
+              <time title="Created: 2020-09-22 15:36:48" itemprop="dateCreated datePublished" datetime="2020-09-22T15:36:48+08:00">2020-09-22</time>
             </span>
 
           
@@ -204,52 +200,41 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/Hash-Collisions/b32662efc5800fdcd75e0e9205072772.jpg"></p>
-<h2 id="Hash-函数"><a href="#Hash-函数" class="headerlink" title="Hash 函数"></a>Hash 函数</h2><p>在有限的数组存储空间中，不存在一个Hash函数是能完全避免Hash冲突的。</p>
-<h2 id="Hash-冲突"><a href="#Hash-冲突" class="headerlink" title="Hash 冲突"></a>Hash 冲突</h2><p>发生了Hash冲突，解决方法有两种，开放寻址法（Open addressing）和链表法(Chaining)。</p>
+        <p>PHP7数组的源码内部实现</p>
+<p>先看下PHP7数组的定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zend_array</span> &#123;</span></span><br><span class="line">    zend_refcounted_h gc;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">            ZEND_ENDIAN_LOHI_4( <span class="comment">// 解决大小端问题*</span></span><br><span class="line">                zend_uchar    flags,</span><br><span class="line">                zend_uchar    _unused,</span><br><span class="line">                zend_uchar    nIteratorsCount,</span><br><span class="line">                zend_uchar    _unused2)</span><br><span class="line">        &#125; v;</span><br><span class="line">        <span class="keyword">uint32_t</span> flags;</span><br><span class="line">    &#125; u;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nTableMask;</span><br><span class="line">    Bucket           *arData;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nNumUsed;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nNumOfElements;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nTableSize;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nInternalPointer;</span><br><span class="line">    zend_long         nNextFreeElement;</span><br><span class="line">    <span class="keyword">dtor_func_t</span>       pDestructor;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>可以从数据结构上看到，PHP7的结构名由PHP5的HastTable修改为了zend_array。</p>
 <a id="more"></a>
 
-<ul>
-<li>开放寻址法</li>
-</ul>
-<p>开放寻址法的核心思想是，出现了Hash冲突就重新找空闲的位置，将其插入。一个简单的探测方法就是<strong>线性探测</strong>（Linear Probing)。</p>
-<p>图例：</p>
-<p><img data-src="/images/Hash-Collisions/Hash-Collisions-Open-Addressing-Linear-Probing-Example.jpg"></p>
-<p>从图中可以看出，被Hash函数计算出的位置已经有数据存在了，就往下一位放，如果到底都无法插入，就从头开始找。</p>
-<p>这个方法的删除操作稍微有些特别。我们不能单纯地把要删除的元素设置为空。假如有一个Hash冲突后的数据，要查找是否存在，通过线性探测计算出空闲位置，但是空闲位置上的数据为之前删除的，就会认定不存在。导致查找结果失败。</p>
-<p>解决方法就是设置个特殊标记，标为这个数据为删除的。</p>
-<p>除了线性探测方法之外，还有另外两种比较经典的探测方法，<strong>二次探测</strong>（Quadratic probing）和<strong>双重Hash</strong>（Double hashing）。</p>
-<p>所谓二次探测，跟线性探测很像，线性探测每次探测的步长是 1，那它探测的下标序列就是 hash(key)+0，hash(key)+1，hash(key)+2……而二次探测探测的步长就变成了原来的“二次方”，也就是说，它探测的下标序列就是 hash(key)+0，hash(key)+1^2，hash(key)+2^2……</p>
-<p>双重Hash，就是不仅要使用一个Hash函数。使用一组Hash函数，hash1、hash2、hash3……使用第一个Hash函数（hash1），计算出位置，结果不为空，就用第二个Hash函数（hash2），依次类推。</p>
-<p>不管采用哪种探测方法，当Hash表中空闲位置不多的时候，Hash冲突的概率就会大大提高。为了尽可能保证Hash表的操作效率，一般情况下，我们会尽可能保证Hash表中有一定比例的空闲槽位。我们用<strong>装载因子</strong>（load factor）来表示空位的多少。</p>
-<p>装载因子的计算公式是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hash表的装载因子 &#x3D; 填入表中的元素个数 &#x2F; Hash表的长度</span><br></pre></td></tr></table></figure>
+<p>核心数据存在在arData中，arData则是一个Bucket数组，Bucket定义：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">Bucket</span> &#123;</span></span><br><span class="line">    zval              val; <span class="comment">// zval是可以表现PHP中所有类型的数据结构</span></span><br><span class="line">    zend_ulong        h;   <span class="comment">/* hash value (or numeric index)   */</span></span><br><span class="line">    zend_string      *key; <span class="comment">/* string key or NULL for numerics */</span></span><br><span class="line">&#125; Bucket</span><br></pre></td></tr></table></figure>
 
-<p>装载因子越大，说明空闲位置越少，冲突越多，Hash表的性能会下降…对于开放定址法，装载因子是特别重要因素，应严格限制在0.7-0.8以下。超过0.8，查表时的CPU缓存不命中（cache missing）按照指数曲线上升。因此，一些采用开放定址法的hash库，如Java的系统库限制了装载因子为0.75，超过此值将resizeHash表。</p>
+<p>在对比看下PHP5的Bucket：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">bucket</span> &#123;</span></span><br><span class="line">    ulong h;               <span class="comment">/* Used for numeric indexing */</span></span><br><span class="line">    uint nKeyLength;</span><br><span class="line">    <span class="keyword">void</span> *pData;</span><br><span class="line">    <span class="keyword">void</span> *pDataPtr;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">bucket</span> *<span class="title">pListNext</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">bucket</span> *<span class="title">pListLast</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">bucket</span> *<span class="title">pNext</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">bucket</span> *<span class="title">pLast</span>;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *arKey;</span><br><span class="line">&#125; Bucket;</span><br></pre></td></tr></table></figure>
+<p>很直观的看到，字段少了很多。这样设计可以使内存占用从72字节，降低到了32个字节。<br>区别：</p>
 <ul>
-<li>链表法</li>
+<li>Hash冲突解决方案改为bucket-&gt;zval-&gt;next，于是bucket-&gt;pNext和bucket-&gt;pLast可以去掉了</li>
+<li>zend_array-&gt;arData是一个数组，所以不需要pListNext和pListLast来保持顺序了。遍历一个数组时，只遍历arData就可以了。</li>
+<li>PHP7中的Bucket直接保存了zval了</li>
 </ul>
-<p>链表法是比较常用的hash冲突解决方法。在Hash表中，每个“桶（Bucket）”或者“槽（Slot）”会对应一个列表</p>
-<p>在插入的时候，计算出位置，如果位置不为空，则会插入到桶的链表中。</p>
-<p>图例：</p>
-<p><img data-src="/images/Hash-Collisions/Hash-Collisions-Chaining-Example.jpg"></p>
-<h2 id="装载因子"><a href="#装载因子" class="headerlink" title="装载因子"></a>装载因子</h2><p>装载因子是表示Hsah表中元素的填满的程度，该值越大，说明Hash表中的元素越多，空闲的位置越少，Hash冲突的概率越大。不仅插入数据的过程要多次寻址或者拉很长的链表，查找过程也会因此变得很慢。</p>
-<p>对于动态Hash表来说，数据集合是频繁变动的，我们事先无法预估将要加入的数据个数，所以我也无法去事先申请一个足够大的Hash表。随者数据慢慢加入，装载因子就会慢慢变大。当装载因子大到一定程度之后，Hash冲突就会变得不可接受。</p>
-<p>这个时候就需要对Hash表“动态扩容”了。针对Hash表，当装载因子过大时，我们也可以进行动态扩容，重新申请一个更大的Hash表，将数据搬移到新Hash表中。假设每次扩容我们都申请一个原来Hash表大小两倍的空间。如果原来Hash表的装载因子是0.8，那经过扩容之后，新Hash表的装载因子就下降为原来的一半，变成了0.4.针对数组的扩容，数据搬移操作比较简单。但是，针对Hash表的扩容，数据搬移操作要复杂很多。因为Hash表的大小变了，数据的存储位置也变了，所以我们需要通过Hash函数重新计算每个数据的存储位置。</p>
-<p>Hash表数据不多时，数据搬移操作基本不费时间和空间，但是如果数据量很大时，搬移操作就很耗时耗空间。</p>
-<p>解决方法是：一个新数据进来时，申请一个新的Hash表，并计算位置插入到新的Hash表。旧的Hash表数据不变。再有新的数据进来时，插入到新的Hash表，并拿旧Hash表的一个数据计算在新的Hash表中的位置并插入，重复上述过程，旧Hash表的数据就一点点的到新的Hash表中。</p>
-<p>上述解决方法的查询顺序就是现在新的Hash表中查找，如果不存在再去旧的Hash表中查找，如果再没有，就是不存在了。</p>
-<h2 id="如何选择Hash冲突解决方法？"><a href="#如何选择Hash冲突解决方法？" class="headerlink" title="如何选择Hash冲突解决方法？"></a>如何选择Hash冲突解决方法？</h2><ul>
-<li>开放寻址法</li>
-</ul>
-<p>由于开放寻址法删除数据比较麻烦，需要标记已删除数据。在开放寻址法中，所有数据都放在一个数组里，比起链表法，开放寻址法的冲突代价更高。</p>
-<p>所以当数据量比较小、装载因子小的时候，适合采用开放寻址法。这也是Java 中的ThreadLocalMap使用开放寻址法解决Hash冲突的原因。</p>
+<p>PHP7的packed array</p>
+<p>全部是数字key的数组，arHash就显得没那么必要了，所以此时我们就用了一种新的数组, packed array来优化这个场景。</p>
+<p>对于HASH_FLAG_PACKED的数组(标志在zend_array-&gt;u.flags)中，它们是只有连续数字key的数组，它们不需要Hash值来映射，所以这样的数组读取的时候，就相当于你直接访问C数组，直接根据偏移来获取zval.</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$a = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>]; <span class="comment">// packed array</span></span><br><span class="line">$a[<span class="string">&quot;foo&quot;</span>] = <span class="string">&quot;bar&quot;</span>; <span class="comment">// 变成了 mixed array</span></span><br><span class="line">$b[<span class="number">2</span>] = <span class="number">1</span>;</span><br><span class="line">$b[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">$b[<span class="number">0</span>] = <span class="number">3</span>; <span class="comment">// $b mixed array</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到 $b 是mixed array，竟然它的索引值是顺序的，但是它的添加顺序不是按照索引值的增长来的，这里也是为了保证PHP数组的foreach的遍历顺序是按照添加顺序来的。</p>
+<p>对于array的类型还有以下几种：</p>
 <ul>
-<li>链表法</li>
+<li><p>Static key array</p>
+</li>
+<li><p>Empty array</p>
+<p>  不分配arData，只有当发生实际写入时，才会分配arData。</p>
+</li>
+<li><p>Immutable array</p>
+</li>
 </ul>
-<p>首先，链表法对内存的利用率比开放寻址法要高。因为链表结点可以在需要的时候再创建，并不需要像开放寻址法那样事先申请好。</p>
-<p>链表法比起开放寻址法，对大装载因子的容忍度更高。开放寻址法只能适用装载因子小于1的情况。接近1时，就可能会有大量的Hash冲突，致大量的探测、再Hash等，性能会下降很多。但是对于链表法来说，只要Hash函数的值随机均匀，即便装载因子变成10，也就是链表的长度变长了而已。虽然查找效率有所下降，但是比起顺序查找还是快很多。</p>
-<p>基于链表的散列冲突处理方法比较适合存储大对象、大数据量的散列表，而且，比起开放寻址法，它更加灵活，支持更多的优化策略，比如用红黑树代替链表。</p>
+<p>更深入理解可以阅读鸟哥的<a target="_blank" rel="noopener" href="https://www.laruence.com/2020/02/25/3182.html">深入理解PHP7内核之HashTable</a>：</p>
 
     </div>
 
@@ -265,7 +250,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://mikado.drrr.app/Hash-Collisions/" title="哈希冲突">https://mikado.drrr.app/Hash-Collisions/</a>
+    <a href="https://mikado.drrr.app/PHP7-HashTable/" title="PHP7-HashTable源码阅读">https://mikado.drrr.app/PHP7-HashTable/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -276,8 +261,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hash/" rel="tag"># hash</a>
-              <a href="/tags/Data-Struct/" rel="tag"># Data Struct</a>
+              <a href="/tags/PHP/" rel="tag"># PHP</a>
+              <a href="/tags/HashTable/" rel="tag"># HashTable</a>
           </div>
 
         
@@ -286,13 +271,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/TCP-Protocol/" rel="prev" title="TCP-协议">
-      <i class="fa fa-chevron-left"></i> TCP-协议
+    <a href="/Bloom-Filter-Introduction/" rel="prev" title="Bloom-Filter介绍">
+      <i class="fa fa-chevron-left"></i> Bloom-Filter介绍
     </a></div>
-      <div class="post-nav-item">
-    <a href="/InnoDB-Locking-Translation/" rel="next" title="译：InnoDB锁定">
-      译：InnoDB锁定 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -351,7 +333,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash-%E5%87%BD%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">Hash 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash-%E5%86%B2%E7%AA%81"><span class="nav-number">2.</span> <span class="nav-text">Hash 冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A3%85%E8%BD%BD%E5%9B%A0%E5%AD%90"><span class="nav-number">3.</span> <span class="nav-text">装载因子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9Hash%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">如何选择Hash冲突解决方法？</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
