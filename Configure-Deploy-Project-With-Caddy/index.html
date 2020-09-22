@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg">
 <meta property="article:published_time" content="2020-05-22T16:13:20.000Z">
-<meta property="article:modified_time" content="2020-09-22T09:59:28.697Z">
+<meta property="article:modified_time" content="2020-09-22T10:11:38.947Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="Caddy">
 <meta property="article:tag" content="Server">
@@ -202,12 +202,12 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg" alt=""></p>
-<h2 id="Caddy简介">Caddy简介</h2>
-<p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br>
+        <p><img data-src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg" alt="" /></p>
+<h2 id="caddy简介"><a class="markdownIt-Anchor" href="#caddy简介"></a> Caddy简介</h2>
+<p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br />
 Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外配置即可提供 HTTPS 特性的 Web 服务器。</p>
 <a id="more"></a>
-<h2 id="Caddy特性">Caddy特性</h2>
+<h2 id="caddy特性"><a class="markdownIt-Anchor" href="#caddy特性"></a> Caddy特性</h2>
 <ul>
 <li>静态文件分发</li>
 <li>FastCGI支持</li>
@@ -217,7 +217,7 @@ Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外�
 <li>配置简单</li>
 <li>…</li>
 </ul>
-<h2 id="安装Caddy">安装Caddy</h2>
+<h2 id="安装caddy"><a class="markdownIt-Anchor" href="#安装caddy"></a> 安装Caddy</h2>
 <blockquote>
 <p>官网：<a target="_blank" rel="noopener" href="https://caddyserver.com/">https://caddyserver.com/</a></p>
 </blockquote>
@@ -245,10 +245,10 @@ Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外�
 <li>Mac OS</li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install caddy</span><br></pre></td></tr></table></figure>
-<h2 id="Caddy-Service配置">Caddy.Service配置</h2>
+<h2 id="caddyservice配置"><a class="markdownIt-Anchor" href="#caddyservice配置"></a> Caddy.Service配置</h2>
 <p>Caddy.service内容，使用 apt 安装会自动生成service文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description&#x3D;Caddy</span><br><span class="line">Documentation&#x3D;https:&#x2F;&#x2F;caddyserver.com&#x2F;docs&#x2F;</span><br><span class="line">After&#x3D;network.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User&#x3D;caddy</span><br><span class="line">Group&#x3D;caddy</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;bin&#x2F;caddy run --environ --config &#x2F;etc&#x2F;caddy&#x2F;Caddyfile</span><br><span class="line">ExecReload&#x3D;&#x2F;usr&#x2F;bin&#x2F;caddy reload --config &#x2F;etc&#x2F;caddy&#x2F;Caddyfile</span><br><span class="line">TimeoutStopSec&#x3D;5s</span><br><span class="line">LimitNOFILE&#x3D;1048576</span><br><span class="line">LimitNPROC&#x3D;512</span><br><span class="line">PrivateTmp&#x3D;true</span><br><span class="line">ProtectSystem&#x3D;full</span><br><span class="line">AmbientCapabilities&#x3D;CAP_NET_BIND_SERVICE</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br></pre></td></tr></table></figure>
-<h2 id="Caddyfile文件">Caddyfile文件</h2>
+<h2 id="caddyfile文件"><a class="markdownIt-Anchor" href="#caddyfile文件"></a> Caddyfile文件</h2>
 <p>Caddy的配置文件是json，但是由于json文件配置起来繁琐且不好管理，Caddy就推出了Caddyfile配置文件，Caddy会通过Caddyfile文件生成json配置。查看json配置内容可通过 adapt 命令查看json内容。</p>
 <p>Caddyfile文件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">localhost</span><br><span class="line"></span><br><span class="line">respond &quot;Hello, world!&quot;</span><br></pre></td></tr></table></figure>
@@ -256,11 +256,11 @@ Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外�
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="attr">&quot;apps&quot;</span>:&#123;<span class="attr">&quot;http&quot;</span>:&#123;<span class="attr">&quot;servers&quot;</span>:&#123;<span class="attr">&quot;srv0&quot;</span>:&#123;<span class="attr">&quot;listen&quot;</span>:[<span class="string">&quot;:443&quot;</span>],<span class="attr">&quot;routes&quot;</span>:[&#123;<span class="attr">&quot;match&quot;</span>:[&#123;<span class="attr">&quot;host&quot;</span>:[<span class="string">&quot;localhost&quot;</span>]&#125;],<span class="attr">&quot;handle&quot;</span>:[&#123;<span class="attr">&quot;handler&quot;</span>:<span class="string">&quot;subroute&quot;</span>,<span class="attr">&quot;routes&quot;</span>:[&#123;<span class="attr">&quot;handle&quot;</span>:[&#123;<span class="attr">&quot;body&quot;</span>:<span class="string">&quot;Hello, world!&quot;</span>,<span class="attr">&quot;handler&quot;</span>:<span class="string">&quot;static_response&quot;</span>&#125;]&#125;]&#125;],<span class="attr">&quot;terminal&quot;</span>:<span class="literal">true</span>&#125;]&#125;&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
 <p>Caddyfile 配置文件大致内容：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">m.example.com &#123;</span><br><span class="line">    log &#123;</span><br><span class="line">        output file &#x2F;var&#x2F;log&#x2F;caddy&#x2F;mock.access.log</span><br><span class="line">    &#125;</span><br><span class="line">    encode zstd gzip</span><br><span class="line">    reverse_proxy localhost:8081 # Go项目监听的端口</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">api.example.com &#123;</span><br><span class="line">    encode zstd gzip</span><br><span class="line">    log &#123;</span><br><span class="line">        output file &#x2F;var&#x2F;log&#x2F;caddy&#x2F;mock-api.access.log</span><br><span class="line">    &#125;</span><br><span class="line">    reverse_proxy localhost:8080</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">php-fast.example.com &#123;</span><br><span class="line">    php_fastcgi 127.0.0.1:9000</span><br><span class="line">    # sock style</span><br><span class="line">    # php_fastcgi unix&#x2F;&#x2F;run&#x2F;php&#x2F;php7.4-fpm.sock</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="Caddy-TLS">Caddy TLS</h2>
+<h2 id="caddy-tls"><a class="markdownIt-Anchor" href="#caddy-tls"></a> Caddy TLS</h2>
 <p>Caddy默认使用<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%82%B3%E8%BC%B8%E5%B1%A4%E5%AE%89%E5%85%A8%E6%80%A7%E5%8D%94%E5%AE%9A">TLS</a>，所以在使用前需要配置证书。另外本地开发时，使用Caddy的内部，本地信任的证书</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">example.com &#123;</span><br><span class="line">    tls internal</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>如果生产环境使用时，有命令行使用权限的话，可使用 certbot 免费生成证书，没有的话，可以使用托管服务商的证书服务。</p>
-<h2 id="Caddy与Nginx简单对比">Caddy与Nginx简单对比</h2>
+<h2 id="caddy与nginx简单对比"><a class="markdownIt-Anchor" href="#caddy与nginx简单对比"></a> Caddy与Nginx简单对比</h2>
 <table>
 <thead>
 <tr>
@@ -399,7 +399,7 @@ Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外�
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Caddy%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Caddy简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caddy%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">Caddy特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Caddy"><span class="nav-number">3.</span> <span class="nav-text">安装Caddy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caddy-Service%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Caddy.Service配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caddyfile%E6%96%87%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">Caddyfile文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caddy-TLS"><span class="nav-number">6.</span> <span class="nav-text">Caddy TLS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Caddy%E4%B8%8ENginx%E7%AE%80%E5%8D%95%E5%AF%B9%E6%AF%94"><span class="nav-number">7.</span> <span class="nav-text">Caddy与Nginx简单对比</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#caddy%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text"> Caddy简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caddy%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text"> Caddy特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85caddy"><span class="nav-number">3.</span> <span class="nav-text"> 安装Caddy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caddyservice%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text"> Caddy.Service配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caddyfile%E6%96%87%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text"> Caddyfile文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caddy-tls"><span class="nav-number">6.</span> <span class="nav-text"> Caddy TLS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#caddy%E4%B8%8Enginx%E7%AE%80%E5%8D%95%E5%AF%B9%E6%AF%94"><span class="nav-number">7.</span> <span class="nav-text"> Caddy与Nginx简单对比</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

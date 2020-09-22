@@ -25,7 +25,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg">
 <meta property="article:published_time" content="2020-07-12T12:28:21.000Z">
-<meta property="article:modified_time" content="2020-09-22T09:59:28.697Z">
+<meta property="article:modified_time" content="2020-09-22T10:11:38.951Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="Redis">
 <meta name="twitter:card" content="summary">
@@ -201,7 +201,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg" alt=""></p>
+        <p><img data-src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg" alt="" /></p>
 <p>Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。</p>
 <p>Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。</p>
 <ul>
@@ -211,7 +211,7 @@
 <li><strong>配置提供者</strong>：Sentinel充当客户端服务发现的授权来源：客户端连接到Sentinel，以询问负责给定服务的当前Redis master服务器的地址。如果发生故障转移，Sentinel将报告新地址。</li>
 </ul>
 <a id="more"></a>
-<h2 id="Sentinel的分布式本质">Sentinel的分布式本质</h2>
+<h2 id="sentinel的分布式本质"><a class="markdownIt-Anchor" href="#sentinel的分布式本质"></a> Sentinel的分布式本质</h2>
 <p>Redis Sentinel是一个分布式系统：</p>
 <p>Sentinel本身设计为在有多个Sentinel进程协同合作的配置中运行。具有多个Sentinel进程进行协作的优点如下：</p>
 <ol>
@@ -219,7 +219,7 @@
 <li>即使不是所有的Sentinel进程都在工作，Sentinel仍可正常工作，从而使系统能够有强大的抗故障能力。毕竟，拥有故障转移系统本身就是一个单点故障，这没有任何乐趣。</li>
 </ol>
 <p>Sentinels，Redis实例（master服务器和replica）以及连接到Sentinel和 Redis的客户端的总和也是具有特定属性的大型分布式系统。</p>
-<h2 id="运行Sentinel">运行Sentinel</h2>
+<h2 id="运行sentinel"><a class="markdownIt-Anchor" href="#运行sentinel"></a> 运行Sentinel</h2>
 <p>拥有独立的 <code>redis-sentinel</code> 可执行文件时：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-sentinel /path/to/sentinel.conf</span><br></pre></td></tr></table></figure>
 <p>另外可以直接使用 <code>redis-server</code> 可执行文件</p>
@@ -227,7 +227,7 @@
 <p>两种方式都一样。</p>
 <p>但是，在运行Sentinel时必须使用配置文件，因为系统将使用此文件来保存当前状态，以便在重启时重新加载。如果未提供配置文件或配置文件路径不可写，Sentinel只会拒绝启动。</p>
 <p>Sentinels默认情况下会监听TCP端口26379的连接，因此，为了使Sentinels正常工作，必须打开服务器的端口26379才能从其他Sentinel实例的IP地址接收连接。否则，Sentinels无法讨论也不能就该做什么达成共识，因此将永远不会执行故障转移。</p>
-<h2 id="部署前有关Sentinel的基本知识">部署前有关Sentinel的基本知识</h2>
+<h2 id="部署前有关sentinel的基本知识"><a class="markdownIt-Anchor" href="#部署前有关sentinel的基本知识"></a> 部署前有关Sentinel的基本知识</h2>
 <ol>
 <li>一个健壮的部署（robust deployment）至少需要三个Sentinel实例。</li>
 <li>应将三个Sentinel实例放置到被认为以独立方式失败（fail in an independent way）的计算机或虚拟机中。因此，例如不同物理服务器或虚拟机必须在不同的可用区域上部署。</li>
@@ -236,7 +236,7 @@
 <li>如果不经常在开发环境中进行测试，就没有安全的HA设置;如果可以的话，在生产环境中进行测试就更好了。你可能有一个错误的配置，只有当太晚的时候（在凌晨3点，master停止工作的时候）才会变得明显。</li>
 <li>Sentinel，Docker，或其他形式的网络地址转换或端口映射应该小心混合（mixed）：Docker执行端口重映射，破坏了其他Sentinel进程的Sentinel自动发现以及master的replica列表。</li>
 </ol>
-<h2 id="配置Sentinel">配置Sentinel</h2>
+<h2 id="配置sentinel"><a class="markdownIt-Anchor" href="#配置sentinel"></a> 配置Sentinel</h2>
 <p>配置三个Sentinel，其中端口不一样，其中一个配置文件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1 ::1</span><br><span class="line">port 26380 # 单机上，不同Sentinel可以修改为不同的port</span><br><span class="line">daemonize yes</span><br><span class="line">pidfile &quot;&#x2F;var&#x2F;run&#x2F;sentinel&#x2F;redis-sentinel-26380.pid&quot;</span><br><span class="line">logfile &quot;&#x2F;var&#x2F;log&#x2F;redis&#x2F;redis-sentinel-26380.log&quot;</span><br><span class="line">dir &quot;&#x2F;var&#x2F;lib&#x2F;redis&quot;</span><br><span class="line">sentinel myid 421825a687412475c44e7235823f99971edd4e2b</span><br><span class="line">protected-mode no</span><br><span class="line">sentinel deny-scripts-reconfig yes</span><br><span class="line">sentinel monitor mymaster 127.0.0.1 6379 2</span><br><span class="line">sentinel down-after-milliseconds mymaster 60000</span><br><span class="line">sentinel auth-pass mymaster 123456 # 如果master有开启密码的话，这里需要配置</span><br></pre></td></tr></table></figure>
 <p>replica的Redis的配置</p>
@@ -247,8 +247,8 @@
 <p>Sentinel会自动更改Redis server 的配置和Sentinel的配置</p>
 <p>更改之后Sentinel的配置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1 ::1</span><br><span class="line">port 26380</span><br><span class="line">daemonize yes</span><br><span class="line">pidfile &quot;&#x2F;var&#x2F;run&#x2F;sentinel&#x2F;redis-sentinel-26380.pid&quot;</span><br><span class="line">logfile &quot;&#x2F;var&#x2F;log&#x2F;redis&#x2F;redis-sentinel-26380.log&quot;</span><br><span class="line">dir &quot;&#x2F;var&#x2F;lib&#x2F;redis&quot;</span><br><span class="line">sentinel myid 421825a687412475c44e7235823f99971edd4e2b</span><br><span class="line">protected-mode no</span><br><span class="line">sentinel deny-scripts-reconfig yes</span><br><span class="line"></span><br><span class="line">sentinel monitor mymaster 127.0.0.1 16479 2</span><br><span class="line">sentinel down-after-milliseconds mymaster 60000</span><br><span class="line">sentinel auth-pass mymaster 123456</span><br><span class="line">sentinel config-epoch mymaster 2</span><br><span class="line">sentinel leader-epoch mymaster 2</span><br><span class="line">sentinel known-replica mymaster 127.0.0.1 36479</span><br><span class="line"></span><br><span class="line">sentinel known-replica mymaster 127.0.0.1 26479</span><br><span class="line">sentinel known-sentinel mymaster 127.0.0.1 26382 b16de2db5c788e0530998336542c11dfed2edfb5</span><br><span class="line">sentinel known-sentinel mymaster 127.0.0.1 26381 f4c2516e7fd32e46f3efc3774d1b49ba4133e700</span><br><span class="line">sentinel current-epoch 2</span><br></pre></td></tr></table></figure>
-<h2 id="主观下线和客观下线">主观下线和客观下线</h2>
-<p>Redis Sentinel对于下线（down）有两个不同的概念，一个是主观下线（<code>SDOWN</code>），它是本地Sentinel判断的一个情况。<br>
+<h2 id="主观下线和客观下线"><a class="markdownIt-Anchor" href="#主观下线和客观下线"></a> 主观下线和客观下线</h2>
+<p>Redis Sentinel对于下线（down）有两个不同的概念，一个是主观下线（<code>SDOWN</code>），它是本地Sentinel判断的一个情况。<br />
 另一个被称为客观下线（<code>ODOWN</code>），当足够多的Sentinel（至少配置为被监视的主节点的法定人数（quorum）参数的数量）具有 <code>SDOWN</code> 条件，并使用 <code>SENTINEL is-master-down-by-addr</code> 命令从其他Sentinel那里获得反馈时，才会达到这个情况。</p>
 <p>从Sentinel的角度来看，当它没有收到对 PING 请求的有效响应时，就会达到一个 SDOWN 条件，这个响应的秒数在配置中指定为<code>is-master-down-after-milliseconds</code>参数。</p>
 <p>可以接受的PING回复如下:</p>
@@ -259,19 +259,19 @@
 </ul>
 <p>任何其他答复(或根本没有答复)都被认为是无效的。但是请注意，在信息输出中将自己作为Replica声明的逻辑master服务器被认为是宕机的。</p>
 <p>注意，SDOWN 要求在配置的整个时间间隔内不接收可接受的应答，因此，例如，如果时间间隔为30000毫秒(30秒)，并且我们每29秒就收到一个可接受的 PING 应答，则认为该实例在工作。</p>
-<p>SDOWN 不足以触发故障转移:它只意味着一个单一的Sentinel认为Redis实例不可用。<br>
+<p>SDOWN 不足以触发故障转移:它只意味着一个单一的Sentinel认为Redis实例不可用。<br />
 要触发故障转移，必须达到ODOWN状态。</p>
 <p>为了从 SDOWN 切换到 ODOWN，没有使用强一致性算法，而只是一种流言（gossip）：如果给定的Sentinel得到报告说，在给定的时间范围内，没有足够的Sentinel在工作，那么SDOWN将被提升为ODOWN。</p>
 <p>为了真正启动故障转移，需要使用实际多数的更严格的授权，但是如果不达到ODOWN状态，就不能触发故障转移。</p>
 <p>ODOWN条件仅适用于主机。对于其他类型的实例，Sentinel不需要执行操作，因此 Replica 和其他Sentinel永远不会达到ODOWN状态，而只有SDOWN可以达到。</p>
-<h2 id="Quorum（法定人数）">Quorum（法定人数）</h2>
+<h2 id="quorum法定人数"><a class="markdownIt-Anchor" href="#quorum法定人数"></a> Quorum（法定人数）</h2>
 <p>如果quorum被配置为5，那么所有Sentinel必须就主错误条件达成一致，并且需要所有Sentinel的授权才能进行故障转移。</p>
 <p>这意味着可以通过两种方式使用 quorum 来调优 Sentinel:</p>
 <ul>
 <li>如果 quorum 的值小于我们部署的大多数Sentinel的值，那么我们基本上就使Sentinel对master 节点故障更加敏感，只要有一小部分Sentinel不再能够与master通信，就会触发故障转移。</li>
 <li>如果 quorum 值设置为大于大多数Sentinel的值，那么只有当连接良好的Sentinel数量非常大（大于大多数）且一致认为master节点处于宕机状态时，Sentinel才能够进行故障转移。</li>
 </ul>
-<h2 id="客户端连接问题">客户端连接问题</h2>
+<h2 id="客户端连接问题"><a class="markdownIt-Anchor" href="#客户端连接问题"></a> 客户端连接问题</h2>
 <ol>
 <li>当master发生故障，Sentinel重新投票新的master，业务层代码怎么保证连接的 IP 地址是新的master的IP地址？
 <ol>
@@ -380,7 +380,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sentinel%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.</span> <span class="nav-text">Sentinel的分布式本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8CSentinel"><span class="nav-number">2.</span> <span class="nav-text">运行Sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%89%8D%E6%9C%89%E5%85%B3Sentinel%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">部署前有关Sentinel的基本知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AESentinel"><span class="nav-number">4.</span> <span class="nav-text">配置Sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A7%82%E4%B8%8B%E7%BA%BF%E5%92%8C%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="nav-number">5.</span> <span class="nav-text">主观下线和客观下线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quorum%EF%BC%88%E6%B3%95%E5%AE%9A%E4%BA%BA%E6%95%B0%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">Quorum（法定人数）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text">客户端连接问题</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sentinel%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.</span> <span class="nav-text"> Sentinel的分布式本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8Csentinel"><span class="nav-number">2.</span> <span class="nav-text"> 运行Sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%89%8D%E6%9C%89%E5%85%B3sentinel%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text"> 部署前有关Sentinel的基本知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEsentinel"><span class="nav-number">4.</span> <span class="nav-text"> 配置Sentinel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A7%82%E4%B8%8B%E7%BA%BF%E5%92%8C%E5%AE%A2%E8%A7%82%E4%B8%8B%E7%BA%BF"><span class="nav-number">5.</span> <span class="nav-text"> 主观下线和客观下线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#quorum%E6%B3%95%E5%AE%9A%E4%BA%BA%E6%95%B0"><span class="nav-number">6.</span> <span class="nav-text"> Quorum（法定人数）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BF%9E%E6%8E%A5%E9%97%AE%E9%A2%98"><span class="nav-number">7.</span> <span class="nav-text"> 客户端连接问题</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

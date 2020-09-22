@@ -194,7 +194,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/PHP7-HashTable/images.png" alt=""></p>
+          <p><img src="/images/PHP7-HashTable/images.png" alt="" /></p>
 <p>PHP7数组的源码内部实现</p>
 <p>先看下PHP7数组的定义：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">zend_array</span> &#123;</span></span><br><span class="line">    zend_refcounted_h gc;</span><br><span class="line">    <span class="keyword">union</span> &#123;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">            ZEND_ENDIAN_LOHI_4( <span class="comment">// 解决大小端问题*</span></span><br><span class="line">                zend_uchar    flags,</span><br><span class="line">                zend_uchar    _unused,</span><br><span class="line">                zend_uchar    nIteratorsCount,</span><br><span class="line">                zend_uchar    _unused2)</span><br><span class="line">        &#125; v;</span><br><span class="line">        <span class="keyword">uint32_t</span> flags;</span><br><span class="line">    &#125; u;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nTableMask;</span><br><span class="line">    Bucket           *arData;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nNumUsed;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nNumOfElements;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nTableSize;</span><br><span class="line">    <span class="keyword">uint32_t</span>          nInternalPointer;</span><br><span class="line">    zend_long         nNextFreeElement;</span><br><span class="line">    <span class="keyword">dtor_func_t</span>       pDestructor;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -263,10 +263,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Bloom-Filter-Introduction/images.png" alt=""></p>
+          <p><img src="/images/Bloom-Filter-Introduction/images.png" alt="" /></p>
 <p>布隆过滤器（英语：Bloom Filter）是1970年由布隆提出的。它实际上是一个很长的二进制向量和一系列随机映射函数。布隆过滤器可以用于检索一个元素是否在一个集合中。它的优点是空间效率和查询时间都远远超过一般的算法，缺点是有一定的误识别率和删除困难。</p>
-<h2 id="基本概念">基本概念</h2>
-<p>如果想判断一个元素是不是在一个集合里，一般想到的是将集合中所有元素保存起来，然后通过比较确定。链表、树、散列表（又叫哈希表，Hash table）等等数据结构都是这种思路。但是随着集合中元素的增加，我们需要的存储空间越来越大。同时检索速度也越来越慢，上述三种结构的检索时间复杂度分别为 ${\displaystyle O(n),O(\log n),O(1)}$。</p>
+<h2 id="基本概念"><a class="markdownIt-Anchor" href="#基本概念"></a> 基本概念</h2>
+<p>如果想判断一个元素是不是在一个集合里，一般想到的是将集合中所有元素保存起来，然后通过比较确定。链表、树、散列表（又叫哈希表，Hash table）等等数据结构都是这种思路。但是随着集合中元素的增加，我们需要的存储空间越来越大。同时检索速度也越来越慢，上述三种结构的检索时间复杂度分别为 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle scriptlevel="0" displaystyle="true"><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>O</mi><mo stretchy="false">(</mo><mi>log</mi><mo>⁡</mo><mi>n</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mstyle></mrow><annotation encoding="application/x-tex">{\displaystyle O(n),O(\log n),O(1)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathdefault">n</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">n</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span></span>。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Bloom-Filter-Introduction/#more" rel="contents">
@@ -331,8 +331,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/MapReduce-Paper-Notes/images.png" alt=""></p>
-<h2 id="介绍">介绍</h2>
+          <p><img src="/images/MapReduce-Paper-Notes/images.png" alt="" /></p>
+<h2 id="介绍"><a class="markdownIt-Anchor" href="#介绍"></a> 介绍</h2>
 <p>MapReduce是Google提出的一个软件架构，用于大规模数据集（大于1TB）的并行运算。概念“Map”和“Reduce”，及他们的主要思想，都是从函数式编程语言借鉴的，还有从矢量编程语言借来的特性。</p>
 <p>当前的软件实现是指定一个Map函数，用来把一组键值对映射成一组新的键值对，指定并发的Reduce函数，用来保证所有映射的键值对中的每一个共享相同的键组。</p>
           <!--noindex-->
@@ -399,13 +399,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg" alt=""></p>
+          <p><img src="/images/Golang-Timer-Source-Code-Analysis/2019-02-14-3a6d91198cfb5c37a6e4f742e2e5601d.png!q90.jpeg" alt="" /></p>
 <p>代码环境：</p>
 <ul>
 <li>Golang版本：1.14.3</li>
 <li>Server： Ubuntu Server 20.04</li>
 </ul>
-<h2 id="P-结构体"><code>P</code> 结构体</h2>
+<h2 id="p-结构体"><a class="markdownIt-Anchor" href="#p-结构体"></a> <code>P</code> 结构体</h2>
 <p>添加 timer 都会添加至 <code>P</code> 的结构体中，然而<code>P</code> 结构体中维护一个最小堆的 timer 数组。</p>
 <p>代码位置：<code>runtime/runtime2.go</code></p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> p <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// ......部分代码省略</span></span><br><span class="line">	<span class="comment">// Lock for timers. We normally access the timers while running</span></span><br><span class="line">	<span class="comment">// on this P, but the scheduler can also do it from a different P.</span></span><br><span class="line">	timersLock mutex</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Actions to take at some time. This is used to implement the</span></span><br><span class="line">	<span class="comment">// standard library&#x27;s time package.</span></span><br><span class="line">	<span class="comment">// Must hold timersLock to access.</span></span><br><span class="line">	timers []*timer <span class="comment">// 最小堆实现</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timers in P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	numTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerModifiedEarlier timers on P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// This should only be modified while holding timersLock,</span></span><br><span class="line">	<span class="comment">// or while the timer status is in a transient state</span></span><br><span class="line">	<span class="comment">// such as timerModifying.</span></span><br><span class="line">	adjustTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Number of timerDeleted timers in P&#x27;s heap.</span></span><br><span class="line">	<span class="comment">// Modified using atomic instructions.</span></span><br><span class="line">	deletedTimers <span class="keyword">uint32</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Race context used while executing timer functions.</span></span><br><span class="line">	timerRaceCtx <span class="keyword">uintptr</span></span><br><span class="line">	<span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -473,7 +473,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg" alt=""></p>
+          <p><img src="/images/Three-Major-Cache-Issue/005FzdTdgy1gegf7mn8b5j31hc0u0dkw.jpg" alt="" /></p>
 <ul>
 <li>
 <p>缓存一致性</p>
@@ -496,7 +496,7 @@
 <li>
 <p>缓存雪崩</p>
 <p>缓存雪崩是指由于大量的热数据设置了相同或接近的过期时间，导致缓存在某一时刻密集失效，大量请求全部转发到 DB，或者是某个冷数据瞬间涌入大量访问，这些查询在缓存 MISS 后，并发的将请求透传到 DB，DB 瞬时压力过载从而拒绝服务。目前常见的预防缓存雪崩的解决方案，主要是通过对 key 的 TTL 时间加随机数，打散 key 的淘汰时间来尽量规避，但是不能彻底规避。</p>
-<p><img src="/images/Three-Major-Cache-Issue/Cache-avalanche.png" alt=""></p>
+<p><img src="/images/Three-Major-Cache-Issue/Cache-avalanche.png" alt="" /></p>
 </li>
 </ul>
           <!--noindex-->
@@ -563,7 +563,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg" alt=""></p>
+          <p><img src="/images/Redis-Sentinel/005FzdTdgy1geeswufoarj31hc0u0b29.jpg" alt="" /></p>
 <p>Redis Sentinel为Redis提供了高可用性。实际上，这意味着使用Sentinel可以创建Redis部署（Redis deployment），该部署可以在没有人工干预的情况下抵抗某些类型的故障。</p>
 <p>Redis Sentinel还提供其他附带任务，例如监视，通知，并充当客户端的配置提供程序。</p>
 <ul>
@@ -636,18 +636,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg" alt=""></p>
-<h2 id="什么是gRPC"><strong>什么是gRPC</strong></h2>
+          <p><img src="/images/gRPC/0072Vf1pgy1fodqpbkx8xj30xc0nke81.jpg" alt="" /></p>
+<h2 id="什么是grpc"><a class="markdownIt-Anchor" href="#什么是grpc"></a> <strong>什么是gRPC</strong></h2>
 <p>gRPC（gRPC Remote Procedure Calls）是由Google开发的一个现代的，开源的远程过程调用（RPC）框架，可以在任何地方运行。它使客户端和服务器应用程序可以透明地进行通信，并使构建连接的系统更加容易。</p>
 <p>gRPC基于 HTTP/2 协议传输，使用Protocol Buffers作为接口描述语（IDL）。</p>
-<h3 id="gRPC使用场景">gRPC使用场景</h3>
+<h3 id="grpc使用场景"><a class="markdownIt-Anchor" href="#grpc使用场景"></a> gRPC使用场景</h3>
 <ul>
 <li>低延迟，高度可扩展的分布式系统。</li>
 <li>开发与云服务器通信的移动客户端。</li>
 <li>设计一个新的协议，该协议必须准确，高效且独立于语言。</li>
 <li>分层设计以实现扩展，例如。身份验证，负载平衡，日志记录和监视等</li>
 </ul>
-<h2 id="什么是RPC">什么是RPC</h2>
+<h2 id="什么是rpc"><a class="markdownIt-Anchor" href="#什么是rpc"></a> 什么是RPC</h2>
 <p>在分布式计算，远程过程调用（英语：Remote Procedure Call，缩写为 RPC）是一个计算机通信协议。该协议允许运行于一台计算机的程序调用另一个地址空间（通常为一个开放网络的一台计算机）的子程序，而程序员就像调用本地程序一样，无需额外地为这个交互作用编程（无需关注细节）。RPC是一种服务器-客户端（Client/Server）模式，经典实现是一个通过发送请求-接受回应进行信息交互的系统。</p>
           <!--noindex-->
             <div class="post-button">
@@ -713,9 +713,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg" alt=""></p>
-<h2 id="Caddy简介">Caddy简介</h2>
-<p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br>
+          <p><img src="/images/Configure-Deploy-Project-With-Caddy/%E8%8A%B1%E7%81%AB10.jpg" alt="" /></p>
+<h2 id="caddy简介"><a class="markdownIt-Anchor" href="#caddy简介"></a> Caddy简介</h2>
+<p>Caddy服务器（或称Caddy Web）是一个开源的，使用 Golang 编写，支持 HTTP/2 的 Web 服务端。它使用 Golang 标准库提供 HTTP 功能。<br />
 Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外配置即可提供 HTTPS 特性的 Web 服务器。</p>
           <!--noindex-->
             <div class="post-button">
@@ -781,9 +781,9 @@ Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外�
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Deploy-Hexo-Blog-With-Travis-CI/1-44.jpg" alt=""></p>
-<h2 id="传统模式">传统模式</h2>
-<p>在传统模式下部署Hexo-Blog，需要在Git仓库下，执行<code>hexo clean &amp;&amp; hexo generate  &amp;&amp; hexo deploy</code>。这步操作都是需要去手动执行。</p>
+          <p><img src="/images/Deploy-Hexo-Blog-With-Travis-CI/1-44.jpg" alt="" /></p>
+<h2 id="传统模式"><a class="markdownIt-Anchor" href="#传统模式"></a> 传统模式</h2>
+<p>在传统模式下部署Hexo-Blog，需要在Git仓库下，执行<code>hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy</code>。这步操作都是需要去手动执行。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/Deploy-Hexo-Blog-With-Travis-CI/#more" rel="contents">
@@ -848,9 +848,9 @@ Caddy 一个显著的特性是默认启用 HTTPS。它是第一个无需额外�
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><img src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg" alt=""></p>
-<h2 id="事务中的加锁方式">事务中的加锁方式</h2>
-<h3 id="事务中的四种隔离级别">事务中的四种隔离级别</h3>
+          <p><img src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg" alt="" /></p>
+<h2 id="事务中的加锁方式"><a class="markdownIt-Anchor" href="#事务中的加锁方式"></a> 事务中的加锁方式</h2>
+<h3 id="事务中的四种隔离级别"><a class="markdownIt-Anchor" href="#事务中的四种隔离级别"></a> 事务中的四种隔离级别</h3>
 <table>
 <thead>
 <tr>

@@ -16,16 +16,16 @@
     var CONFIG = {"hostname":"mikado.drrr.app","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="事务中的加锁方式 事务中的四种隔离级别    隔离级别 脏读（Dirty Read） 不可重复读（NonRepeatable Read） 幻读（Phantom Read）     未提交读（Read Uncommitted） 可能 可能 可能   已提交读（Read Committed） 不可能 可能 可能   可重复度（Repeatable Read） 不可能 不可能 可能   可串行化（Se">
+  <meta name="description" content="事务中的加锁方式  事务中的四种隔离级别    隔离级别 脏读（Dirty Read） 不可重复读（NonRepeatable Read） 幻读（Phantom Read）     未提交读（Read Uncommitted） 可能 可能 可能   已提交读（Read Committed） 不可能 可能 可能   可重复度（Repeatable Read） 不可能 不可能 可能   可串行化（">
 <meta property="og:type" content="article">
 <meta property="og:title" content="InnoDB中事务隔离级别和锁的关系">
 <meta property="og:url" content="https://mikado.drrr.app/Transaction-Isolation-Level-AND-Locks-In-InnoDB/index.html">
 <meta property="og:site_name" content="Mikado&#39;s Blog">
-<meta property="og:description" content="事务中的加锁方式 事务中的四种隔离级别    隔离级别 脏读（Dirty Read） 不可重复读（NonRepeatable Read） 幻读（Phantom Read）     未提交读（Read Uncommitted） 可能 可能 可能   已提交读（Read Committed） 不可能 可能 可能   可重复度（Repeatable Read） 不可能 不可能 可能   可串行化（Se">
+<meta property="og:description" content="事务中的加锁方式  事务中的四种隔离级别    隔离级别 脏读（Dirty Read） 不可重复读（NonRepeatable Read） 幻读（Phantom Read）     未提交读（Read Uncommitted） 可能 可能 可能   已提交读（Read Committed） 不可能 可能 可能   可重复度（Repeatable Read） 不可能 不可能 可能   可串行化（">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg">
 <meta property="article:published_time" content="2020-04-18T16:38:52.000Z">
-<meta property="article:modified_time" content="2020-09-22T09:59:28.697Z">
+<meta property="article:modified_time" content="2020-09-22T10:11:38.947Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="InnoDB">
 <meta property="article:tag" content="MySQL">
@@ -202,9 +202,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg" alt=""></p>
-<h2 id="事务中的加锁方式">事务中的加锁方式</h2>
-<h3 id="事务中的四种隔离级别">事务中的四种隔离级别</h3>
+        <p><img data-src="/images/Transaction-Isolation-Level-AND-Locks-In-InnoDB/1.jpg" alt="" /></p>
+<h2 id="事务中的加锁方式"><a class="markdownIt-Anchor" href="#事务中的加锁方式"></a> 事务中的加锁方式</h2>
+<h3 id="事务中的四种隔离级别"><a class="markdownIt-Anchor" href="#事务中的四种隔离级别"></a> 事务中的四种隔离级别</h3>
 <table>
 <thead>
 <tr>
@@ -248,11 +248,11 @@
 <li>串行读（Serializable）：完全串行化的读，每次读都需要获得表级共享锁，读写相互都会阻塞</li>
 </ul>
 <a id="more"></a>
-<h2 id="MySQL中锁的种类">MySQL中锁的种类</h2>
+<h2 id="mysql中锁的种类"><a class="markdownIt-Anchor" href="#mysql中锁的种类"></a> MySQL中锁的种类</h2>
 <p>MySQL中锁的种类很多，有常见的表锁和行锁，也有新加入的Metadata Lock等等，表锁是对一整张表进行锁定，虽然区分读锁和写锁，但毕竟是锁住整张表，会导致并发能力下降，一般是做ddl处理时使用。</p>
 <p>行锁则是锁住数据行，这种加锁方式比较复杂，但是由于只锁住有限的数据，对于其他数据不加限制，所以并发能力强，MySQL一般都是用行锁来处理并发事务。</p>
-<h2 id="Read-Committed（已提交读）">Read Committed（已提交读）</h2>
-<p>在RC级别中，数据的读取都是不加锁的，但是数据的写入、修改和删除是需要加锁的。<br>
+<h2 id="read-committed已提交读"><a class="markdownIt-Anchor" href="#read-committed已提交读"></a> Read Committed（已提交读）</h2>
+<p>在RC级别中，数据的读取都是不加锁的，但是数据的写入、修改和删除是需要加锁的。<br />
 表结构和数据如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">MySQL&gt; show create table class_teacher \G;</span><br><span class="line">Table: class_teacher</span><br><span class="line">Create Table: CREATE TABLE &#96;class_teacher&#96; (</span><br><span class="line">  &#96;id&#96; int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  &#96;class_name&#96; varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,</span><br><span class="line">  &#96;teacher_id&#96; int(11) NOT NULL,</span><br><span class="line">  PRIMARY KEY (&#96;id&#96;),</span><br><span class="line">  KEY &#96;idx_teacher_id&#96; (&#96;teacher_id&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB AUTO_INCREMENT&#x3D;5 DEFAULT CHARSET&#x3D;utf8mb4 COLLATE&#x3D;utf8mb4_unicode_ci</span><br><span class="line">1 row in set (0.02 sec)</span><br><span class="line"></span><br><span class="line">MySQL&gt; select * from class_teacher;</span><br><span class="line">+----+--------------+------------+</span><br><span class="line">| id | class_name   | teacher_id |</span><br><span class="line">+----+--------------+------------+</span><br><span class="line">|  1 | 初三一班      |          1 |</span><br><span class="line">|  3 | 初二一班      |          2 |</span><br><span class="line">|  4 | 初二二班      |          2 |</span><br><span class="line">+----+--------------+------------+</span><br></pre></td></tr></table></figure>
 <p>由于MySQL的InnoDB默认是使用的RR级别，所以我们先要将该session开启成RC级别，并且设置binlog的模式</p>
@@ -283,10 +283,10 @@
 <p>这时我们要注意到，teacher_id是有索引的，如果是没有索引的class_name呢？<code>update class_teacher set teacher_id=3 where class_name = '初三一班'</code>; 那么MySQL会给整张表的所有数据行的加行锁。这里听起来有点不可思议，但是当sql运行的过程中，MySQL并不知道哪些数据行是 class_name = ‘初三一班’的（没有索引嘛），如果一个条件无法通过索引快速过滤，存储引擎层面就会将所有记录加锁后返回，再由MySQL Server层进行过滤。</p>
 <p>但在实际使用过程当中，MySQL做了一些改进，在MySQL Server过滤条件，发现不满足后，会调用unlock_row方法，把不满足条件的记录释放锁（违背了<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%BA%8C%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4">二段锁协议的约束</a>）。这样做，保证了最后只会持有满足条件记录上的锁，但是每条记录的加锁操作还是不能省略的。可见即使是MySQL，为了效率也是会违反规范的。（参见《高性能MySQL》中文第三版p181）</p>
 <p>这种情况同样适用于MySQL的默认隔离级别RR。所以对一个数据量很大的表做批量修改的时候，如果无法使用相应的索引，MySQL Server过滤数据的的时候特别慢，就会出现虽然没有修改某些行的数据，但是它们还是被锁住了的现象。</p>
-<h2 id="Repeatable-Read（可重复读）">Repeatable Read（可重复读）</h2>
+<h2 id="repeatable-read可重复读"><a class="markdownIt-Anchor" href="#repeatable-read可重复读"></a> Repeatable Read（可重复读）</h2>
 <p>这是MySQL中InnoDB默认的隔离级别。分为“读”和“写”两个模块来讲解。</p>
-<h3 id="读">读</h3>
-<p>读就是可重复读，可重复读这个概念是一事务的多个实例在并发读取数据时，会看到同样的数据行。<br>
+<h3 id="读"><a class="markdownIt-Anchor" href="#读"></a> 读</h3>
+<p>读就是可重复读，可重复读这个概念是一事务的多个实例在并发读取数据时，会看到同样的数据行。<br />
 RC（不可重复读）模式下的展现</p>
 <table>
 <thead>
@@ -361,12 +361,12 @@ RC（不可重复读）模式下的展现</p>
 </tbody>
 </table>
 <p>当teacher_id=1时，事务A先做了一次读取，事务B中间修改了id=1的数据，并commit之后，事务A第二次读到的数据和第一次完全相同。所以说它是可重读的。</p>
-<h4 id="不可重复读和幻读的区别">不可重复读和幻读的区别</h4>
+<h4 id="不可重复读和幻读的区别"><a class="markdownIt-Anchor" href="#不可重复读和幻读的区别"></a> 不可重复读和幻读的区别</h4>
 <p>不可重复读重点在于update和delete，而幻读的重点在于insert。</p>
 <p>如果使用锁机制来实现这两种隔离级别，在可重复读中，该sql第一次读取到数据后，就将这些数据加锁，其它事务无法修改这些数据，就可以实现可重复读了。但这种方法却无法锁住insert的数据，所以当事务A先前读取了数据，或者修改了全部数据，事务B还是可以insert数据提交，这时事务A就会发现莫名其妙多了一条之前没有的数据，这就是幻读，不能通过行锁来避免。需要Serializable隔离级别 ，读用读锁，写用写锁，读锁和写锁互斥，这么做可以有效的避免幻读、不可重复读、脏读等问题，但会极大的降低数据库的并发能力。</p>
 <p>所以说不可重复读和幻读最大的区别，就在于如何通过锁机制来解决他们产生的问题。</p>
 <p>上文说的，是使用悲观锁机制来处理这两种问题，但是MySQL、ORACLE、PostgreSQL等成熟的数据库，出于性能考虑，都是使用了以乐观锁为理论基础的MVCC（多版本并发控制）来避免这两种问题。</p>
-<h4 id="悲观锁和乐观锁">悲观锁和乐观锁</h4>
+<h4 id="悲观锁和乐观锁"><a class="markdownIt-Anchor" href="#悲观锁和乐观锁"></a> 悲观锁和乐观锁</h4>
 <ul>
 <li>悲观锁</li>
 </ul>
@@ -378,7 +378,7 @@ RC（不可重复读）模式下的展现</p>
 <p>相对悲观锁而言，乐观锁机制采取了更加宽松的加锁机制。悲观锁大多数情况下依靠数据库的锁机制实现，以保证操作最大程度的独占性。但随之而来的就是数据库性能的大量开销，特别是对长事务而言，这样的开销往往无法承受。</p>
 <p>而乐观锁机制在一定程度上解决了这个问题。乐观锁，大多是基于数据版本（ Version ）记录机制实现。何谓数据版本？即为数据增加一个版本标识，在基于数据库表的版本解决方案中，一般是通过为数据库表增加一个 “version” 字段来实现。读取出数据时，将此版本号一同读出，之后更新时，对此版本号加一。此时，将提交数据的版本数据与数据库表对应记录的当前版本信息进行比对，如果提交的数据版本号大于数据库表当前版本号，则予以更新，否则认为是过期数据。</p>
 <p>要说明的是，MVCC的实现没有固定的规范，每个数据库都会有不同的实现方式，这里讨论的是InnoDB的MVCC。</p>
-<h4 id="MVCC在MySQL的InnoDB中的实现">MVCC在MySQL的InnoDB中的实现</h4>
+<h4 id="mvcc在mysql的innodb中的实现"><a class="markdownIt-Anchor" href="#mvcc在mysql的innodb中的实现"></a> MVCC在MySQL的InnoDB中的实现</h4>
 <p>在InnoDB中，会在每行数据后添加两个额外的隐藏的值来实现MVCC，这两个值一个记录这行数据何时被创建，另外一个记录这行数据何时过期（或者被删除）。 在实际操作中，存储的并不是时间，而是事务的版本号，每开启一个新事务，事务的版本号就会递增。 在可重读RR事务隔离级别下：</p>
 <ul>
 <li>SELECT时，读取创建版本号&lt;=当前事务版本号，删除版本号为空或&gt;当前事务版本号。</li>
@@ -388,7 +388,7 @@ RC（不可重复读）模式下的展现</p>
 </ul>
 <p>通过MVCC，虽然每行记录都需要额外的存储空间，更多的行检查工作以及一些额外的维护工作，但可以减少锁的使用，大多数读操作都不用加锁，读数据操作很简单，性能很好，并且也能保证只会读取到符合标准的行，也只锁住必要行。</p>
 <p>我们不管从数据库方面的教课书中学到，还是从网络上看到，大都是上文中事务的四种隔离级别这一模块列出的意思，RR级别是可重复读的，但无法解决幻读，而只有在Serializable级别才能解决幻读。于是我就加了一个事务C来展示效果。在事务C中添加了一条teacher_id=1的数据commit，RR级别中应该会有幻读现象，事务A在查询teacher_id=1的数据时会读到事务C新加的数据。但是测试后发现，在MySQL中是不存在这种情况的，在事务C提交后，事务A还是不会读到这条数据。可见在MySQL的RR级别中，是解决了幻读的读问题的。</p>
-<h4 id="“读”与“读”的区别">“读”与“读”的区别</h4>
+<h4 id="读与读的区别"><a class="markdownIt-Anchor" href="#读与读的区别"></a> “读”与“读”的区别</h4>
 <p>MySQL中的读，和事务隔离级别中的读，是不一样的。</p>
 <p>我们且看，在RR级别中，通过MVCC机制，虽然让数据变得可重复读，但我们读到的数据可能是历史数据，是不及时的数据，不是数据库当前的数据！这在一些对于数据的时效特别敏感的业务中，就很可能出问题。</p>
 <p>对于这种读取历史数据的方式，我们叫它快照读 (snapshot read)，而读取数据库当前版本数据的方式，叫当前读 (current read)。很显然，在MVCC中：</p>
@@ -411,10 +411,10 @@ RC（不可重复读）模式下的展现</p>
 </li>
 </ul>
 <p>事务的隔离级别实际上都是定义了当前读的级别，MySQL为了减少锁处理（包括等待其它锁）的时间，提升并发能力，引入了快照读的概念，使得select不用加锁。而update、insert这些“当前读”，就需要另外的模块来解决了。</p>
-<h3 id="写（“当前读”）">写（“当前读”）</h3>
+<h3 id="写当前读"><a class="markdownIt-Anchor" href="#写当前读"></a> 写（“当前读”）</h3>
 <p>事务的隔离级别中虽然只定义了读数据的要求，实际上也可以说是写数据的要求。上文的“读”，实际是讲快照读；而这里说的“写”就是当前读。</p>
 <p>为了解决当前读中的幻读问题，MySQL事务使用了Next-Key锁。</p>
-<h4 id="Next-Key锁">Next-Key锁</h4>
+<h4 id="next-key锁"><a class="markdownIt-Anchor" href="#next-key锁"></a> Next-Key锁</h4>
 <p>Next-Key锁是行锁与GAP（间隙锁）的合并，行锁上文已经介绍了，接下来说下GAP间隙锁。</p>
 <p>行锁可以防止不同事务版本的数据修改提交时造成数据冲突的情况。但如何避免别的事务插入数据就成了问题。我们可以看看RR级别和RC级别的对比</p>
 <p>RC级别：</p>
@@ -541,10 +541,10 @@ RC（不可重复读）模式下的展现</p>
 <p>update的teacher_id=20是在(5，30]区间，即使没有修改任何数据，Innodb也会在这个区间加gap锁，而其它区间不会影响，事务C正常插入。</p>
 <p>如果使用的是没有索引的字段，比如update class_teacher set teacher_id=7 where class_name=‘初三八班（即使没有匹配到任何数据）’,那么会给全表加入gap锁。同时，它不能像上文中行锁一样经过MySQL Server过滤自动解除不满足条件的锁，因为没有索引，则这些字段也就没有排序，也就没有区间。除非该事务提交，否则其它事务无法插入任何数据。</p>
 <p>行锁防止别的事务修改或删除，GAP锁防止别的事务新增，行锁和GAP锁结合形成的的Next-Key锁共同解决了RR级别在写数据时的幻读问题。</p>
-<h2 id="Serializable">Serializable</h2>
+<h2 id="serializable"><a class="markdownIt-Anchor" href="#serializable"></a> Serializable</h2>
 <p>这个级别很简单，读加共享锁，写加排他锁，读写互斥。使用的悲观锁的理论，实现简单，数据更加安全，但是并发能力非常差。如果你的业务并发的特别少或者没有并发，同时又要求数据及时可靠的话，可以使用这种模式。</p>
 <p>在Serializable这个级别，select 还是会加锁的！</p>
-<h2 id="参考资料">参考资料</h2>
+<h2 id="参考资料"><a class="markdownIt-Anchor" href="#参考资料"></a> 参考资料</h2>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2014/08/20/innodb-lock.html">https://tech.meituan.com/2014/08/20/innodb-lock.html</a></li>
 <li><a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/">MySQL参考手册</a></li>
@@ -650,7 +650,7 @@ RC（不可重复读）模式下的展现</p>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%8A%A0%E9%94%81%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">事务中的加锁方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text">事务中的四种隔离级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL%E4%B8%AD%E9%94%81%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text">MySQL中锁的种类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Read-Committed%EF%BC%88%E5%B7%B2%E6%8F%90%E4%BA%A4%E8%AF%BB%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">Read Committed（已提交读）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Repeatable-Read%EF%BC%88%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">Repeatable Read（可重复读）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB"><span class="nav-number">4.1.</span> <span class="nav-text">读</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E5%92%8C%E5%B9%BB%E8%AF%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.1.1.</span> <span class="nav-text">不可重复读和幻读的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81"><span class="nav-number">4.1.2.</span> <span class="nav-text">悲观锁和乐观锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MVCC%E5%9C%A8MySQL%E7%9A%84InnoDB%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.1.3.</span> <span class="nav-text">MVCC在MySQL的InnoDB中的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%9C%E8%AF%BB%E2%80%9D%E4%B8%8E%E2%80%9C%E8%AF%BB%E2%80%9D%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.1.4.</span> <span class="nav-text">“读”与“读”的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%EF%BC%88%E2%80%9C%E5%BD%93%E5%89%8D%E8%AF%BB%E2%80%9D%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">写（“当前读”）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Next-Key%E9%94%81"><span class="nav-number">4.2.1.</span> <span class="nav-text">Next-Key锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Serializable"><span class="nav-number">5.</span> <span class="nav-text">Serializable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%8A%A0%E9%94%81%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text"> 事务中的加锁方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E4%B8%AD%E7%9A%84%E5%9B%9B%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">1.1.</span> <span class="nav-text"> 事务中的四种隔离级别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql%E4%B8%AD%E9%94%81%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="nav-number">2.</span> <span class="nav-text"> MySQL中锁的种类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#read-committed%E5%B7%B2%E6%8F%90%E4%BA%A4%E8%AF%BB"><span class="nav-number">3.</span> <span class="nav-text"> Read Committed（已提交读）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#repeatable-read%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-number">4.</span> <span class="nav-text"> Repeatable Read（可重复读）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB"><span class="nav-number">4.1.</span> <span class="nav-text"> 读</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E5%92%8C%E5%B9%BB%E8%AF%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.1.1.</span> <span class="nav-text"> 不可重复读和幻读的区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81"><span class="nav-number">4.1.2.</span> <span class="nav-text"> 悲观锁和乐观锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mvcc%E5%9C%A8mysql%E7%9A%84innodb%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.1.3.</span> <span class="nav-text"> MVCC在MySQL的InnoDB中的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E4%B8%8E%E8%AF%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.1.4.</span> <span class="nav-text"> “读”与“读”的区别</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%BD%93%E5%89%8D%E8%AF%BB"><span class="nav-number">4.2.</span> <span class="nav-text"> 写（“当前读”）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#next-key%E9%94%81"><span class="nav-number">4.2.1.</span> <span class="nav-text"> Next-Key锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#serializable"><span class="nav-number">5.</span> <span class="nav-text"> Serializable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text"> 参考资料</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -16,16 +16,16 @@
     var CONFIG = {"hostname":"mikado.drrr.app","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="EN：https:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;persistence CN：http:&#x2F;&#x2F;www.redis.cn&#x2F;topics&#x2F;persistence.html  Redis 提供了不同级别的持久化方式: RDB 持久化方式能够在指定的时间间隔能对你的数据进行快照存储.  AOF 持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据, AOF 命令">
+  <meta name="description" content="EN：https:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;persistence CN：http:&#x2F;&#x2F;www.redis.cn&#x2F;topics&#x2F;persistence.html   Redis 提供了不同级别的持久化方式: RDB 持久化方式能够在指定的时间间隔能对你的数据进行快照存储.  AOF 持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据, AOF 命">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis持久化介绍">
 <meta property="og:url" content="https://mikado.drrr.app/Redis-Persistence/index.html">
 <meta property="og:site_name" content="Mikado&#39;s Blog">
-<meta property="og:description" content="EN：https:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;persistence CN：http:&#x2F;&#x2F;www.redis.cn&#x2F;topics&#x2F;persistence.html  Redis 提供了不同级别的持久化方式: RDB 持久化方式能够在指定的时间间隔能对你的数据进行快照存储.  AOF 持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据, AOF 命令">
+<meta property="og:description" content="EN：https:&#x2F;&#x2F;redis.io&#x2F;topics&#x2F;persistence CN：http:&#x2F;&#x2F;www.redis.cn&#x2F;topics&#x2F;persistence.html   Redis 提供了不同级别的持久化方式: RDB 持久化方式能够在指定的时间间隔能对你的数据进行快照存储.  AOF 持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据, AOF 命">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://mikado.drrr.app/images/Redis-Persistence/a15b4afegy1fmvjboz2dgj21hc0u0qj6.jpg">
 <meta property="article:published_time" content="2019-02-21T09:59:51.000Z">
-<meta property="article:modified_time" content="2020-09-22T09:59:28.697Z">
+<meta property="article:modified_time" content="2020-09-22T10:11:38.947Z">
 <meta property="article:author" content="Mikado">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="Redis">
@@ -202,11 +202,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img data-src="/images/Redis-Persistence/a15b4afegy1fmvjboz2dgj21hc0u0qj6.jpg" alt=""></p>
+        <p><img data-src="/images/Redis-Persistence/a15b4afegy1fmvjboz2dgj21hc0u0qj6.jpg" alt="" /></p>
 <blockquote>
 <p>EN：<a target="_blank" rel="noopener" href="https://redis.io/topics/persistence">https://redis.io/topics/persistence</a> <br>CN：<a target="_blank" rel="noopener" href="http://www.redis.cn/topics/persistence.html">http://www.redis.cn/topics/persistence.html</a></p>
 </blockquote>
-<h3 id="Redis-提供了不同级别的持久化方式">Redis 提供了不同级别的持久化方式:</h3>
+<h3 id="redis-提供了不同级别的持久化方式"><a class="markdownIt-Anchor" href="#redis-提供了不同级别的持久化方式"></a> Redis 提供了不同级别的持久化方式:</h3>
 <p><code>RDB</code> 持久化方式能够在指定的时间间隔能对你的数据进行快照存储.</p>
 <ul>
 <li><code>AOF</code> 持久化方式记录每次对服务器写的操作,当服务器重启的时候会重新执行这些命令来恢复原始的数据, <code>AOF</code> 命令以redis协议追加保存每次写的操作到文件末尾.Redis还能对 <code>AOF</code> 文件进行后台重写,使得 <code>AOF</code> 文件的体积不至于过大.</li>
@@ -214,58 +214,58 @@
 <li>你也可以同时开启两种持久化方式, 在这种情况下, 当Redis重启的时候会优先载入 <code>AOF</code> 文件来恢复原始的数据,因为在通常情况下 <code>AOF</code> 文件保存的数据集要比 <code>RDB</code> 文件保存的数据集要完整.</li>
 <li>最重要的事情是了解 <code>RDB</code> 和 <code>AOF</code> 持久化方式的不同,让我们以 <code>RDB</code> 持久化方式开始：<a id="more"></a></li>
 </ul>
-<h3 id="RDB优点"><code>RDB</code>优点</h3>
+<h3 id="rdb优点"><a class="markdownIt-Anchor" href="#rdb优点"></a> <code>RDB</code>优点</h3>
 <ul>
 <li><code>RDB</code> 持久化保存一个时间点的Redis数据</li>
 <li><code>RDB</code> 适合容灾恢复</li>
 <li><code>RDB</code> 最大限度地提高了Redis的性能</li>
 <li>与 <code>AOF</code> 相比， <code>RDB</code> 允许使用大数据集更快地重启。</li>
 </ul>
-<h3 id="RDB缺点"><code>RDB</code>缺点</h3>
+<h3 id="rdb缺点"><a class="markdownIt-Anchor" href="#rdb缺点"></a> <code>RDB</code>缺点</h3>
 <ul>
 <li>意外情况发生，数据会有丢失</li>
 <li><code>RDB</code> 需要<code>fork()</code>出子进程来处理持久化，如果数据集比较大，<code>fork()</code>会很耗时的。再加上CPU性能也不是很好，耗时就会很久。 <code>AOF</code> 也是需要<code>fork()</code>的，但是 <code>AOF</code> 能调整重写无需权衡持久性的日志的频率</li>
 </ul>
-<h3 id="AOF-优点"><code>AOF</code> 优点</h3>
+<h3 id="aof-优点"><a class="markdownIt-Anchor" href="#aof-优点"></a> <code>AOF</code> 优点</h3>
 <ul>
 <li><code>AOF</code> 有多种<code>fsync</code>策略（NO <code>fsync</code>,每秒<code>fsync</code>，每个查询<code>fsync</code>）。默认的每秒<code>fsync</code>策略，写性能也是不错的（<code>fsync</code>是使用后台线程执行的，当没有<code>fsync</code>正在进行时主线程会尽力执行写操作）</li>
 <li><code>AOF</code> 的日志的append的，所以发生意外时，使用<code>redis-check-aof</code> 工具还是能简单的修复</li>
 <li>当Redis太大时，Redis会在后台自动重写 <code>AOF</code> 日志。重写是完全安全的，因为当Redis继续附加到旧文件时，使用创建当前数据集所需的最小操作集生成一个全新的文件，并一旦第二个文件准备就绪，Redis会切换两个并开始附加到 新的那一个。</li>
 <li><code>AOF</code> 包含所有便于理解格式的操作日志，你可以轻松导入一个 <code>AOF</code> 文件。万一使用了<code>FLUSHALL</code>，还是能通过 <code>AOF</code> 文件恢复的。</li>
 </ul>
-<h3 id="AOF-缺点"><code>AOF</code> 缺点</h3>
+<h3 id="aof-缺点"><a class="markdownIt-Anchor" href="#aof-缺点"></a> <code>AOF</code> 缺点</h3>
 <ul>
 <li>文件比 <code>RDB</code> 大</li>
 <li>精确<code>fsync</code>策略的话，<code>AOF</code> 比较慢。禁用<code>fsync</code>的话，跟 <code>RDB</code> 差不多快</li>
 </ul>
-<h3 id="快照（Snapshotting）">快照（Snapshotting）</h3>
-<p>默认的数据集快照是保存到磁盘的，一个叫 <code>dump.rdb</code>  的二进制文件。你可以配置在N秒内至少M次修改时保存快照。有两个命令 <code>SAVE</code> 和<code> BGSAVE</code>。例子，60秒内有1000key改动：<code>save 60 1000</code></p>
-<h3 id="快照是怎么工作的（How-it-works">快照是怎么工作的（How it works)</h3>
+<h3 id="快照snapshotting"><a class="markdownIt-Anchor" href="#快照snapshotting"></a> 快照（Snapshotting）</h3>
+<p>默认的数据集快照是保存到磁盘的，一个叫 <code>dump.rdb</code>  的二进制文件。你可以配置在N秒内至少M次修改时保存快照。有两个命令 <code>SAVE</code> 和<code>BGSAVE</code>。例子，60秒内有1000key改动：<code>save 60 1000</code></p>
+<h3 id="快照是怎么工作的how-it-works"><a class="markdownIt-Anchor" href="#快照是怎么工作的how-it-works"></a> 快照是怎么工作的（How it works)</h3>
 <ul>
 <li>Redis执行<code>fork</code>操作，现在有一个子进程和一个父进程。</li>
 <li>子进程开始把数据集写入临时的 <code>RDB</code> 文件</li>
 <li>当子进程完成写入新的 <code>RDB</code> 文件，就会替换掉旧的文件</li>
 </ul>
-<h3 id="附加文件（Append-only-file）">附加文件（Append-only file）</h3>
+<h3 id="附加文件append-only-file"><a class="markdownIt-Anchor" href="#附加文件append-only-file"></a> 附加文件（Append-only file）</h3>
 <p>快照不是非常耐用（durable）。如果发生意外（Redis停止，断电，<code>kill -9</code>），最后的Redis数据就会丢失。在1.1版本后，你可以在配置文件中开启 <code>AOF</code> ：<code>appendonly file</code>。现在开始，每次Redis接收到命令将会附加到 <code>AOF</code> 中。当Redis重启时，Redis会自己根据 <code>AOF</code> 文件重建状态。</p>
-<h3 id="日记重写（Log-rewriting）">日记重写（Log rewriting）</h3>
+<h3 id="日记重写log-rewriting"><a class="markdownIt-Anchor" href="#日记重写log-rewriting"></a> 日记重写（Log rewriting）</h3>
 <p><code>AOF</code> 会根据执行越来越大。例如，如果将一个计数器递增100次，则最终会在数据集中包含一个包含最终值的key，但在 <code>AOF</code> 中会有100个条目。重建当前状态其实不需要其中99个条目。在Redis 2.2中有 <code>BGREWRITEAOF</code>  这个命令，这个会分析出重建当前数据集所需最短的命令。在Redis 2.4之后就会自动执行（更多信息需要看配置文件）。</p>
-<h3 id="AOF-的持久性如何？（How-durable-is-the-append-only-file"><code>AOF</code> 的持久性如何？（How durable is the append only file?)</h3>
+<h3 id="aof-的持久性如何how-durable-is-the-append-only-file"><a class="markdownIt-Anchor" href="#aof-的持久性如何how-durable-is-the-append-only-file"></a> <code>AOF</code> 的持久性如何？（How durable is the append only file?)</h3>
 <p><code>AOF</code> 有三种配置来配置备份频率</p>
 <ul>
 <li>每个命令都<code>fsync</code>备份。非常非常慢，但是非常安全。</li>
 <li>每秒<code>fsync</code>备份。如果发送意外，最多也就丢失1s的数据</li>
-<li>不<code>fsync</code>备份。<br>
+<li>不<code>fsync</code>备份。<br />
 <code>AOF</code> 默认是第二个(每秒<code>fsync</code>备份)。</li>
 </ul>
-<h3 id="如果-AOF-文件损坏怎么处理">如果 <code>AOF</code> 文件损坏怎么处理</h3>
+<h3 id="如果-aof-文件损坏怎么处理"><a class="markdownIt-Anchor" href="#如果-aof-文件损坏怎么处理"></a> 如果 <code>AOF</code> 文件损坏怎么处理</h3>
 <ul>
 <li>备份你的 <code>AOF</code> 文件</li>
 <li>使用Redis自带的<code>redis-check-aof</code>工具。 <code>$ redis-check-aof --fix</code></li>
 <li>(可选)使用 <code>diff -u</code> 来查看两个文件的不同</li>
 <li>使用修复后的文件重启Redis服务服务器</li>
 </ul>
-<h3 id="怎么修复的？">怎么修复的？</h3>
+<h3 id="怎么修复的"><a class="markdownIt-Anchor" href="#怎么修复的"></a> 怎么修复的？</h3>
 <ul>
 <li>Redis执行<code>fork</code>操作，现在有一个子进程和一个父进程。</li>
 <li>子进程开始写新的 <code>AOF</code> 到临时文件</li>
@@ -273,7 +273,7 @@
 <li>当子进程完成后，父进程得到一个信号，开始将内存缓冲区的数据append到新的 <code>AOF</code> 文件中</li>
 <li>Redis会进行原子性的重命名，将临时文件重命名为新的。并开始appending旧的数据。</li>
 </ul>
-<h3 id="怎么从-RDB-切换到-AOF">怎么从 <code>RDB</code> 切换到 <code>AOF</code></h3>
+<h3 id="怎么从-rdb-切换到-aof"><a class="markdownIt-Anchor" href="#怎么从-rdb-切换到-aof"></a> 怎么从 <code>RDB</code> 切换到 <code>AOF</code></h3>
 <p>在Redis 2.2之后有不同的操作方式</p>
 <p><em>Redis &gt;= 2.2</em></p>
 <ul>
@@ -295,7 +295,7 @@
 <li>确保您的数据库包含相同数量的Key。</li>
 <li>确保写入正确附加到 <code>AOF</code> 文件。</li>
 </ul>
-<h3 id="AOF-和-RDB-之间的相互作用"><code>AOF</code> 和 <code>RDB</code> 之间的相互作用</h3>
+<h3 id="aof-和-rdb-之间的相互作用"><a class="markdownIt-Anchor" href="#aof-和-rdb-之间的相互作用"></a> <code>AOF</code> 和 <code>RDB</code> 之间的相互作用</h3>
 <p>在版本号大于等于 2.4 的 Redis 中，<code>BGSAVE</code> 执行的过程中，不可以执行 <code>BGREWRITEAOF</code> 。反过来说，在 <code>BGREWRITEAOF</code> 执行的过程中， 也不可以执行 <code>BGSAVE</code>。这可以防止两个 Redis 后台进程同时对磁盘进行大量的 I/O 操作。</p>
 <p>如果 <code>BGSAVE</code> 正在执行， 并且用户显示地调用 <code>BGREWRITEAOF</code> 命令， 那么服务器将向用户回复一个 OK 状态， 并告知用户，<code>BGREWRITEAOF</code> 已经被预定执行： 一旦 <code>BGSAVE</code> 执行完毕，<code>BGREWRITEAOF</code> 就会正式开始。 当 Redis 启动时， 如果 <code>RDB</code> 持久化和 <code>AOF</code> 持久化都被打开了， 那么程序会优先使用  <code>AOF</code> 文件来恢复数据集， 因为 <code>AOF</code> 文件所保存的数据通常是最完整的。</p>
 
@@ -399,7 +399,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-%E6%8F%90%E4%BE%9B%E4%BA%86%E4%B8%8D%E5%90%8C%E7%BA%A7%E5%88%AB%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">Redis 提供了不同级别的持久化方式:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB%E4%BC%98%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">RDB优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB%E7%BC%BA%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">RDB缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF-%E4%BC%98%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">AOF 优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF-%E7%BC%BA%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text">AOF 缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%EF%BC%88Snapshotting%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">快照（Snapshotting）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%88How-it-works"><span class="nav-number">7.</span> <span class="nav-text">快照是怎么工作的（How it works)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%84%E5%8A%A0%E6%96%87%E4%BB%B6%EF%BC%88Append-only-file%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">附加文件（Append-only file）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E8%AE%B0%E9%87%8D%E5%86%99%EF%BC%88Log-rewriting%EF%BC%89"><span class="nav-number">9.</span> <span class="nav-text">日记重写（Log rewriting）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF-%E7%9A%84%E6%8C%81%E4%B9%85%E6%80%A7%E5%A6%82%E4%BD%95%EF%BC%9F%EF%BC%88How-durable-is-the-append-only-file"><span class="nav-number">10.</span> <span class="nav-text">AOF 的持久性如何？（How durable is the append only file?)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C-AOF-%E6%96%87%E4%BB%B6%E6%8D%9F%E5%9D%8F%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86"><span class="nav-number">11.</span> <span class="nav-text">如果 AOF 文件损坏怎么处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E4%BF%AE%E5%A4%8D%E7%9A%84%EF%BC%9F"><span class="nav-number">12.</span> <span class="nav-text">怎么修复的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E4%BB%8E-RDB-%E5%88%87%E6%8D%A2%E5%88%B0-AOF"><span class="nav-number">13.</span> <span class="nav-text">怎么从 RDB 切换到 AOF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF-%E5%92%8C-RDB-%E4%B9%8B%E9%97%B4%E7%9A%84%E7%9B%B8%E4%BA%92%E4%BD%9C%E7%94%A8"><span class="nav-number">14.</span> <span class="nav-text">AOF 和 RDB 之间的相互作用</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-%E6%8F%90%E4%BE%9B%E4%BA%86%E4%B8%8D%E5%90%8C%E7%BA%A7%E5%88%AB%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96%E6%96%B9%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text"> Redis 提供了不同级别的持久化方式:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdb%E4%BC%98%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text"> RDB优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rdb%E7%BC%BA%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text"> RDB缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aof-%E4%BC%98%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text"> AOF 优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aof-%E7%BC%BA%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text"> AOF 缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7snapshotting"><span class="nav-number">6.</span> <span class="nav-text"> 快照（Snapshotting）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E6%98%AF%E6%80%8E%E4%B9%88%E5%B7%A5%E4%BD%9C%E7%9A%84how-it-works"><span class="nav-number">7.</span> <span class="nav-text"> 快照是怎么工作的（How it works)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%99%84%E5%8A%A0%E6%96%87%E4%BB%B6append-only-file"><span class="nav-number">8.</span> <span class="nav-text"> 附加文件（Append-only file）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E8%AE%B0%E9%87%8D%E5%86%99log-rewriting"><span class="nav-number">9.</span> <span class="nav-text"> 日记重写（Log rewriting）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aof-%E7%9A%84%E6%8C%81%E4%B9%85%E6%80%A7%E5%A6%82%E4%BD%95how-durable-is-the-append-only-file"><span class="nav-number">10.</span> <span class="nav-text"> AOF 的持久性如何？（How durable is the append only file?)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C-aof-%E6%96%87%E4%BB%B6%E6%8D%9F%E5%9D%8F%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86"><span class="nav-number">11.</span> <span class="nav-text"> 如果 AOF 文件损坏怎么处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E4%BF%AE%E5%A4%8D%E7%9A%84"><span class="nav-number">12.</span> <span class="nav-text"> 怎么修复的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E4%BB%8E-rdb-%E5%88%87%E6%8D%A2%E5%88%B0-aof"><span class="nav-number">13.</span> <span class="nav-text"> 怎么从 RDB 切换到 AOF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#aof-%E5%92%8C-rdb-%E4%B9%8B%E9%97%B4%E7%9A%84%E7%9B%B8%E4%BA%92%E4%BD%9C%E7%94%A8"><span class="nav-number">14.</span> <span class="nav-text"> AOF 和 RDB 之间的相互作用</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
