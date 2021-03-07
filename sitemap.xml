@@ -9,20 +9,6 @@
   </url>
   
   <url>
-    <loc>https://mikado.drrr.app/Deploy-Services-With-Traefik</loc>
-    
-    <lastmod>2021-03-07</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://mikado.drrr.app/about/index.html</loc>
-    
-    <lastmod>2021-03-07</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://mikado.drrr.app/First-Blog/</loc>
     
     <lastmod>2021-03-07</lastmod>
@@ -135,6 +121,13 @@
   </url>
   
   <url>
+    <loc>https://mikado.drrr.app/Deploy-Services-With-Traefik/</loc>
+    
+    <lastmod>2021-03-07</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://mikado.drrr.app/Transaction-Isolation-Level-AND-Locks-In-InnoDB/</loc>
     
     <lastmod>2021-03-07</lastmod>
@@ -143,6 +136,13 @@
   
   <url>
     <loc>https://mikado.drrr.app/Golang-Timer-Source-Code-Analysis/</loc>
+    
+    <lastmod>2021-03-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://mikado.drrr.app/about/index.html</loc>
     
     <lastmod>2021-03-07</lastmod>
     
